@@ -1,0 +1,622 @@
+<title>放課後リライト 設計ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Zen+Kaku+Gothic+New:wght@400;700;900&display=swap">
+<style>
+/* Layout: 左に細いマージン見出し（ラベル）、右に本文の2カラム。狭い画面では1カラム。夜の部室×ニキシー管の世界観 */
+:root {
+  --bg: #0d1018;
+  --panel: #151a26;
+  --line: #262d3d;
+  --fg: #e6e8ee;
+  --muted: #9aa2b4;
+  --accent: #ff8a2a;       /* ニキシー管のオレンジ */
+  --accent-soft: rgba(255, 138, 42, 0.14);
+  --echo: #7ff5d9;         /* 残響の青緑 */
+  --code-bg: #0a0d14;
+  --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --font-mono: "Share Tech Mono", "Consolas", "Menlo", monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f5f2ec; --panel: #ffffff; --line: #e1dbd0; --fg: #1d2030; --muted: #5d6474;
+    --accent: #c25400; --accent-soft: rgba(194, 84, 0, 0.1); --echo: #00806a; --code-bg: #f0ebe2;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #f5f2ec; --panel: #ffffff; --line: #e1dbd0; --fg: #1d2030; --muted: #5d6474;
+  --accent: #c25400; --accent-soft: rgba(194, 84, 0, 0.1); --echo: #00806a; --code-bg: #f0ebe2;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.85;
+  padding-inline: 20px;
+  padding-block: 0 80px;
+}
+.wrap { max-width: 1040px; margin: 0 auto; }
+
+/* ===== ヘッダー ===== */
+header.hero {
+  padding-block: 64px 40px;
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 18px;
+}
+.eyebrow {
+  font-family: var(--font-mono);
+  letter-spacing: 0.3em;
+  font-size: 0.8rem;
+  color: var(--accent);
+}
+h1 {
+  margin: 0;
+  font-weight: 900;
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  line-height: 1.25;
+  letter-spacing: 0.06em;
+  text-wrap: balance;
+}
+.lead { margin: 0; max-width: 40em; color: var(--muted); }
+.nixie {
+  display: inline-flex;
+  gap: 4px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  background: #0a0603;
+  border-radius: 6px;
+  width: fit-content;
+}
+.nixie span {
+  font-family: var(--font-mono);
+  font-size: 1.9rem;
+  width: 0.9em;
+  text-align: center;
+  color: #ffb066;
+  text-shadow: 0 0 4px #ff7b00, 0 0 14px #ff5500;
+  background: linear-gradient(rgba(255,120,0,.1), rgba(255,120,0,.02));
+  border-radius: 3px;
+}
+.nixie span.dot { width: 0.4em; background: none; }
+.stack { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  padding: 2px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+}
+
+/* ===== 目次 ===== */
+nav.toc {
+  padding-block: 24px;
+  border-bottom: 1px solid var(--line);
+}
+nav.toc ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 6px 24px;
+  counter-reset: toc;
+}
+nav.toc li { counter-increment: toc; }
+nav.toc a {
+  color: var(--fg);
+  text-decoration: none;
+  display: flex;
+  gap: 10px;
+}
+nav.toc a::before {
+  content: counter(toc, decimal-leading-zero);
+  font-family: var(--font-mono);
+  color: var(--accent);
+}
+nav.toc a:hover, nav.toc a:focus-visible { color: var(--accent); }
+
+/* ===== セクション ===== */
+section {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 32px;
+  padding-block: 48px;
+  border-bottom: 1px solid var(--line);
+  scroll-margin-top: 16px;
+}
+.sec-label {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  padding-top: 8px;
+}
+.sec-label b { display: block; font-size: 1.6rem; color: var(--accent); font-weight: 400; letter-spacing: 0; }
+.sec-body { min-width: 0; display: grid; gap: 18px; align-content: start; }
+h2 { margin: 0; font-size: 1.6rem; font-weight: 900; text-wrap: balance; letter-spacing: 0.04em; }
+h3 { margin: 12px 0 0; font-size: 1.1rem; font-weight: 700; }
+p { margin: 0; max-width: 42em; }
+.note { color: var(--muted); font-size: 0.92rem; }
+code {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--accent-soft);
+  color: var(--fg);
+}
+pre {
+  margin: 0;
+  padding: 16px 18px;
+  background: var(--code-bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+pre code { background: none; padding: 0; font-size: inherit; }
+.file {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: -12px;
+}
+.c { color: var(--muted); }     /* コメント */
+.k { color: var(--accent); }    /* キーワード */
+.s { color: var(--echo); }      /* 文字列 */
+
+/* 表 */
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.93rem; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--font-mono); font-weight: 400; font-size: 0.8rem; letter-spacing: 0.1em; color: var(--muted); background: var(--panel); }
+tr:last-child td { border-bottom: none; }
+
+/* 3つの層 */
+.layers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.layer { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: grid; gap: 6px; align-content: start; }
+.layer .tag { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.15em; color: var(--accent); }
+.layer h3 { margin: 0; }
+.layer p { font-size: 0.9rem; color: var(--muted); }
+
+/* 図 */
+.diagram { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; overflow-x: auto; }
+.diagram pre.mermaid { background: none; border: none; padding: 0; text-align: center; }
+
+/* バグ解説の前後比較 */
+.compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.compare > div { min-width: 0; display: grid; gap: 8px; align-content: start; }
+.badge { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.15em; }
+.badge.bad { color: #ff6b7d; }
+.badge.good { color: var(--echo); }
+
+/* 判断のリスト */
+.decisions { display: grid; gap: 12px; }
+.decision { border-left: 3px solid var(--accent); padding: 4px 0 4px 16px; display: grid; gap: 4px; }
+.decision strong { font-size: 1rem; }
+.decision p { color: var(--muted); font-size: 0.93rem; }
+
+footer { padding-block: 32px; color: var(--muted); font-size: 0.85rem; }
+
+@media (max-width: 760px) {
+  section { grid-template-columns: minmax(0, 1fr); gap: 12px; padding-block: 36px; }
+  .layers, .compare { grid-template-columns: minmax(0, 1fr); }
+  body { padding-inline: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">DESIGN NOTES / VUE 3 + VUE ROUTER + PINIA</div>
+    <h1>放課後リライト 設計ノート</h1>
+    <p class="lead">ずんだもんと過去改変装置のSFノベルゲームを、どう組み立てたかの解説です。ファイルの役割分担、データの流れ、演出のしくみ、素材の扱いを順番に説明します。コードは <code>vuenovel/src</code> の中身そのままです。</p>
+    <div class="nixie" aria-label="観測値 0.409431">
+      <span>0</span><span class="dot">.</span><span>4</span><span>0</span><span>9</span><span>4</span><span>3</span><span>1</span>
+    </div>
+    <div class="stack">
+      <span class="chip">Vue 3.5</span><span class="chip">Vue Router 5</span><span class="chip">Pinia 4</span><span class="chip">Vite 8</span><span class="chip">&lt;script setup&gt;</span>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="目次">
+    <ol>
+      <li><a href="#overview">全体の構成</a></li>
+      <li><a href="#layers">3つの役割分担</a></li>
+      <li><a href="#router">ページ切り替え</a></li>
+      <li><a href="#data">シナリオデータ</a></li>
+      <li><a href="#store">Pinia ストア</a></li>
+      <li><a href="#flow">1クリックの流れ</a></li>
+      <li><a href="#effects">演出のしくみ</a></li>
+      <li><a href="#bug">立ち絵が重なるバグ</a></li>
+      <li><a href="#assets">素材とライセンス</a></li>
+      <li><a href="#decisions">設計の判断</a></li>
+      <li><a href="#next">次の改造</a></li>
+    </ol>
+  </nav>
+
+  <!-- 01 -->
+  <section id="overview">
+    <div class="sec-label"><b>01</b>OVERVIEW</div>
+    <div class="sec-body">
+      <h2>全体の構成</h2>
+      <p>アプリの入り口は <code>main.js</code> です。ここで Pinia（共有データ）と Vue Router（ページ切り替え）を登録し、<code>App.vue</code> を画面に出します。<code>App.vue</code> には <code>&lt;RouterView /&gt;</code> しかなく、URL に応じて4つのページのどれかがそこに入ります。</p>
+      <div class="diagram">
+<pre class="mermaid">
+flowchart TD
+  main["main.js<br/>createApp + Pinia + Router"] --> app["App.vue<br/>&lt;RouterView /&gt;"]
+  app --> title["TitleView<br/>/"]
+  app --> game["GameView<br/>/game"]
+  app --> ending["EndingView<br/>/ending/:type"]
+  app --> credits["CreditsView<br/>/credits"]
+  game --> stage["StageLayer<br/>背景＋立ち絵"]
+  game --> meter["NixieMeter<br/>観測計"]
+  game --> msg["MessageBox"]
+  game --> choice["ChoiceList"]
+  ending --> stage
+  store[("stores/game.js<br/>Pinia")] -.読む・変える.-> game
+  store -.読む.-> title
+  data[["data/scenario.js<br/>シナリオ"]] -.読む.-> store
+  data -.読む.-> ending
+</pre>
+      </div>
+      <div class="file">vuenovel/</div>
+<pre><code>public/images/        <span class="c">画像（bg：背景 6枚 / chara：立ち絵 12枚）</span>
+src/
+├─ main.js            <span class="c">入り口</span>
+├─ App.vue            <span class="c">&lt;RouterView /&gt; と全体のスタイル</span>
+├─ router/index.js    <span class="c">URL とページの対応表</span>
+├─ stores/game.js     <span class="c">ゲームの進行状況（Pinia）</span>
+├─ data/scenario.js   <span class="c">セリフ・選択肢・エンディング</span>
+├─ views/             <span class="c">ページ（URL ごとに1つ）</span>
+└─ components/        <span class="c">ページの中で使う部品</span></code></pre>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section id="layers">
+    <div class="sec-label"><b>02</b>LAYERS</div>
+    <div class="sec-body">
+      <h2>3つの役割分担</h2>
+      <p>このゲームは「お話」「進み具合」「見た目」をはっきり分けています。分けておくと、お話を足すときはデータだけ、見た目を変えるときは画面だけを触ればよくなります。</p>
+      <div class="layers">
+        <div class="layer">
+          <span class="tag">DATA</span>
+          <h3>お話の中身</h3>
+          <p><code>data/scenario.js</code>。セリフ・選択肢・背景・エンディングを、ただのオブジェクトとして書いた場所。Vue の機能は一切使っていません。</p>
+        </div>
+        <div class="layer">
+          <span class="tag">STATE</span>
+          <h3>今どこまで進んだか</h3>
+          <p><code>stores/game.js</code>。今のシーン、何行目か、絆の値。データを読んで「次はどこか」を決めます。</p>
+        </div>
+        <div class="layer">
+          <span class="tag">VIEW</span>
+          <h3>画面と演出</h3>
+          <p><code>views/</code> と <code>components/</code>。ストアの値を表示し、クリックを受け取り、タイプライターやグリッチを担当します。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section id="router">
+    <div class="sec-label"><b>03</b>ROUTER</div>
+    <div class="sec-body">
+      <h2>ページ切り替え（Vue Router）</h2>
+      <p>URL とページの対応を <code>router/index.js</code> に1か所で書いています。エンディングだけは URL の一部（<code>:type</code>）で、どのエンディングを出すかを受け渡します。</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>URL</th><th>ページ</th><th>役割</th></tr></thead>
+          <tbody>
+            <tr><td><code>/</code></td><td>TitleView</td><td>タイトル。START でストアをリセットして <code>/game</code> へ</td></tr>
+            <tr><td><code>/game</code></td><td>GameView</td><td>本編。演出のほとんどがここ</td></tr>
+            <tr><td><code>/ending/:type</code></td><td>EndingView</td><td><code>true</code> / <code>good</code> / <code>lost</code> を URL から読む</td></tr>
+            <tr><td><code>/credits</code></td><td>CreditsView</td><td>素材のクレジット</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>ページ移動の2つの書き方</h3>
+      <div class="file">TitleView.vue（コードで移動）</div>
+<pre><code><span class="k">function</span> start() {
+  game.reset()          <span class="c">// ストアを最初の状態に戻す</span>
+  router.push(<span class="s">'/game'</span>)  <span class="c">// ページ移動</span>
+}</code></pre>
+      <div class="file">EndingView.vue（リンクで移動）</div>
+<pre><code>&lt;RouterLink to=<span class="s">"/"</span>&gt;TITLE&lt;/RouterLink&gt;</code></pre>
+      <div class="file">EndingView.vue（URL から値を受け取る）</div>
+<pre><code><span class="k">const</span> route = useRoute()
+<span class="c">// /ending/true なら route.params.type は 'true'。知らない値なら lost にする</span>
+<span class="k">const</span> ending = computed(() =&gt; endings[route.params.type] ?? endings.lost)</code></pre>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section id="data">
+    <div class="sec-label"><b>04</b>DATA</div>
+    <div class="sec-body">
+      <h2>シナリオデータの形</h2>
+      <p>シーンは ID をキーにしたオブジェクトです。各シーンが「次はどこへ行くか」を持っているので、シーン同士がつながって1本の物語になります。</p>
+      <div class="file">data/scenario.js（抜粋）</div>
+<pre><code>roof: {
+  bg: <span class="s">'roof_night'</span>,          <span class="c">// public/images/bg/roof_night.webp</span>
+  meter: SHIFTED_METER,       <span class="c">// 観測計に出す数字 '1.130205'</span>
+  lines: [
+    { speaker: <span class="s">'ずんだもん'</span>, chara: <span class="s">'zun_sad'</span>, echo: <span class="k">true</span>,
+      text: <span class="s">'……やっぱり。キミには、見えるのだ？'</span> },
+    <span class="c">// …</span>
+  ],
+  choices: [
+    { text: <span class="s">'「絶対に、元の世界に戻す」'</span>, next: <span class="s">'observer'</span>, points: 1 },
+    { text: <span class="s">'「……どうすればいいんだ」'</span>,  next: <span class="s">'observer'</span>, points: 0 },
+  ],
+},</code></pre>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>キー</th><th>意味</th></tr></thead>
+          <tbody>
+            <tr><td><code>bg</code></td><td>背景画像の名前</td></tr>
+            <tr><td><code>meter</code></td><td>右上の〈観測計〉の数字。変わると数字が回る</td></tr>
+            <tr><td><code>glitch</code></td><td><code>true</code> ならシーンに入るとき画面が乱れる</td></tr>
+            <tr><td><code>lines</code></td><td>セリフの配列。<code>speaker</code>・<code>chara</code>・<code>text</code>、残響なら <code>echo: true</code></td></tr>
+            <tr><td><code>choices</code></td><td>最後のセリフのあとに出る選択肢。<code>points</code> が絆に足される</td></tr>
+            <tr><td><code>next</code></td><td>選択肢がないときの次のシーン</td></tr>
+            <tr><td><code>end</code></td><td><code>true</code> ならこのシーンのあとエンディングへ</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="diagram">
+<pre class="mermaid">
+flowchart LR
+  start(["start<br/>部室・夕方"]) -- 選択1 --> shift["shift<br/>グリッチ"]
+  shift --> classroom["classroom<br/>名簿が消える"]
+  classroom --> roof(["roof<br/>残響ずんだもん"])
+  roof -- 選択2 --> observer["observer<br/>四国めたん"]
+  observer --> lastLab(["lastLab<br/>最後の1通"])
+  lastLab -- 選択3 --> final["final<br/>グリッチ"]
+  final -- "絆 3" --> T{{"TRUE END"}}
+  final -- "絆 2" --> G{{"GOOD END"}}
+  final -- "絆 0〜1" --> L{{"LOST END"}}
+</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section id="store">
+    <div class="sec-label"><b>05</b>PINIA</div>
+    <div class="sec-body">
+      <h2>Pinia ストア</h2>
+      <p>ゲーム画面とエンディング画面は別のページなので、コンポーネントの <code>ref</code> だけでは値を受け渡せません。ストアに置けば、どのページからでも <code>useGameStore()</code> で同じデータに触れます。書き方はコンポーネントとほぼ同じ形です。</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Pinia</th><th>コンポーネントでいうと</th><th>このゲームでは</th></tr></thead>
+          <tbody>
+            <tr><td><code>state</code></td><td><code>ref</code></td><td><code>sceneId</code>・<code>lineIndex</code>・<code>bond</code>（絆）</td></tr>
+            <tr><td><code>getters</code></td><td><code>computed</code></td><td><code>scene</code>・<code>line</code>・<code>isLastLine</code>・<code>showChoices</code>・<code>endingType</code></td></tr>
+            <tr><td><code>actions</code></td><td>普通の関数</td><td><code>reset()</code>・<code>next()</code>・<code>choose()</code>・<code>goToScene()</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="file">stores/game.js（抜粋）</div>
+<pre><code>getters: {
+  scene: (state) =&gt; scenes[state.sceneId],
+  line() {
+    <span class="c">// getter から別の getter を使うときは this</span>
+    <span class="k">return</span> <span class="k">this</span>.scene.lines[<span class="k">this</span>.lineIndex]
+  },
+  endingType: (state) =&gt; {
+    <span class="k">if</span> (state.bond &gt;= 3) <span class="k">return</span> <span class="s">'true'</span>
+    <span class="k">if</span> (state.bond === 2) <span class="k">return</span> <span class="s">'good'</span>
+    <span class="k">return</span> <span class="s">'lost'</span>
+  },
+},
+actions: {
+  next() {
+    <span class="k">if</span> (!<span class="k">this</span>.isLastLine) <span class="k">this</span>.lineIndex++
+    <span class="k">else if</span> (<span class="k">this</span>.scene.next) <span class="k">this</span>.goToScene(<span class="k">this</span>.scene.next)
+  },
+  choose(choice) {
+    <span class="k">this</span>.bond += choice.points
+    <span class="k">this</span>.goToScene(choice.next)
+  },
+}</code></pre>
+      <p class="note">ストアはページ移動（<code>router.push</code>）をしません。「どこまで進んだか」だけを管理し、画面の移動はページ側（GameView）が決めます。こうしておくと、ストアは画面のことを知らずに済みます。</p>
+    </div>
+  </section>
+
+  <!-- 06 -->
+  <section id="flow">
+    <div class="sec-label"><b>06</b>FLOW</div>
+    <div class="sec-body">
+      <h2>1クリックの流れ</h2>
+      <p>画面をクリックすると <code>GameView</code> の <code>onNext()</code> が呼ばれます。判定は上から順に4つです。</p>
+      <div class="diagram">
+<pre class="mermaid">
+flowchart TD
+  click(["画面をクリック"]) --> typing{"文字を表示中？"}
+  typing -- はい --> finish["全文を一気に表示"]
+  typing -- いいえ --> choices{"選択肢が出ている？"}
+  choices -- はい --> wait["何もしない<br/>（ボタンを押してもらう）"]
+  choices -- いいえ --> isEnd{"最後のシーンの<br/>最後の行？"}
+  isEnd -- はい --> push["router.push<br/>/ending/ + endingType"]
+  isEnd -- いいえ --> next["game.next()<br/>次の行 or 次のシーン"]
+  next --> watch["watch が line の変化を検知<br/>タイプライター開始"]
+</pre>
+      </div>
+      <div class="file">views/GameView.vue</div>
+<pre><code><span class="k">function</span> onNext() {
+  <span class="k">if</span> (isTyping.value) { finishTyping(); <span class="k">return</span> }
+  <span class="k">if</span> (game.showChoices) <span class="k">return</span>
+  <span class="k">if</span> (game.isLastLine &amp;&amp; game.scene.end) {
+    router.push(<span class="s">`/ending/${game.endingType}`</span>)
+    <span class="k">return</span>
+  }
+  game.next()
+}</code></pre>
+      <p class="note">選択肢のボタンは <code>@click.stop</code> の付いた枠の中にあります。これがないと、ボタンのクリックが外側の画面にも伝わり、選んだ瞬間に1行先へ進んでしまいます。</p>
+    </div>
+  </section>
+
+  <!-- 07 -->
+  <section id="effects">
+    <div class="sec-label"><b>07</b>EFFECTS</div>
+    <div class="sec-body">
+      <h2>演出のしくみ</h2>
+      <p>演出は「Vue で状態を切り替え、見た目は CSS に任せる」形でそろえています。Vue 側でやっているのは、値を変えることとクラスを付け外しすることだけです。</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>演出</th><th>Vue の機能</th><th>場所</th></tr></thead>
+          <tbody>
+            <tr><td>文字が1文字ずつ出る</td><td><code>ref</code> + <code>computed</code> + <code>watch</code> + <code>setInterval</code></td><td>GameView</td></tr>
+            <tr><td>画面が乱れる（グリッチ）</td><td><code>watch</code> でシーン変化を検知 → <code>:class</code></td><td>GameView</td></tr>
+            <tr><td>観測計の数字が回る</td><td><code>watch</code> で props の変化を検知</td><td>NixieMeter</td></tr>
+            <tr><td>背景・立ち絵のフェード</td><td><code>&lt;Transition&gt;</code> + <code>:key</code></td><td>StageLayer</td></tr>
+            <tr><td>残響（青白く透けて点滅）</td><td>props の <code>echo</code> → <code>:class</code></td><td>StageLayer</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>タイプライター</h3>
+      <p>「何文字目まで出したか」だけを <code>ref</code> で持ち、表示する文字列は <code>computed</code> で切り出します。セリフが変わったら <code>watch</code> が数え直しを始めます。</p>
+<pre><code><span class="k">const</span> typedLength = ref(0)
+<span class="k">const</span> typedText = computed(() =&gt; game.line.text.slice(0, typedLength.value))
+<span class="k">const</span> isTyping = computed(() =&gt; typedLength.value &lt; game.line.text.length)
+
+<span class="c">// immediate: true で、画面を開いた最初の1回も実行する</span>
+watch(() =&gt; game.line, startTyping, { immediate: <span class="k">true</span> })</code></pre>
+
+      <h3>グリッチ</h3>
+      <p>シーンに <code>glitch: true</code> があれば、1秒だけ <code>glitching</code> を <code>true</code> にします。揺れや色ずれは CSS の <code>@keyframes</code>（<code>transform</code> と <code>filter: hue-rotate / invert</code>）が担当します。</p>
+<pre><code>watch(() =&gt; game.sceneId, () =&gt; {
+  <span class="k">if</span> (!game.scene.glitch) <span class="k">return</span>
+  glitching.value = <span class="k">true</span>
+  glitchTimer = setTimeout(() =&gt; (glitching.value = <span class="k">false</span>), 1000)
+})</code></pre>
+
+      <h3>観測計（ニキシー管）</h3>
+      <p>表示用の <code>shown</code> を別に持ち、新しい値が来たら60ミリ秒ごとにランダムな数字を15回出してから本当の値で止めます。光のにじみは <code>text-shadow</code> を3重に重ねて作っています。</p>
+
+      <h3>タイマーの後片付け</h3>
+      <p class="note"><code>setInterval</code> や <code>setTimeout</code> を使うコンポーネントはすべて、<code>onUnmounted</code> でタイマーを止めています。ページを離れても動き続けるタイマーは、よくあるバグの原因になります。</p>
+    </div>
+  </section>
+
+  <!-- 08 -->
+  <section id="bug">
+    <div class="sec-label"><b>08</b>BUGFIX</div>
+    <div class="sec-body">
+      <h2>立ち絵が重なるバグと <code>:key</code></h2>
+      <p>表情が変わるたびに、ずんだもんが一瞬2人に見えるバグがありました。原因は <code>&lt;Transition&gt;</code> に渡す <code>:key</code> の選び方です。</p>
+      <div class="compare">
+        <div>
+          <span class="badge bad">BEFORE</span>
+<pre><code>&lt;Transition name=<span class="s">"fade"</span>&gt;
+  &lt;img :key=<span class="s">"charaSrc"</span> … /&gt;
+&lt;/Transition&gt;</code></pre>
+          <p class="note">key が画像のパスなので、表情が変わるたびに「別の画像」とみなされます。古い画像のフェードアウトと新しい画像のフェードインが同時に0.6秒起き、腕の位置が違う2枚が重なって見えていました。</p>
+        </div>
+        <div>
+          <span class="badge good">AFTER</span>
+<pre><code>&lt;Transition name=<span class="s">"chara-fade"</span> mode=<span class="s">"out-in"</span>&gt;
+  &lt;img :key=<span class="s">"charaKey"</span> … /&gt;
+&lt;/Transition&gt;</code></pre>
+          <p class="note">key をキャラ名（<code>'zun_smile'</code> → <code>'zun'</code>）にしました。表情が変わっても同じ要素のまま <code>src</code> だけが差し替わります。別のキャラに替わるときは <code>mode="out-in"</code> で、消えきってから次が出ます。</p>
+        </div>
+      </div>
+<pre><code><span class="k">const</span> charaKey = computed(() =&gt; props.chara?.split(<span class="s">'_'</span>)[0])</code></pre>
+      <p class="note">ポイントは、<code>:key</code> が「Vue が同じものとみなす単位」を決めているということです。アニメーションさせたい単位を key にします。</p>
+    </div>
+  </section>
+
+  <!-- 09 -->
+  <section id="assets">
+    <div class="sec-label"><b>09</b>ASSETS</div>
+    <div class="sec-body">
+      <h2>素材とライセンス</h2>
+      <p>立ち絵は PSD（レイヤーで表情を切り替える形式）で配布されています。Python の psd-tools でレイヤーの表示・非表示を切り替え、表情ごとに PNG に書き出しました。</p>
+      <div class="diagram">
+<pre class="mermaid">
+flowchart LR
+  psd["PSD<br/>眉・目・口・腕・枝豆<br/>のレイヤー"] --> pick["表情ごとに<br/>レイヤーを選ぶ"]
+  pick --> png["PNG に合成<br/>余白を切り詰め<br/>高さ1100px"]
+  png --> pub["public/images/chara/<br/>zun_smile.png など"]
+</pre>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>素材</th><th>作者</th><th>条件</th></tr></thead>
+          <tbody>
+            <tr><td>ずんだもん・四国めたん（キャラクター）</td><td>東北ずん子・ずんだもんプロジェクト</td><td>非商用は申請不要。残虐な表現やイメージを大きく損なう使い方は禁止</td></tr>
+            <tr><td>立ち絵（ずんだもん V3.2 / 四国めたん 2.1）</td><td>坂本アヒル</td><td>公式ガイドラインの範囲で自由。改変可。クレジット任意</td></tr>
+            <tr><td>背景（School Mini Pack 1）</td><td>Potat0Master</td><td>商用可・改変可。画像そのものの再配布は禁止</td></tr>
+            <tr><td>フォント（Zen Kaku Gothic New / Share Tech Mono）</td><td>Google Fonts</td><td>SIL Open Font License</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">背景の候補だった NoranekoGames の素材は、規約に「AIと一緒に使わないこと」とあったため使っていません。素材を選ぶときは、規約を読んでから決めています。</p>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section id="decisions">
+    <div class="sec-label"><b>10</b>DECISIONS</div>
+    <div class="sec-body">
+      <h2>設計の判断</h2>
+      <div class="decisions">
+        <div class="decision">
+          <strong>お話はコードではなくデータで書く</strong>
+          <p>シナリオを <code>scenario.js</code> のオブジェクトにしたので、シーンを足すときに Vue のコードを触る必要がありません。分岐もエンディングも同じ形のデータで表せます。</p>
+        </div>
+        <div class="decision">
+          <strong>画像はファイル名ではなく「名前」で指定する</strong>
+          <p>シナリオには <code>'zun_sad'</code> とだけ書き、パスの組み立ては StageLayer が担当します。フォルダや拡張子を変えても、直す場所は1か所です。</p>
+        </div>
+        <div class="decision">
+          <strong>エンディングは URL で渡す</strong>
+          <p><code>/ending/true</code> のように URL に結果を入れたので、エンディング画面はストアがなくても表示できます。直接 URL を開けば、各エンディングの見た目を確認できます。</p>
+        </div>
+        <div class="decision">
+          <strong>演出の判定は Vue、動きは CSS</strong>
+          <p>グリッチや残響の動きは CSS アニメーションに任せ、Vue はクラスを付け外しするだけです。JavaScript でフレームごとに動かすより短く、止め忘れも起きません。</p>
+        </div>
+        <div class="decision">
+          <strong>背景と立ち絵の表示を1つの部品にまとめる</strong>
+          <p>StageLayer をゲーム画面・エンディング・タイトルで使い回しています。フェードや残響の演出が、どの画面でも同じように動きます。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 -->
+  <section id="next">
+    <div class="sec-label"><b>11</b>NEXT</div>
+    <div class="sec-body">
+      <h2>次の改造</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>やりたいこと</th><th>触る場所</th><th>学べること</th></tr></thead>
+          <tbody>
+            <tr><td>シーンを足す（おどろき顔 <code>zun_surprise</code> は未使用）</td><td>scenario.js だけ</td><td>データ駆動の設計</td></tr>
+            <tr><td>選択肢によって観測計の数字を変える</td><td>scenario.js と store</td><td>getter の追加</td></tr>
+            <tr><td>読んだセリフのバックログ画面</td><td>store に <code>log: []</code>、新しいページとルート</td><td>Pinia と Router の両方</td></tr>
+            <tr><td>セーブ・ロード</td><td>store の action と <code>localStorage</code></td><td>状態の保存と復元</td></tr>
+            <tr><td>Enter キーでも進める</td><td>GameView</td><td>キーボードイベントと <code>onUnmounted</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <footer>放課後リライト / vuenovel プロジェクトの設計ノート</footer>
+</div>
