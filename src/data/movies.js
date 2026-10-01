@@ -2,9 +2,10 @@
 // 動画ファイルではなく、「カット（shot）」を順番に見せて映像にする。
 // 1カットの書き方：
 //   bg / still : 表示する画像（背景 public/images/bg/〇〇.webp か、スチル public/images/still/〇〇.webp）
+//   chara / echo : 背景の上に立たせるキャラ（立ち絵の名前）と、残響にするか
 //   duration   : 表示する時間（ミリ秒）
 //   motion     : カメラの動き  'pan-right' | 'pan-left' | 'pan-up' | 'zoom-in' | 'zoom-out' | 'shake'
-//   effect     : 特殊効果      'digits'（数字の雨） | 'glitch' | 'flash'（白く光る） | 'white' | 'title' | 'rewind'（巻き戻し）
+//   effect     : 特殊効果      'digits'（数字の雨） | 'glitch' | 'flash'（白く光る） | 'white' | 'title' | 'rewind'（巻き戻し） | 'memory'（色あせた思い出）
 //   caption    : 字幕
 //   sound      : 効果音の名前（composables/useSound.js）
 
@@ -28,6 +29,16 @@ export const movies = {
     { bg: 'hallway_night', duration: 380, motion: 'shake', effect: 'glitch' },
     { effect: 'flash', duration: 600, sound: 'impact' },
     { bg: 'lab_night', duration: 2600, motion: 'zoom-out', caption: '観測値 0.409431 → 1.130205' },
+  ],
+
+  // 走馬灯：最後の選択の前に、ふたりの放課後が色あせたフィルムのように流れる
+  memories: [
+    { bg: 'lab_evening', chara: 'zun_proud', duration: 3200, motion: 'zoom-in', effect: 'memory', caption: '「待ってたのだ！ ついに完成したのだ！」' },
+    { bg: 'lab_evening', chara: 'zun_surprise', duration: 2400, motion: 'pan-left', effect: 'memory', caption: '「ボクの発明を疑ってるのだ!?」' },
+    { still: 'promise', duration: 3400, motion: 'zoom-in', effect: 'memory', caption: '「キミに決めさせてあげるのだ」' },
+    { bg: 'classroom_evening', duration: 2400, motion: 'pan-right', effect: 'memory', caption: '——いつもの、なんでもない放課後。' },
+    { still: 'echo', duration: 3200, motion: 'zoom-out', effect: 'memory', caption: '「キミが覚えててくれるから……」' },
+    { effect: 'white', duration: 1400 },
   ],
 
   // 最後のメッセージのあと、エンディングの前

@@ -21,12 +21,15 @@ import CinemaText from '../components/effects/CinemaText.vue'
 import CutIn from '../components/effects/CutIn.vue'
 import PhoneScreen from '../components/effects/PhoneScreen.vue'
 import LightLeak from '../components/effects/LightLeak.vue'
+import ClickRipple from '../components/effects/ClickRipple.vue'
+import HudFrame from '../components/effects/HudFrame.vue'
+import TileDissolve from '../components/effects/TileDissolve.vue'
 import { routeTree } from '../data/routeTree'
 
 const router = useRouter()
 const game = useGameStore()
 const { play, muted, toggleMute } = useSound()
-const { playMusic } = useMusic()
+const { playMusic, setMood } = useMusic()
 
 // ===== タイプライター演出（1文字ずつ表示する） =====
 const chars = computed(() => parseRichText(game.line.text)) // 装飾付きの1文字ずつの配列
@@ -53,19 +56,24 @@ watch(
 // ムービーやチャプターカードが出ている間は、セリフを進めない
 const blocking = computed(() => Boolean(game.movie) || chapterActive.value)
 
+// 文字の速さ：セリフの speed で変える（'slow' は大事な言葉を、1文字ずつかみしめるように）
+const SPEED = { slow: 2.6, fast: 0.5 }
+
 // 1文字出して、句読点なら少し長めに待ってから次の文字へ（setTimeout をつなげていく）
 function typeNext() {
   typedLength.value++
   if (typedLength.value % 2 === 0) play('tick')
   if (!isTyping.value) return
-  typeTimer = setTimeout(typeNext, pauseAfter(chars.value[typedLength.value - 1].ch))
+  const factor = SPEED[game.line.speed] ?? 1
+  typeTimer = setTimeout(typeNext, pauseAfter(chars.value[typedLength.value - 1].ch) * factor)
 }
 
 function startTyping() {
   clearTimeout(typeTimer)
   typedLength.value = 0
   if (blocking.value) return // ムービーやチャプターの間は待つ（終わったらもう一度呼ばれる）
-  typeTimer = setTimeout(typeNext, 250)
+  // beat：セリフが始まる前の「間」。何も起きない時間が、次の言葉を重くする
+  typeTimer = setTimeout(typeNext, game.line.beat ?? 250)
 }
 
 function finishTyping() {
@@ -79,13 +87,42 @@ watch(() => [game.line, blocking.value], startTyping, { immediate: true })
 
 // しゃべっている間だけ口パク（地の文・SYSTEM・スチル表示中はしない）
 const talking = computed(
-  () => isTyping.value && Boolean(game.line.speaker) && game.line.speaker !== 'SYSTEM' && !game.line.still && !game.line.cinema,
+  () =>
+    isTyping.value &&
+    Boolean(game.line.speaker) &&
+    !['SYSTEM', '僕'].includes(game.line.speaker) && // 主人公のセリフのときは、相手は口を動かさない
+    !game.line.still &&
+    !game.line.cinema,
 )
 
 // ===== BGM：シーンの bgm を流す。世界が変わる・巻き戻るムービーの間は無音にする =====
+// さらに、セリフの music で音楽に「演技」をさせる（消える・こもる・小さくなる・ふくらむ）。
+// 一度変えた演技は、次に music が出てくるか、シーンが変わるまで続く
+let moodScene = null
 watch(
-  () => [game.scene.bgm, game.movie],
-  () => playMusic(game.movie === 'shift' || game.movie === 'rewind' ? null : game.scene.bgm),
+  () => [lineId.value, game.movie],
+  () => {
+    playMusic(game.movie === 'shift' || game.movie === 'rewind' ? null : game.scene.bgm)
+    if (moodScene !== game.sceneId) {
+      moodScene = game.sceneId
+      setMood(game.line.music ?? 'normal')
+    } else if (game.line.music) {
+      setMood(game.line.music)
+    }
+  },
+  { immediate: true },
+)
+
+// ===== セリフ単位のムービー（走馬灯など）：そのセリフに来たとき、1回だけ流す =====
+const playedLineMovies = new Set()
+watch(
+  lineId,
+  (id) => {
+    if (game.line.movie && !playedLineMovies.has(id)) {
+      playedLineMovies.add(id)
+      game.playMovie(game.line.movie)
+    }
+  },
   { immediate: true },
 )
 
@@ -129,8 +166,30 @@ watch(
   () => game.line,
   (line) => {
     if (line.fx && !blocking.value) playFx(line.fx)
+    if (line.sfx && !blocking.value) play(line.sfx) // 心臓の音・耳鳴りなどの効果音
   },
 )
+
+// ===== 場面転換：ムービーやチャプターカードがない場面に移るときは、タイルでほどける =====
+const dissolveKey = ref(0) // 0 のときは出さない。増やすたびに新しく再生する
+let dissolveTimer = null
+watch(
+  () => game.sceneId,
+  () => {
+    if (game.movie || game.scene.chapter) return
+    dissolveKey.value++
+    clearTimeout(dissolveTimer)
+    dissolveTimer = setTimeout(() => (dissolveKey.value = 0), 1200)
+  },
+)
+
+// ===== クリックの波紋 =====
+const ripple = ref(null) // template の ref="ripple"（ClickRipple 部品）が入る
+function onScreenClick(e) {
+  const rect = e.currentTarget.getBoundingClientRect()
+  ripple.value?.spawn(e.clientX - rect.left, e.clientY - rect.top)
+  onNext()
+}
 
 // ===== 視差：マウスの位置を -1〜1 にして、CSS 変数で StageLayer に渡す =====
 const mouse = ref({ x: 0, y: 0 })
@@ -141,14 +200,15 @@ function onMouseMove(e) {
 onUnmounted(() => {
   clearTimeout(typeTimer)
   clearTimeout(fxTimer)
+  clearTimeout(dissolveTimer)
 })
 
 // ===== ムービー =====
 function onMovieEnd() {
   const name = game.movie
   game.endMovie()
-  // 巻き戻しムービーのあとは、エンディングのページへ
-  if (name === 'rewind') router.push(`/ending/${game.endingType}`)
+  // 巻き戻しムービーのあとは、そのエンディングのエピローグ（会話）へ
+  if (name === 'rewind') game.goToScene(`ep_${game.endingType}`)
 }
 
 // ===== クリックで進む =====
@@ -161,9 +221,14 @@ function onNext() {
   // 選択肢が出ているときは、クリックで進ませない
   if (game.showChoices) return
 
-  // 最後のシーンの最後のセリフなら、巻き戻しムービー → エンディング
+  // 最後のシーンの最後のセリフなら、巻き戻しムービー → エピローグ
   if (game.isLastLine && game.scene.end) {
     game.playMovie('rewind')
+    return
+  }
+  // エピローグの最後のセリフなら、エンディング（動画）のページへ
+  if (game.isLastLine && game.scene.epilogue) {
+    router.push(`/ending/${game.endingType}`)
     return
   }
   game.next()
@@ -214,7 +279,7 @@ const remaining = computed(() => (game.sceneId === 'start' ? 2 : 1))
     class="screen"
     :class="[fx ? `fx-${fx}` : '', { choosing }]"
     :style="{ '--mx': mouse.x, '--my': mouse.y }"
-    @click="onNext"
+    @click="onScreenClick"
     @mousemove="onMouseMove"
   >
     <div class="world">
@@ -229,13 +294,18 @@ const remaining = computed(() => (game.sceneId === 'start' ? 2 : 1))
         :camera="game.line.camera"
         :handheld="game.scene.handheld"
         :light="game.scene.light"
+        :ghost="game.line.ghost"
       />
       <AmbientLayer :mode="game.scene.ambient" />
       </div>
     </div>
 
+    <!-- SF の HUD（四隅の照準・タイムコード・データの流れ） -->
+    <HudFrame :scene-id="game.sceneId" :time="game.scene.place?.time" :meter="game.scene.meter" :hidden="blocking || Boolean(game.line.cinema)" />
+
     <!-- 映画のような上下の黒帯（シーンの scope） -->
-    <div v-if="game.scene.scope" class="scope"><span></span><span></span></div>
+    <!-- 感情の山場（セリフの scope: 'wide'）では、黒帯がさらに広がって画面が横長になる -->
+    <div class="scope" :class="{ on: game.scene.scope, wide: game.line.scope === 'wide' }"><span></span><span></span></div>
 
     <!-- カットイン（目のアップなど）と携帯演出。セリフごとに出す -->
     <CutIn v-if="cutin && !blocking" :key="`c-${lineId}`" :cutin="cutin" :talking="talking" />
@@ -271,10 +341,13 @@ const remaining = computed(() => (game.sceneId === 'start' ? 2 : 1))
     />
 
     <!-- cinema: true のセリフは、画面中央に大きく。それ以外はいつものメッセージ欄 -->
-    <CinemaText v-if="game.line.cinema" :speaker="game.line.speaker" :chars="typedChars" :line-id="lineId" />
+    <CinemaText v-if="game.line.cinema" :speaker="game.line.speaker" :chars="typedChars" :line-id="lineId" :done="!isTyping" />
     <MessageBox v-else :speaker="game.line.speaker" :chars="typedChars" :done="!isTyping" :line-id="lineId" />
 
     <ChapterCard v-if="chapterActive" :key="game.sceneId" :chapter="game.scene.chapter" @end="chapterActive = false" />
+
+    <TileDissolve v-if="dissolveKey" :key="dissolveKey" />
+    <ClickRipple ref="ripple" />
 
     <!-- ムービーは画面のいちばん上に重ねる -->
     <MoviePlayer v-if="game.movie" :key="game.movie" :name="game.movie" @end="onMovieEnd" />
@@ -313,14 +386,15 @@ const remaining = computed(() => (game.sceneId === 'start' ? 2 : 1))
   left: 0;
   right: 0;
   z-index: 1;
-  height: 8%;
+  height: 0;
   background: #000;
   pointer-events: none;
-  animation: scope-in 1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  transition: height 1.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.scope span:first-child { top: 0; transform-origin: top; }
-.scope span:last-child { bottom: 0; transform-origin: bottom; }
-@keyframes scope-in { from { transform: scaleY(0); } }
+.scope span:first-child { top: 0; }
+.scope span:last-child { bottom: 0; }
+.scope.on span { height: 8%; }
+.scope.wide span { height: 14%; }
 
 .choosing .world {
   filter: saturate(0.35) brightness(0.65);

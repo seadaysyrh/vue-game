@@ -20,7 +20,9 @@ function select(choice, index) {
   if (sending.value !== null) return // 送信中は二重に押せない
   emit('pick') // 押した瞬間の効果音用
   if (props.variant !== 'message') {
-    emit('choose', choice)
+    // 選んだものに照準が絞りこみ、ほかが散ってから決定する
+    sending.value = index
+    timer = setTimeout(() => emit('choose', choice), 550)
     return
   }
   sending.value = index
@@ -78,6 +80,7 @@ onUnmounted(() => {
         v-for="(choice, i) in choices"
         :key="choice.text"
         class="speech-option"
+        :class="{ locked: sending === i, dismissed: sending !== null && sending !== i }"
         :style="{ animationDelay: `${0.1 + i * 0.12}s` }"
         @click="select(choice, i)"
       >
@@ -215,6 +218,39 @@ onUnmounted(() => {
   border-bottom: 1px solid rgba(255, 154, 60, 0.5);
   background: linear-gradient(90deg, transparent, rgba(10, 12, 25, 0.9), transparent);
   animation: rise 0.4s ease-out both;
+}
+.speech-option {
+  position: relative;
+}
+/* 照準：選んだ選択肢の左右から、カッコが締まってくる */
+.speech-option::before,
+.speech-option::after {
+  position: absolute;
+  top: 50%;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1.6rem;
+  color: #ffb066;
+  text-shadow: 0 0 10px #ff7b00;
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.2, 1.4, 0.4, 1), opacity 0.2s;
+}
+.speech-option::before { content: '['; left: 0; transform: translate(-40px, -50%); }
+.speech-option::after { content: ']'; right: 0; transform: translate(40px, -50%); }
+.speech-option:hover::before,
+.speech-option.locked::before { opacity: 1; transform: translate(-6px, -50%); }
+.speech-option:hover::after,
+.speech-option.locked::after { opacity: 1; transform: translate(6px, -50%); }
+.speech-option.locked {
+  background: linear-gradient(90deg, transparent, rgba(255, 123, 0, 0.45), transparent);
+  letter-spacing: 0.16em;
+  transition: letter-spacing 0.4s, background 0.2s;
+}
+/* 選ばれなかった選択肢は、横に流れて消える */
+.speech-option.dismissed {
+  animation: dismiss 0.4s cubic-bezier(0.6, 0, 0.8, 0.4) forwards;
+}
+@keyframes dismiss {
+  to { opacity: 0; transform: translateX(-30%) scaleY(0.2); filter: blur(6px); }
 }
 .speech-option:hover {
   background: linear-gradient(90deg, transparent, rgba(255, 123, 0, 0.3), transparent);

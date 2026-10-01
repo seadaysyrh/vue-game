@@ -81,6 +81,15 @@ const sounds = {
     noise(c, { dur: 2.2, vol: 0.08, freq: 2500 })
   },
   whoosh: (c) => noise(c, { dur: 1.6, vol: 0.1, freq: 600 }),
+  // 心臓の音：ドクン、ドクン
+  heartbeat: (c) => {
+    ;[0, 0.22, 0.9, 1.12].forEach((delay, i) => tone(c, { freq: i % 2 ? 50 : 60, to: 35, dur: 0.18, vol: i % 2 ? 0.35 : 0.5, delay }))
+  },
+  // 耳鳴り：キーンと高い音が、ゆっくり消える（衝撃で頭が真っ白になる感じ）
+  tinnitus: (c) => {
+    tone(c, { freq: 5200, to: 5000, dur: 3.5, type: 'sine', vol: 0.025 })
+    tone(c, { freq: 40, to: 30, dur: 1.2, vol: 0.4 })
+  },
   // スマホのバイブ：低いブーッを短く2回
   buzz: (c) => {
     ;[0, 0.35].forEach((delay) => tone(c, { freq: 150, to: 140, dur: 0.25, type: 'square', vol: 0.05, delay }))

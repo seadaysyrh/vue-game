@@ -5,6 +5,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { movies } from '../data/movies'
 import { useSound } from '../composables/useSound'
 import DigitRain from './DigitRain.vue'
+import CharaSprite from './CharaSprite.vue'
 
 const props = defineProps({
   name: String, // 'opening' / 'shift' / 'rewind'
@@ -65,7 +66,11 @@ onUnmounted(() => clearTimeout(timer))
         :class="[`motion-${shot.motion ?? 'none'}`, shot.effect ? `effect-${shot.effect}` : '']"
         :style="{ '--duration': `${shot.duration}ms` }"
       >
-        <img v-if="imageOf(shot)" :src="imageOf(shot)" class="shot-image" alt="" />
+        <!-- 絵とキャラを1つの「フレーム」にまとめて、カメラの動きはフレームごと付ける -->
+        <div class="frame">
+          <img v-if="imageOf(shot)" :src="imageOf(shot)" class="shot-image" alt="" />
+          <CharaSprite v-if="shot.chara" :name="shot.chara" :echo="shot.echo" class="shot-chara" />
+        </div>
         <DigitRain v-if="shot.effect === 'digits'" />
         <h1 v-if="shot.effect === 'title'" class="movie-title" :data-text="shot.caption">{{ shot.caption }}</h1>
         <div v-if="shot.effect === 'rewind'" class="rewind-label">◀◀ REWIND</div>
@@ -104,25 +109,36 @@ onUnmounted(() => clearTimeout(timer))
   inset: 0;
   overflow: hidden;
 }
+.frame {
+  position: absolute;
+  inset: 0;
+  /* カメラの動きは、カットの長さ（--duration）いっぱいにかけて動かす */
+  animation-duration: var(--duration);
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+}
 .shot-image {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* カメラの動きは、カットの長さ（--duration）いっぱいにかけて動かす */
-  animation-duration: var(--duration);
-  animation-timing-function: ease-out;
-  animation-fill-mode: both;
+}
+.shot-chara {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  height: 92%;
+  transform: translateX(-50%);
 }
 
 /* ===== カメラの動き ===== */
-.motion-pan-right .shot-image { animation-name: pan-right; }
-.motion-pan-left .shot-image { animation-name: pan-left; }
-.motion-pan-up .shot-image { animation-name: pan-up; }
-.motion-zoom-in .shot-image { animation-name: zoom-in; }
-.motion-zoom-out .shot-image { animation-name: zoom-out; }
-.motion-shake .shot-image { animation: shake 0.12s steps(2) infinite; }
+.motion-pan-right .frame { animation-name: pan-right; }
+.motion-pan-left .frame { animation-name: pan-left; }
+.motion-pan-up .frame { animation-name: pan-up; }
+.motion-zoom-in .frame { animation-name: zoom-in; }
+.motion-zoom-out .frame { animation-name: zoom-out; }
+.motion-shake .frame { animation: shake 0.12s steps(2) infinite; }
 @keyframes pan-right { from { transform: scale(1.18) translateX(-5%); } to { transform: scale(1.18) translateX(5%); } }
 @keyframes pan-left { from { transform: scale(1.18) translateX(5%); } to { transform: scale(1.18) translateX(-5%); } }
 @keyframes pan-up { from { transform: scale(1.18) translateY(6%); } to { transform: scale(1.18) translateY(-6%); } }
@@ -135,7 +151,23 @@ onUnmounted(() => clearTimeout(timer))
 }
 
 /* ===== 特殊効果 ===== */
-.effect-glitch .shot-image { filter: hue-rotate(80deg) saturate(2.5) contrast(1.4); }
+.effect-glitch .frame { filter: hue-rotate(80deg) saturate(2.5) contrast(1.4); }
+/* 思い出（走馬灯）：色あせて、少しにじんで、フィルムのようにちらつく */
+.effect-memory .frame {
+  filter: sepia(0.55) saturate(0.7) brightness(1.08) contrast(0.9) blur(0.6px);
+}
+.effect-memory::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, transparent 45%, rgba(40, 20, 0, 0.65) 100%),
+    radial-gradient(circle at 15% 20%, rgba(255, 190, 120, 0.25), transparent 40%);
+  animation: film-flicker 0.18s steps(2) infinite;
+}
+@keyframes film-flicker {
+  50% { opacity: 0.85; }
+}
 .effect-glitch::after {
   content: '';
   position: absolute;
@@ -143,7 +175,7 @@ onUnmounted(() => clearTimeout(timer))
   background: repeating-linear-gradient(transparent 0 14px, rgba(255, 40, 120, 0.25) 14px 18px, transparent 18px 40px);
   mix-blend-mode: screen;
 }
-.effect-rewind .shot-image { filter: grayscale(0.7) contrast(1.3) brightness(0.9); }
+.effect-rewind .frame { filter: grayscale(0.7) contrast(1.3) brightness(0.9); }
 .effect-rewind::after {
   /* ビデオテープの巻き戻しのような横線 */
   content: '';
@@ -262,6 +294,6 @@ onUnmounted(() => clearTimeout(timer))
 .caption-leave-to { opacity: 0; }
 
 @media (prefers-reduced-motion: reduce) {
-  .shot-image, .movie-title, .effect-rewind::after { animation: none !important; }
+  .frame, .movie-title, .effect-rewind::after, .effect-memory::after { animation: none !important; }
 }
 </style>

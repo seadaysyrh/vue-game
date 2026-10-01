@@ -150,10 +150,25 @@ function noiseBurst(c, out, time, dur, vol, cutoff, type = 'lowpass') {
   src.start(time)
 }
 
+// ----- 音楽の出口：ここで「こもらせる」「小さくする」などの演技をする -----
+//   曲 → ローパスフィルター（高い音を削ると、水の中のようにこもった音になる） → 音量 → スピーカー
+let chain = null
+function getChain(c, master) {
+  if (chain) return chain
+  const filter = c.createBiquadFilter()
+  filter.type = 'lowpass'
+  filter.frequency.value = 20000
+  const gain = c.createGain()
+  filter.connect(gain).connect(master)
+  chain = { input: filter, filter, gain }
+  return chain
+}
+
 // ----- 響き（リバーブとディレイ） -----
 let effects = null
 function getEffects(c, master) {
   if (effects) return effects
+  master = getChain(c, master).input // 響きも、音楽の出口を通す
   // リバーブ：だんだん小さくなるノイズを「響き方の型」にして、音を響かせる
   const reverb = c.createConvolver()
   const len = c.sampleRate * 3
@@ -189,7 +204,7 @@ function startTrack(name, c, master) {
   const bus = c.createGain() // この曲の音量つまみ（フェードイン・アウトに使う）
   bus.gain.setValueAtTime(0, c.currentTime)
   bus.gain.linearRampToValueAtTime(MUSIC_VOLUME, c.currentTime + 2.5)
-  bus.connect(master)
+  bus.connect(getChain(c, master).input)
   bus.connect(fx.reverb)
 
   const sendDelay = c.createGain() // アルペジオとベルだけ、やまびこを付ける
@@ -259,5 +274,31 @@ export function useMusic() {
     current = name && TRACKS[name] ? startTrack(name, audio.ctx, audio.master) : null
   }
 
-  return { playMusic, stopMusic: () => playMusic(null) }
+  // 音楽の「演技」：セリフに合わせて、音の聞こえ方を変える
+  //   'normal' … ふつう        'duck'   … 小さく（セリフや効果音を聞かせたいとき）
+  //   'muffle' … こもる（夢の中・意識が遠のく感じ）   'cut' … ぷつっと消える（衝撃の瞬間）
+  //   'swell'  … ふくらむ（感情の山場）
+  function setMood(mood) {
+    const audio = getAudio()
+    if (!audio) return
+    const { ctx } = audio
+    const { filter, gain } = getChain(ctx, audio.master)
+    const now = ctx.currentTime
+    const MOODS = {
+      normal: { vol: 1, cutoff: 20000, time: 1.5 },
+      duck: { vol: 0.35, cutoff: 20000, time: 1 },
+      muffle: { vol: 0.8, cutoff: 450, time: 1.2 },
+      cut: { vol: 0, cutoff: 20000, time: 0.06 },
+      swell: { vol: 1.5, cutoff: 20000, time: 3 },
+    }
+    const m = MOODS[mood] ?? MOODS.normal
+    gain.gain.cancelScheduledValues(now)
+    gain.gain.setValueAtTime(gain.gain.value, now)
+    gain.gain.linearRampToValueAtTime(m.vol, now + m.time)
+    filter.frequency.cancelScheduledValues(now)
+    filter.frequency.setValueAtTime(filter.frequency.value, now)
+    filter.frequency.exponentialRampToValueAtTime(m.cutoff, now + m.time)
+  }
+
+  return { playMusic, stopMusic: () => playMusic(null), setMood }
 }

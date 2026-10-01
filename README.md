@@ -135,13 +135,42 @@ src/
 | 光漏れ | ぼかした色の光を `mix-blend-mode: screen` で流す | LightLeak.vue |
 | ホイップ・クラッシュズーム・ピント送り | セリフの `fx` を CSS クラスにして、ブレ・急な拡大・ぼかしを付ける | GameView.vue |
 | 色調補正・黒帯 | シーンの `grade`（CSS filter）と `scope` | GameView.vue |
+| クリックの波紋 | クリック位置に輪と光の粒を出す。親から `spawn(x, y)` を呼ぶ（`defineExpose`） | ClickRipple.vue |
+| SF の HUD | 四隅の照準枠（`:key` で場面ごとに再生）、24fps で進むタイムコード、流れ続けるデータ | HudFrame.vue |
+| 場面転換 | 16×9 のタイルが、ランダムな1点から距離に応じた遅れで消えていく | TileDissolve.vue |
+| 自動カメラ | キャラ・表情・カメラワークが変わるたびに、少し寄った位置からブレながら戻る。背景は常にゆっくり動く | StageLayer.vue |
+
+### 演出の台本（間・沈黙・不在）
+
+エフェクトを足すだけでなく、セリフ1行ごとに「どう見せるか」をデータで指定しています（`scenario.js` の先頭に一覧）。
+
+| 指定 | 効果 | しくみ |
+|---|---|---|
+| `beat` | セリフの前の「間」 | タイプライターを始めるまでの待ち時間 |
+| `speed` | 大事な言葉をゆっくり | 1文字ごとの待ち時間に倍率をかける |
+| `music` | 音楽が消える・こもる・小さくなる・ふくらむ | 曲の出口にローパスフィルターと音量をはさみ、`setMood()` で動かす（useMusic.js） |
+| `sfx` | 心臓の音・耳鳴り | 効果音（useSound.js） |
+| `ghost` | 誰もいない場所に、さっきまでいた人の残像 | 白く透けた立ち絵を出して、5秒で消す（StageLayer.vue） |
+| `scope: 'wide'` | 黒帯が広がって画面が横長に | 黒帯の高さを `transition` で変える |
+| `movie`（セリフ） | 走馬灯 | セリフに来たとき1回だけムービーを流す。カットにキャラを立たせ、色あせたフィルム風にする |
+| `camera` の追加 | 見上げる・引いて孤独を見せる・漂う | `tilt-up` / `pull-back` / `drift`（StageLayer.vue） |
+
+### エピローグとエンディング
+
+| しくみ | 使っている機能 | 場所 |
+|---|---|---|
+| エピローグ（会話） | 巻き戻しムービーのあと `ep_<エンディングID>` のシーンへ。本編と同じ演出で「その後」を描く | scenario.js / GameView.vue |
+| 10秒のエンディング動画 | 素材を合成したレイヤー画像から、Python で1コマずつ合成して MP4 に（`public/videos/`） | — |
+| 動画の再生 | `<video autoplay muted>`。音は入れず、BGM はゲームの自動演奏。`@ended` で次へ | EndingSequence.vue |
+| 本文・スタッフロール | 動画の最後のコマの上に、`phase` を進めて順番に出す | EndingSequence.vue |
+| 別のエンディングへ移ったとき | `:key` をエンディングの ID にして、部品ごと作り直す | EndingView.vue |
 
 ## 素材について
 
 - キャラクター：ずんだもん・四国めたん（[東北ずん子・ずんだもんPJ ガイドライン](https://zunko.jp/guideline.html)に沿って非商用で利用）
 - 立ち絵：坂本アヒル「ずんだもん立ち絵素材V3.2」「四国めたん立ち絵素材2.1」
   （PSD のレイヤーを切り替えて、表情ごとに PNG に書き出したもの）
-- スチル：上記の立ち絵と背景を合成・加工して作ったもの（`public/images/still`）
+- スチル・エンディング動画：上記の立ち絵と背景を合成・加工して作ったもの（`public/images/still`、`public/videos`）
 - 背景：Potat0Master「Free Visual Novel Backgrounds (School Mini Pack 1)」
   （改変・ゲームへの組み込みは OK。**素材そのものの再配布は禁止**なので、`public/images` だけを配ったりしないこと）
 
