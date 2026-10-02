@@ -3,6 +3,7 @@
 //   dust  … 夕方の光のチリ（オレンジ）
 //   stars … 夜空のまたたき＋ふわっと光る粒
 //   echo  … 残響の光（青緑）が下から立ちのぼる
+//   rain  … 斜めに降る雨（細い線）と、地面ではねるしぶき
 import { ref, watch, onMounted, onUnmounted } from 'vue'
 
 const props = defineProps({
@@ -13,6 +14,7 @@ const SETTINGS = {
   dust: { count: 60, color: [255, 190, 120], speedY: -0.08, size: [1, 3.2], glow: 8 },
   stars: { count: 90, color: [220, 235, 255], speedY: -0.03, size: [0.6, 2], glow: 6 },
   echo: { count: 70, color: [120, 255, 220], speedY: -0.35, size: [1, 3.5], glow: 12 },
+  rain: { count: 260, color: [200, 215, 240], speedY: 14, size: [10, 26], glow: 0 },
 }
 
 const canvas = ref(null)
@@ -21,6 +23,17 @@ let particles = []
 let resize = null
 
 function makeParticle(w, h, s, anywhere) {
+  if (props.mode === 'rain') {
+    // 雨粒：上から斜めに、速く落ちる。r は線の長さ
+    return {
+      x: Math.random() * (w + 200) - 100,
+      y: anywhere ? Math.random() * h : -30,
+      r: s.size[0] + Math.random() * (s.size[1] - s.size[0]),
+      vx: -2.5,
+      vy: s.speedY * (0.7 + Math.random() * 0.6),
+      phase: 0,
+    }
+  }
   return {
     x: Math.random() * w,
     y: anywhere ? Math.random() * h : h + 10,
@@ -53,7 +66,27 @@ onMounted(() => {
   function draw(time) {
     ctx.clearRect(0, 0, c.width, c.height)
     const s = SETTINGS[props.mode]
-    if (s) {
+    if (s && props.mode === 'rain') {
+      // 雨：細い線を引く。下まで落ちたら、小さなしぶきを描いて上に戻す
+      ctx.shadowBlur = 0
+      ctx.lineWidth = 1.2
+      for (const p of particles) {
+        if (!reduceMotion) {
+          p.x += p.vx
+          p.y += p.vy
+        }
+        ctx.strokeStyle = `rgba(200, 215, 240, ${0.25 + (p.r / 26) * 0.3})`
+        ctx.beginPath()
+        ctx.moveTo(p.x, p.y)
+        ctx.lineTo(p.x + p.vx * 2, p.y + p.r)
+        ctx.stroke()
+        if (p.y > c.height) {
+          ctx.fillStyle = 'rgba(210, 225, 255, 0.35)'
+          ctx.fillRect(p.x - 3, c.height - 4, 6, 1.5)
+          Object.assign(p, makeParticle(c.width, c.height, s, false))
+        }
+      }
+    } else if (s) {
       const [r, g, b] = s.color
       for (const p of particles) {
         if (!reduceMotion) {

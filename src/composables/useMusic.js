@@ -15,6 +15,43 @@ function freq(note) {
 // ----- 曲のデータ -----
 // chords の各コードは [ベース音, 上に重ねる音...]。1小節に1コード、4小節でループする
 const TRACKS = {
+  // メインテーマ：物語の山場でだけ流れる、旋律のある曲
+  //   コードは「王道進行」（Fmaj7 → G → Em7 → Am7）。切ないのに前を向ける響き
+  //   melody は1小節ごとに8つ（8分音符）。'-' は前の音をのばす（＝何も鳴らさない）
+  theme: {
+    bpm: 76,
+    chords: [
+      ['F2', 'A3', 'C4', 'E4'],
+      ['G2', 'B3', 'D4', 'G4'],
+      ['E2', 'G3', 'B3', 'D4'],
+      ['A2', 'C4', 'E4', 'G4'],
+    ],
+    pad: { type: 'sine', vol: 0.03, cutoff: 2400 },
+    arp: { pattern: [1, 2, 3, 2, 1, 2, 3, 2], octave: 0, vol: 0.022 },
+    melody: [
+      ['E5', '-', 'G5', '-', 'A5', '-', 'G5', '-'],
+      ['F5', '-', '-', 'E5', 'D5', '-', 'G4', '-'],
+      ['E5', '-', '-', 'D5', 'C5', '-', 'B4', '-'],
+      ['C5', '-', '-', '-', 'A4', '-', '-', '-'],
+      ['E5', '-', 'G5', '-', 'C6', '-', 'B5', 'A5'],
+      ['G5', '-', '-', 'F5', 'E5', '-', 'D5', '-'],
+      ['E5', '-', 'D5', '-', 'C5', '-', 'B4', '-'],
+      ['C5', '-', '-', '-', '-', '-', '-', '-'],
+    ],
+  },
+  // 昼休み：明るく軽やかな日常
+  day: {
+    bpm: 96,
+    chords: [
+      ['C3', 'E4', 'G4', 'C5'],
+      ['G2', 'D4', 'G4', 'B4'],
+      ['A2', 'C4', 'E4', 'A4'],
+      ['F2', 'A3', 'C4', 'F4'],
+    ],
+    pad: { type: 'triangle', vol: 0.025, cutoff: 2600 },
+    arp: { pattern: [1, 3, 2, 3, 1, 3, 2, 3], octave: 1, vol: 0.05 },
+    bell: { chance: 0.1, vol: 0.03 },
+  },
   // 夕方の部室：あたたかいパッドと、ころころ鳴るアルペジオ
   evening: {
     bpm: 72,
@@ -132,6 +169,23 @@ function bass(c, out, f, time, dur, vol) {
   osc.stop(time + dur)
 }
 
+// ピアノ：ポーンと鳴って、ゆっくり減っていく（倍音を少し重ねて、やわらかい鍵盤の音に）
+function piano(c, out, f, time, vol) {
+  for (const [ratio, type, v] of [[1, 'triangle', 1], [2, 'sine', 0.35], [3, 'sine', 0.12]]) {
+    const osc = c.createOscillator()
+    osc.type = type
+    osc.frequency.value = f * ratio
+    const gain = c.createGain()
+    gain.gain.setValueAtTime(0, time)
+    gain.gain.linearRampToValueAtTime(vol * v, time + 0.01)
+    gain.gain.exponentialRampToValueAtTime(vol * v * 0.35, time + 0.4)
+    gain.gain.exponentialRampToValueAtTime(0.0001, time + 2.6)
+    osc.connect(gain).connect(out)
+    osc.start(time)
+    osc.stop(time + 2.7)
+  }
+}
+
 // ノイズ：風の音・リズムのチッという音
 function noiseBurst(c, out, time, dur, vol, cutoff, type = 'lowpass') {
   const buffer = c.createBuffer(1, Math.floor(c.sampleRate * dur), c.sampleRate)
@@ -236,6 +290,14 @@ function startTrack(name, c, master) {
       const n = chord[1 + Math.floor(Math.random() * (chord.length - 1))]
       bell(c, sendDelay, freq(n) * 4, time, track.bell.vol)
       bell(c, bus, freq(n) * 4, time, track.bell.vol * 0.6)
+    }
+    if (track.melody) {
+      // 旋律は、コード（4小節）より長い8小節でひとまわりする
+      const note = track.melody[bar % track.melody.length][inBar]
+      if (note !== '-') {
+        piano(c, bus, freq(note), time, 0.09)
+        piano(c, sendDelay, freq(note), time, 0.03)
+      }
     }
     if (track.pulse) {
       bass(c, bus, freq(chord[0]) * (inBar % 4 === 3 ? 2 : 1), time, eighth * 0.9, 0.07)

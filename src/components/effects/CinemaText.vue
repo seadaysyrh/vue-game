@@ -7,11 +7,17 @@ defineProps({
   chars: Array, // MessageBox と同じ、1文字ずつの配列
   lineId: String,
   done: Boolean, // 全部表示し終わったか
+  kinetic: Boolean, // true なら「決めゼリフ」モード：巨大な文字が跳ねながら飛び込み、後ろで光が回る
 })
 </script>
 
 <template>
-  <div class="cinema">
+  <div class="cinema" :class="{ kinetic }">
+    <!-- 決めゼリフのときだけ：後ろで回る光の筋と、広がる光の輪 -->
+    <template v-if="kinetic">
+      <div class="rays"></div>
+      <div :key="lineId" class="ring"></div>
+    </template>
     <div class="bar top"></div>
     <div class="bar bottom"></div>
     <p v-if="speaker && speaker !== 'SYSTEM'" class="who">— {{ speaker }} —</p>
@@ -110,7 +116,45 @@ defineProps({
   from { transform: translateX(-60%); }
   to { transform: translateX(60%); opacity: 0; }
 }
+/* ===== 決めゼリフモード ===== */
+.kinetic .text {
+  font-size: clamp(2.4rem, 7vw, 5.4rem);
+  letter-spacing: 0.06em;
+}
+.kinetic .char {
+  animation: bounce 0.7s cubic-bezier(0.2, 1.8, 0.4, 1) both;
+  color: #fff;
+  text-shadow: 0 0 30px rgba(255, 150, 60, 0.9), 0 0 4px #000;
+}
+@keyframes bounce {
+  from { opacity: 0; transform: scale(3.2) rotate(var(--rx)); filter: blur(8px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+.rays {
+  position: absolute;
+  inset: -50%;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 170, 90, 0.16) 0deg 6deg, transparent 6deg 18deg);
+  mask-image: radial-gradient(circle, #000 10%, transparent 55%);
+  animation: rays-spin 14s linear infinite, fade-in 1s ease-out both;
+}
+@keyframes rays-spin { to { transform: rotate(360deg); } }
+@keyframes fade-in { from { opacity: 0; } }
+.ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20vmin;
+  height: 20vmin;
+  border: 3px solid rgba(255, 200, 140, 0.8);
+  border-radius: 50%;
+  box-shadow: 0 0 30px rgba(255, 130, 40, 0.8);
+  transform: translate(-50%, -50%) scale(0.2);
+  animation: ring 1.4s cubic-bezier(0.1, 0.7, 0.3, 1) forwards;
+}
+@keyframes ring {
+  to { transform: translate(-50%, -50%) scale(6); opacity: 0; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .bar, .char, .who, .text.done::after { animation: none; }
+  .bar, .char, .who, .text.done::after, .kinetic .char, .rays, .ring { animation: none; }
 }
 </style>

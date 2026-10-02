@@ -23,16 +23,25 @@ import PhoneScreen from '../components/effects/PhoneScreen.vue'
 import LightLeak from '../components/effects/LightLeak.vue'
 import ClickRipple from '../components/effects/ClickRipple.vue'
 import HudFrame from '../components/effects/HudFrame.vue'
+import ScanLock from '../components/effects/ScanLock.vue'
+import RewriteScan from '../components/effects/RewriteScan.vue'
+import HoloTerminal from '../components/effects/HoloTerminal.vue'
 import TileDissolve from '../components/effects/TileDissolve.vue'
 import { routeTree } from '../data/routeTree'
+import InvestigateLayer from '../components/InvestigateLayer.vue'
+import TipToast from '../components/TipToast.vue'
+import { useArchive } from '../composables/useArchive'
 
 const router = useRouter()
 const game = useGameStore()
-const { play, muted, toggleMute } = useSound()
+const { play, muted, toggleMute, setWeather } = useSound()
 const { playMusic, setMood } = useMusic()
+const { unlockTipsIn, seeStill } = useArchive()
 
 // ===== タイプライター演出（1文字ずつ表示する） =====
-const chars = computed(() => parseRichText(game.line.text)) // 装飾付きの1文字ずつの配列
+// 本文の {runs} は「この屋上に来るのは何回目か」（見たエンディングの数 + 1）に置き換える
+const lineText = computed(() => game.line.text.replace(/\{runs\}/g, String(game.endingsSeenCount + 1)))
+const chars = computed(() => parseRichText(lineText.value)) // 装飾付きの1文字ずつの配列
 const typedLength = ref(0) // いま何文字目まで出しているか
 const typedChars = computed(() => chars.value.slice(0, typedLength.value))
 const isTyping = computed(() => typedLength.value < chars.value.length)
@@ -99,10 +108,13 @@ const talking = computed(
 // さらに、セリフの music で音楽に「演技」をさせる（消える・こもる・小さくなる・ふくらむ）。
 // 一度変えた演技は、次に music が出てくるか、シーンが変わるまで続く
 let moodScene = null
+let bgmOverride = null // セリフの bgm で切り替えた曲（シーンが変わるまで続く）
 watch(
   () => [lineId.value, game.movie],
   () => {
-    playMusic(game.movie === 'shift' || game.movie === 'rewind' ? null : game.scene.bgm)
+    if (moodScene !== game.sceneId) bgmOverride = null
+    if (game.line.bgm) bgmOverride = game.line.bgm
+    playMusic(game.movie === 'shift' || game.movie === 'rewind' ? null : (bgmOverride ?? game.scene.bgm))
     if (moodScene !== game.sceneId) {
       moodScene = game.sceneId
       setMood(game.line.music ?? 'normal')
@@ -142,6 +154,7 @@ const FX = {
   zoom: { ms: 1300, sound: 'impact' },  // 一気に寄る（クラッシュズーム）
   leak: { ms: 2600, sound: 'whoosh' },  // 光漏れ
   rack: { ms: 1600, sound: null },      // ピント送り（手前→奥）
+  rewrite: { ms: 2000, sound: 'rewrite' }, // 世界の書き換え（光の線が走り、通ったところから世界が変わる）
 }
 
 function playFx(name) {
@@ -197,7 +210,15 @@ function onMouseMove(e) {
   mouse.value = { x: (e.clientX / window.innerWidth) * 2 - 1, y: (e.clientY / window.innerHeight) * 2 - 1 }
 }
 
+// ===== 天気：シーンの weather が 'rain' なら雨の音（ムービー中は止める） =====
+watch(
+  () => [game.scene.weather, game.movie],
+  () => setWeather(game.movie ? null : game.scene.weather),
+  { immediate: true },
+)
+
 onUnmounted(() => {
+  setWeather(null)
   clearTimeout(typeTimer)
   clearTimeout(fxTimer)
   clearTimeout(dissolveTimer)
@@ -218,8 +239,8 @@ function onNext() {
     finishTyping()
     return
   }
-  // 選択肢が出ているときは、クリックで進ませない
-  if (game.showChoices) return
+  // 選択肢が出ているときや、調査中は、クリックで進ませない
+  if (game.showChoices || investigating.value) return
 
   // 最後のシーンの最後のセリフなら、巻き戻しムービー → エピローグ
   if (game.isLastLine && game.scene.end) {
@@ -235,6 +256,32 @@ function onNext() {
 }
 
 const choosing = computed(() => game.showChoices && !isTyping.value)
+
+// ===== 調査パート：investigate の付いたセリフは、文字を出し終わったら調べる画面になる =====
+const investigated = ref(new Set()) // 調査を終えたセリフ
+const investigating = computed(
+  () => Boolean(game.line.investigate) && !isTyping.value && !investigated.value.has(lineId.value),
+)
+function onInvestigated() {
+  investigated.value = new Set([...investigated.value, lineId.value])
+  game.next()
+}
+
+// ===== 記録室：本文に出た用語を TIPS として解放し、見たスチルを覚えておく =====
+const newTips = ref([]) // 右上にお知らせ中の TIPS
+watch(
+  lineId,
+  () => {
+    const found = unlockTipsIn(game.line.text)
+    if (!found.length) return
+    newTips.value = [...newTips.value, ...found]
+    setTimeout(() => {
+      newTips.value = newTips.value.filter((t) => !found.includes(t))
+    }, 3500)
+  },
+  { immediate: true },
+)
+watch(() => game.line.still, seeStill, { immediate: true })
 
 // ===== カットイン：cutin: 'eyes' のような短い書き方も、{ type, chara, echo } の形にそろえる =====
 const cutin = computed(() => {
@@ -311,12 +358,17 @@ const remaining = computed(() => (game.sceneId === 'start' ? 2 : 1))
     <CutIn v-if="cutin && !blocking" :key="`c-${lineId}`" :cutin="cutin" :talking="talking" />
     <PhoneScreen v-if="phone && !blocking" :key="`p-${lineId}`" :phone="phone" />
 
+    <!-- SF の演出：キャラの解析（scan）と、空中に浮かぶ端末（terminal） -->
+    <ScanLock v-if="game.line.scan && game.line.chara && !blocking && !game.line.cinema" :key="`s-${lineId}`" :scan="game.line.scan" :chara="game.line.chara" />
+    <HoloTerminal v-if="game.line.terminal && !blocking" :key="`t-${lineId}`" :lines="game.line.terminal" />
+
     <!-- 画面効果の部品（fx の名前に合わせて出す） -->
     <FxFilters />
     <FxShockwave v-if="fx === 'shockwave'" />
     <FxBurst v-if="fx === 'burst'" />
     <MeterBurst v-if="fx === 'meter'" :value="game.scene.meter" />
     <LightLeak v-if="fx === 'leak'" />
+    <RewriteScan v-if="fx === 'rewrite'" />
 
     <!-- 仕上げのフィルター：周辺を暗く（ビネット）＋フィルムのざらつき -->
     <div class="post"></div>
@@ -333,18 +385,22 @@ const remaining = computed(() => (game.sceneId === 'start' ? 2 : 1))
     <!-- 選択肢は、文字を出し終わってから表示する -->
     <ChoiceList
       v-if="choosing"
-      :choices="game.scene.choices"
+      :choices="game.visibleChoices"
       :variant="game.scene.choiceStyle"
       :remaining="remaining"
+      :timer="game.scene.timer"
       @pick="onPick"
       @choose="game.choose"
     />
 
     <!-- cinema: true のセリフは、画面中央に大きく。それ以外はいつものメッセージ欄 -->
-    <CinemaText v-if="game.line.cinema" :speaker="game.line.speaker" :chars="typedChars" :line-id="lineId" :done="!isTyping" />
+    <CinemaText v-if="game.line.cinema" :speaker="game.line.speaker" :chars="typedChars" :line-id="lineId" :done="!isTyping" :kinetic="game.line.kinetic" />
     <MessageBox v-else :speaker="game.line.speaker" :chars="typedChars" :done="!isTyping" :line-id="lineId" />
 
     <ChapterCard v-if="chapterActive" :key="game.sceneId" :chapter="game.scene.chapter" @end="chapterActive = false" />
+
+    <InvestigateLayer v-if="investigating" :key="`i-${lineId}`" :bg="game.scene.bg" :investigate="game.line.investigate" @done="onInvestigated" />
+    <TipToast :tips="newTips" />
 
     <TileDissolve v-if="dissolveKey" :key="dissolveKey" />
     <ClickRipple ref="ripple" />

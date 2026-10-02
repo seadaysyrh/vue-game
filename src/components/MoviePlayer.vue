@@ -5,6 +5,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { movies } from '../data/movies'
 import { useSound } from '../composables/useSound'
 import DigitRain from './DigitRain.vue'
+import TimeLeap from './TimeLeap.vue'
 import CharaSprite from './CharaSprite.vue'
 
 const props = defineProps({
@@ -27,10 +28,15 @@ function imageOf(s) {
   return null
 }
 
+// タイムリープのトンネルで、横を通りすぎる景色（flyby: ['roof_night', 'promise', …]。bg にも still にもある名前を使える）
+const STILLS = ['echo', 'farewell', 'observer', 'promise', 'rain', 'ramen']
+const flybyOf = (s) => (s.flyby ?? []).map((n) => (STILLS.includes(n) ? `/images/still/${n}.webp` : `/images/bg/${n}.webp`))
+
 // 先に画像を読み込んでおく（カットが切り替わった瞬間に、絵が遅れて出ないように）
 shots.forEach((s) => {
   const src = imageOf(s)
   if (src) new Image().src = src
+  flybyOf(s).forEach((f) => (new Image().src = f))
 })
 
 // カットを表示して、duration ミリ秒後に次のカットへ。
@@ -69,9 +75,16 @@ onUnmounted(() => clearTimeout(timer))
         <!-- 絵とキャラを1つの「フレーム」にまとめて、カメラの動きはフレームごと付ける -->
         <div class="frame">
           <img v-if="imageOf(shot)" :src="imageOf(shot)" class="shot-image" alt="" />
+          <!-- 着地の瞬間だけ：赤と青にずれた絵を重ねて、だんだん1枚に重なっていく（色収差） -->
+          <template v-if="shot.effect === 'arrive' && imageOf(shot)">
+            <img :src="imageOf(shot)" class="shot-image ghost red" alt="" />
+            <img :src="imageOf(shot)" class="shot-image ghost cyan" alt="" />
+          </template>
           <CharaSprite v-if="shot.chara" :name="shot.chara" :echo="shot.echo" class="shot-chara" />
         </div>
         <DigitRain v-if="shot.effect === 'digits'" />
+        <TimeLeap v-if="shot.effect === 'leap'" :duration="shot.duration" :images="flybyOf(shot)" :reverse="shot.reverse" :label="shot.label" />
+        <div v-if="shot.effect === 'arrive'" class="shockwave"></div>
         <h1 v-if="shot.effect === 'title'" class="movie-title" :data-text="shot.caption">{{ shot.caption }}</h1>
         <div v-if="shot.effect === 'rewind'" class="rewind-label">◀◀ REWIND</div>
       </div>
@@ -185,6 +198,73 @@ onUnmounted(() => clearTimeout(timer))
   animation: tracking 0.3s linear infinite;
 }
 @keyframes tracking { from { background-position: 0 0; } to { background-position: 0 40px; } }
+
+/* ===== タイムリープ ① 吸いこまれる：景色が渦を巻きながら、画面の中心の一点へ縮んでいく ===== */
+.effect-suck .frame {
+  overflow: hidden;
+  animation: suck var(--duration) cubic-bezier(0.55, 0, 0.85, 0.35) forwards;
+}
+@keyframes suck {
+  0% { transform: none; filter: none; border-radius: 0; }
+  30% { transform: scale(0.9) rotate(-40deg); filter: blur(1px) saturate(1.4); border-radius: 12%; }
+  100% { transform: scale(0.01) rotate(-1080deg); filter: blur(10px) brightness(3); border-radius: 50%; }
+}
+/* 後ろで回る渦（縞模様を円すい状に並べて、回す） */
+.effect-suck::before {
+  content: '';
+  position: absolute;
+  inset: -60%;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 140, 50, 0.35) 0deg 4deg, transparent 4deg 14deg, rgba(110, 220, 255, 0.25) 14deg 16deg, transparent 16deg 30deg);
+  mask-image: radial-gradient(circle, transparent 4%, #000 20%, transparent 60%);
+  animation: vortex 0.9s linear infinite, vortex-in var(--duration) ease-in both;
+}
+@keyframes vortex { to { transform: rotate(-360deg); } }
+@keyframes vortex-in { from { opacity: 0; scale: 1.6; } to { opacity: 1; scale: 0.8; } }
+/* まわりから闇が迫ってくる */
+.effect-suck::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, transparent 0, transparent 20%, #000 70%);
+  animation: close-in var(--duration) ease-in both;
+}
+@keyframes close-in { from { opacity: 0; transform: scale(2.5); } to { opacity: 1; transform: scale(1); } }
+
+/* ===== タイムリープ ③ 着地：ぶれた景色が一気に止まり、衝撃の輪が広がる ===== */
+.effect-arrive .frame {
+  animation: arrive 1.3s cubic-bezier(0.1, 0.85, 0.2, 1) both, settle var(--duration) ease-out 1.3s both;
+}
+@keyframes arrive {
+  0% { transform: scale(2.8) rotate(14deg); filter: blur(22px) brightness(3.5); }
+  55% { transform: scale(0.97) rotate(-1deg); filter: blur(0) brightness(1.2); }
+  70% { transform: scale(1.03) translate(1%, -1%); }
+  85% { transform: scale(1.01) translate(-0.6%, 0.6%); }
+  100% { transform: scale(1.02); filter: none; }
+}
+@keyframes settle { to { transform: scale(1.1); } }
+.ghost {
+  mix-blend-mode: screen;
+  animation: ghost 1.6s cubic-bezier(0.1, 0.8, 0.2, 1) both;
+}
+.ghost.red { filter: sepia(1) saturate(8) hue-rotate(-40deg); --gx: -4%; }
+.ghost.cyan { filter: sepia(1) saturate(8) hue-rotate(150deg); --gx: 4%; }
+@keyframes ghost {
+  from { transform: translateX(var(--gx)) scale(1.06); opacity: 0.8; }
+  to { transform: none; opacity: 0; }
+}
+.shockwave {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30vmin;
+  height: 30vmin;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 240, 220, 0.9);
+  box-shadow: 0 0 40px rgba(255, 150, 60, 0.9), inset 0 0 30px rgba(255, 150, 60, 0.6);
+  transform: translate(-50%, -50%) scale(0.1);
+  animation: shockwave 1.2s cubic-bezier(0.1, 0.7, 0.3, 1) 0.15s forwards;
+}
+@keyframes shockwave { to { transform: translate(-50%, -50%) scale(7); opacity: 0; border-width: 1px; } }
 .rewind-label {
   position: absolute;
   top: 14%;
@@ -294,6 +374,6 @@ onUnmounted(() => clearTimeout(timer))
 .caption-leave-to { opacity: 0; }
 
 @media (prefers-reduced-motion: reduce) {
-  .frame, .movie-title, .effect-rewind::after, .effect-memory::after { animation: none !important; }
+  .frame, .movie-title, .effect-rewind::after, .effect-memory::after, .effect-suck::before, .effect-suck::after, .ghost, .shockwave { animation: none !important; }
 }
 </style>

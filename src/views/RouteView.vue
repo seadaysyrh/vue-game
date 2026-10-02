@@ -10,6 +10,15 @@ import { useMusic } from '../composables/useMusic'
 
 const router = useRouter()
 const game = useGameStore()
+
+// 隠しエンディングへの枝は、8つのエンディングをすべて見るまで分岐図に出さない
+function prune(node) {
+  return {
+    ...node,
+    children: node.children.filter((c) => !c.secret || game.allEndingsSeen).map(prune),
+  }
+}
+const tree = prune(routeTree)
 useMusic().playMusic('night')
 
 // ===== 1. 木を画面上の位置に並べる =====
@@ -43,10 +52,10 @@ function place(node, col, rowStart, parent) {
     row += countLeaves(child)
   }
 }
-place(routeTree, 0, 0, null)
+place(tree, 0, 0, null)
 
 const WIDTH = colX(COL_W.length - 1) + COL_W[COL_W.length - 1]
-const HEIGHT = countLeaves(routeTree) * ROW_H
+const HEIGHT = countLeaves(tree) * ROW_H
 
 // 線の形：親の右端から子の左端へ、なめらかな S 字カーブ（ベジェ曲線）
 function edgePath({ from, to }) {
@@ -91,7 +100,7 @@ function shortTitleOf(node) {
   return node.type === 'ending' ? endings[node.ending].name : scenes[node.sceneId].title
 }
 
-const TOTAL_ENDINGS = Object.keys(endings).length
+const TOTAL_ENDINGS = Object.values(endings).filter((e) => !e.secret || game.allEndingsSeen).length
 
 // ===== 4. 選んだノードの詳しい説明 =====
 const selectedKey = ref(isVisited(game.path) ? game.path : '')

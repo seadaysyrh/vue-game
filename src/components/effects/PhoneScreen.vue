@@ -1,13 +1,13 @@
 <script setup>
 // 携帯演出：画面にスマホが現れる
-//   mode 'lock'   … ロック画面。ブルッと震えて、通知が1件ずつ届く
+//   mode 'lock'   … ロック画面。ブルッと震えて、通知が1件ずつ届く。vanish: true なら、そのあと通知が跡形もなく消える
 //   mode 'thread' … トーク画面。吹き出しが1つずつ出る。erase: true なら、そのあと履歴が消えていく
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useSound } from '../../composables/useSound'
 
 const props = defineProps({
   phone: Object,
-  // { mode: 'lock', time, date, notices: [{ app, title, body }] }
+  // { mode: 'lock', time, date, notices: [{ app, title, body }], vanish }
   // { mode: 'thread', contact, bubbles: [{ from: 'me' | 'them', text, time }], erase }
 })
 const { play } = useSound()
@@ -37,6 +37,13 @@ onMounted(() => {
     }))
     later(start + items.length * 450 + 300, () => (vanished.value = true))
   }
+  // vanish：通知が届いて少しすると、ノイズとともに消え、「通知はありません」になる
+  if (props.phone.vanish) {
+    later(500 + items.length * 700 + 1800, () => {
+      vanished.value = true
+      play('glitch')
+    })
+  }
 })
 onUnmounted(() => timers.forEach(clearTimeout))
 </script>
@@ -51,12 +58,13 @@ onUnmounted(() => timers.forEach(clearTimeout))
         <div class="lock-time">{{ phone.time }}</div>
         <div class="lock-date">{{ phone.date }}</div>
         <TransitionGroup name="notice" tag="div" class="notices">
-          <div v-for="n in phone.notices.slice(0, shown)" :key="n.title + n.body" class="notice">
+          <div v-for="n in vanished ? [] : phone.notices.slice(0, shown)" :key="n.title + n.body" class="notice">
             <div class="notice-head"><span class="app">{{ n.app }}</span><span>今</span></div>
             <b>{{ n.title }}</b>
             <p>{{ n.body }}</p>
           </div>
         </TransitionGroup>
+        <p v-if="vanished" class="empty">通知はありません</p>
       </template>
 
       <!-- ===== トーク画面 ===== -->
@@ -171,6 +179,8 @@ onUnmounted(() => timers.forEach(clearTimeout))
 }
 .notice p { margin: 2px 0 0; color: #dfe3ec; }
 .notice-enter-active { transition: transform 0.45s cubic-bezier(0.2, 0.9, 0.2, 1), opacity 0.45s; }
+/* 消える通知：色がずれて、横に崩れて消える */
+.notice-leave-active { animation: erase 0.5s steps(5) forwards; }
 .notice-enter-from { transform: translateY(-20px) scale(0.95); opacity: 0; }
 
 /* ===== トーク画面 ===== */

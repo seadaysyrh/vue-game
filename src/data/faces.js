@@ -4,10 +4,11 @@
 // 表情によって画像の切り抜き範囲が少し違うので、表情ごとに持っている
 //   aspect : 画像の 横 ÷ 縦
 //   eyeSpan: 両目の幅が、画像の横幅のどれくらいか
-const ZUN = { aspect: 0.503, eyeSpan: 0.3 }
-const ZUN_TALL = { aspect: 0.483, eyeSpan: 0.29 } // 枝豆が立っていて、画像が縦に長い表情
-const ZUN_WIDE = { aspect: 0.531, eyeSpan: 0.29 } // 枝豆がしおれて、画像が横に広い表情
-const METAN = { aspect: 0.485, eyeSpan: 0.3 }
+//   mouthY : 目から口までの距離（画像の高さに対する割合）。口のアップに使う
+const ZUN = { aspect: 0.503, eyeSpan: 0.3, mouthY: 0.045 }
+const ZUN_TALL = { aspect: 0.483, eyeSpan: 0.29, mouthY: 0.045 } // 枝豆が立っていて、画像が縦に長い表情
+const ZUN_WIDE = { aspect: 0.531, eyeSpan: 0.29, mouthY: 0.046 } // 枝豆がしおれて、画像が横に広い表情
+const METAN = { aspect: 0.485, eyeSpan: 0.3, mouthY: 0.078 }
 
 export const FACES = {
   zun_normal: { ...ZUN, x: 0.318, y: 0.185 },

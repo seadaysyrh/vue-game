@@ -1,16 +1,18 @@
 <script setup>
 // エンディング画面：10秒のエンディング動画を流し、終わったら
-// その最後のコマの上に、本文 → スタッフロール → THANK YOU FOR PLAYING を出す
+// その最後のコマの上に、本文 → 手紙 → スタッフロール（＋思い出のアルバム）→ THANK YOU FOR PLAYING を出す
 // 動画は public/videos/ending_<id>.mp4（レイヤー画像から Python で1コマずつ合成して作ったもの）
 // どこかをクリックすると、最後の状態まで一気に飛ばせる
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useArchive } from '../composables/useArchive'
+import LetterCard from './LetterCard.vue'
 
 const props = defineProps({
   id: String,
   ending: Object,
 })
 
-// いまどこまで進んだか：0 動画 → 1 本文 → 2 スタッフロール → 3 最後
+// いまどこまで進んだか：0 動画 → 1 本文 → 2 手紙 → 3 スタッフロール → 4 最後
 const phase = ref(0)
 const typed = ref(0) // 本文を何文字まで出したか
 const video = ref(null)
@@ -43,12 +45,29 @@ function showText() {
     typed.value++
     if (typed.value >= props.ending.text.length) {
       clearInterval(timer)
-      at(1800, () => (phase.value = 2)) // スタッフロールへ
-      at(1800 + 15000, () => (phase.value = 3)) // 流れきったら最後の画面へ
+      // 手紙があれば手紙へ、なければスタッフロールへ
+      at(1800, () => (props.ending.letter ? (phase.value = 2) : startCredits()))
     }
   }, 45)
   timers.push(timer)
 }
+
+function startCredits() {
+  phase.value = 3
+  at(15000, () => (phase.value = 4)) // 流れきったら最後の画面へ
+}
+
+// 記録室のギャラリーに、このエンディングの絵を登録する
+const { stills, seeStill } = useArchive()
+seeStill(props.ending.still)
+
+// ===== 思い出のアルバム：これまでに見たスチルを、スタッフロールの横で次々に見せる =====
+const album = computed(() => [...stills.value])
+const albumIndex = ref(0)
+const albumTimer = setInterval(() => {
+  if (phase.value === 3 && album.value.length) albumIndex.value = (albumIndex.value + 1) % album.value.length
+}, 2800)
+timers.push(albumTimer)
 
 onMounted(() => {
   if (reduceMotion) at(800, showText)
@@ -57,14 +76,14 @@ onUnmounted(clearTimers)
 
 // クリック：最後の状態まで飛ばす（動画は最後のコマで止める）
 function skip() {
-  if (phase.value >= 3) return
+  if (phase.value >= 4 || phase.value === 2) return // 手紙の間は、手紙のほうでクリックを受け取る
   clearTimers()
   if (video.value && !video.value.ended) {
     video.value.currentTime = video.value.duration || 10
     video.value.pause()
   }
   typed.value = props.ending.text.length
-  phase.value = 3
+  phase.value = 4
 }
 </script>
 
@@ -96,8 +115,19 @@ function skip() {
       <p>{{ ending.text.slice(0, typed) }}<i v-if="typed < ending.text.length" class="caret"></i></p>
     </div>
 
+    <!-- 手紙 -->
+    <LetterCard v-if="phase === 2" :letter="ending.letter" @close="startCredits" />
+
+    <!-- 思い出のアルバム（スタッフロールの間、左側に） -->
+    <div v-if="phase === 3 && album.length" class="album">
+      <Transition name="album">
+        <img :key="albumIndex" :src="`/images/still/${album[albumIndex]}.webp`" alt="" />
+      </Transition>
+      <span class="album-label">MEMORIES {{ albumIndex + 1 }} / {{ album.length }}</span>
+    </div>
+
     <!-- スタッフロール -->
-    <div v-if="phase === 2" class="roll">
+    <div v-if="phase === 3" class="roll">
       <div class="roll-inner">
         <div v-for="block in CREDITS" :key="block[0]" class="credit">
           <span class="role">{{ block[0] }}</span>
@@ -107,16 +137,17 @@ function skip() {
     </div>
 
     <!-- 最後 -->
-    <div v-if="phase >= 3" class="finale">
+    <div v-if="phase >= 4" class="finale">
       <p class="thanks">THANK YOU FOR PLAYING</p>
       <nav @click.stop>
         <RouterLink to="/route">WORLDLINE</RouterLink>
+        <RouterLink to="/archive">ARCHIVE</RouterLink>
         <RouterLink to="/">TITLE</RouterLink>
         <RouterLink to="/credits">CREDITS</RouterLink>
       </nav>
     </div>
 
-    <span v-if="phase < 3" class="skip">CLICK TO SKIP ▶▶</span>
+    <span v-if="phase < 4 && phase !== 2" class="skip">CLICK TO SKIP ▶▶</span>
   </div>
 </template>
 
@@ -182,6 +213,46 @@ function skip() {
   animation: blink 0.5s steps(2) infinite;
 }
 @keyframes blink { 50% { opacity: 0; } }
+
+/* ===== 思い出のアルバム：写真のように、少し傾けて、ゆっくり寄る ===== */
+.album {
+  position: absolute;
+  left: 6%;
+  top: 12%;
+  width: min(46%, 560px);
+  aspect-ratio: 16 / 9;
+  transform: rotate(-2deg);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 0 6px #f4efe4;
+  overflow: hidden;
+  background: #000;
+  animation: fade 1.2s ease-out both;
+}
+.album img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: album-zoom 3.2s ease-out both;
+}
+@keyframes album-zoom {
+  from { transform: scale(1.12); }
+  to { transform: scale(1); }
+}
+.album-enter-active,
+.album-leave-active { transition: opacity 1s; }
+.album-enter-from,
+.album-leave-to { opacity: 0; }
+.album-label {
+  position: absolute;
+  right: 10px;
+  bottom: 6px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: #fff;
+  text-shadow: 0 0 6px #000;
+}
 
 /* ===== スタッフロール：右側を下から上へ流れる ===== */
 .roll {

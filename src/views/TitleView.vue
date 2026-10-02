@@ -1,14 +1,18 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGameStore } from '../stores/game'
 import StageLayer from '../components/StageLayer.vue'
 import AmbientLayer from '../components/AmbientLayer.vue'
+import CharaSprite from '../components/CharaSprite.vue'
 import NixieMeter from '../components/NixieMeter.vue'
 import { useSound } from '../composables/useSound'
 
 const router = useRouter() // ページ移動に使う
 const game = useGameStore() // Pinia のストアを使う
+// 「観測終了」（選び方 010）を見たあとは、フェンスのそばに、ときどき残響の影が立つ
+const lostSeen = computed(() => game.visited.includes('010'))
+const secretTeaser = computed(() => game.allEndingsSeen && !['002', '012', '102', '112'].some((p) => game.visited.includes(p)))
 const { play, muted, toggleMute } = useSound()
 
 // 視差：マウスの位置を -1〜1 にして CSS 変数で渡す
@@ -61,6 +65,8 @@ function start() {
   <div class="title" :style="{ '--mx': mouse.x, '--my': mouse.y }" @mousemove="onMouseMove">
     <StageLayer bg="roof_evening" :chara="null" />
     <AmbientLayer mode="dust" />
+    <!-- 影の出たり消えたりは外側の箱で動かす（残響の立ち絵自体のゆらめきと、ぶつからないように） -->
+    <div v-if="lostSeen" class="title-ghost"><CharaSprite name="zun_gentle" echo class="ghost-sprite" /></div>
     <div class="shade"></div>
 
     <!-- ロゴの後ろで回る観測リング -->
@@ -88,8 +94,11 @@ function start() {
       <!-- RouterLink：リンクでページ移動 -->
       <nav class="sub-links">
         <RouterLink to="/route" class="credit-link">WORLDLINE</RouterLink>
+        <RouterLink to="/archive" class="credit-link">ARCHIVE</RouterLink>
         <RouterLink to="/credits" class="credit-link">CREDITS</RouterLink>
       </nav>
+      <!-- 8つのエンディングをすべて見たのに、隠しエンディングだけ見ていないときのささやき -->
+      <p v-if="secretTeaser" class="teaser">— 観測されていない結末が、ひとつだけ残っている —</p>
       <button class="sound" @click="toggleMute">{{ muted ? 'SOUND OFF' : 'SOUND ON' }}</button>
     </div>
   </div>
@@ -169,6 +178,31 @@ h1 {
   display: flex;
   gap: 24px;
 }
+.title-ghost {
+  position: absolute;
+  right: 7%;
+  bottom: 0;
+  height: 62%;
+  pointer-events: none;
+  /* 20秒に一度、数秒だけ、うっすら現れて消える */
+  animation: haunt 20s ease-in-out infinite;
+}
+.ghost-sprite {
+  height: 100%;
+}
+@keyframes haunt {
+  0%, 62%, 100% { opacity: 0; }
+  70%, 80% { opacity: 0.22; }
+}
+.teaser {
+  margin: 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  color: #d4b8ff;
+  text-shadow: 0 0 10px rgba(180, 130, 255, 0.8);
+  animation: breathe 3s ease-in-out infinite;
+}
+@keyframes breathe { 50% { opacity: 0.4; } }
 .sound {
   padding: 4px 12px;
   font-family: 'Share Tech Mono', monospace;

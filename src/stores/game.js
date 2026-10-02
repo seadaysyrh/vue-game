@@ -2,7 +2,7 @@
 // 「どのページからでも使える共有データ置き場」。
 // ゲームの進行状況をここにまとめておけば、ゲーム画面・エンディング・分岐図のどれからでも読める。
 import { defineStore, acceptHMRUpdate } from 'pinia'
-import { scenes, getEndingType } from '../data/scenario'
+import { scenes, getEndingType, endings, endingByPath } from '../data/scenario'
 
 // ----- 通った世界線をブラウザに保存する（ページを閉じても残る） -----
 const SAVE_KEY = 'after-school-rewrite:visited'
@@ -23,10 +23,19 @@ function saveVisited(visited) {
   }
 }
 
+// セリフの when（条件）が、今の選び方 path に合っているか
+//   when: '0'  … 1回目の選択で 0番を選んだ
+//   when: '?1' … 2回目の選択で 1番を選んだ（? はどちらでもよい）
+//   when がないセリフは、いつでも出る
+export function matchesWhen(when, path) {
+  if (!when) return true
+  return [...when].every((ch, i) => ch === '?' || path[i] === ch)
+}
+
 export const useGameStore = defineStore('game', {
   // ----- state：保存しておくデータ（コンポーネントの ref にあたる） -----
   state: () => ({
-    sceneId: 'start', // いまのシーン
+    sceneId: 'lunch', // いまのシーン（最初は昼休みの屋上）
     lineIndex: 0,     // シーンの中で何番目のセリフか
     path: '',         // 今回の選び方（選んだ選択肢の番号を並べた文字列。例：'101'）
     visited: loadVisited(), // これまでに通った分岐（path の一覧）
@@ -36,12 +45,31 @@ export const useGameStore = defineStore('game', {
   // ----- getters：state から計算する値（コンポーネントの computed にあたる） -----
   getters: {
     scene: (state) => scenes[state.sceneId],
-    line() {
+    // このシーンのセリフのうち、今の選び方で出るものだけ
+    lines() {
       // getter から別の getter を使うときは this を使う
-      return this.scene.lines[this.lineIndex]
+      // replay: true のセリフは、エンディングを1つでも見たあと（2周目以降）だけ出す
+      return this.scene.lines.filter(
+        (l) => matchesWhen(l.when, this.path) && (!l.replay || this.endingsSeenCount > 0),
+      )
+    },
+    line() {
+      return this.lines[this.lineIndex]
     },
     isLastLine() {
-      return this.lineIndex === this.scene.lines.length - 1
+      return this.lineIndex === this.lines.length - 1
+    },
+    // これまでに見たエンディングの数（最後まで選んだ選び方の数）
+    endingsSeenCount: (state) => new Set(state.visited.filter((p) => p.length === 3).map(getEndingType)).size,
+    // 隠しエンディング以外の、8つのエンディングをすべて見たか
+    allEndingsSeen: (state) =>
+      Object.entries(endingByPath)
+        .filter(([, id]) => !endings[id].secret)
+        .every(([path]) => state.visited.includes(path)),
+    // 画面に出す選択肢（secret の選択肢は、全部のエンディングを見たあとだけ）
+    // ※ 選んだ番号は、元の choices の中の位置で記録するので、隠れていてもずれない
+    visibleChoices() {
+      return (this.scene.choices ?? []).filter((c) => !c.secret || this.allEndingsSeen)
     },
     // 最後のセリフまで読んだら選択肢を出す
     showChoices() {
@@ -54,7 +82,7 @@ export const useGameStore = defineStore('game', {
   // ----- actions：state を変える関数（コンポーネントの普通の関数にあたる） -----
   actions: {
     reset() {
-      this.sceneId = 'start'
+      this.sceneId = 'lunch'
       this.lineIndex = 0
       this.path = ''
       this.movie = null

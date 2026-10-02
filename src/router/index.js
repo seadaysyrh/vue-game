@@ -6,6 +6,7 @@ import GameView from '../views/GameView.vue'
 import EndingView from '../views/EndingView.vue'
 import CreditsView from '../views/CreditsView.vue'
 import RouteView from '../views/RouteView.vue'
+import ArchiveView from '../views/ArchiveView.vue'
 
 const routes = [
   { path: '/', component: TitleView },
@@ -14,6 +15,7 @@ const routes = [
   { path: '/ending/:type', component: EndingView },
   { path: '/credits', component: CreditsView },
   { path: '/route', component: RouteView }, // 世界線分岐図
+  { path: '/archive', component: ArchiveView }, // 記録室（エンディング・ギャラリー・TIPS）
 ]
 
 export default createRouter({

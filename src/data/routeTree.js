@@ -9,6 +9,7 @@
 //   ending     : エンディングの ID（type が 'ending' のとき。scenario.js の endings のキー）
 //   choiceText : そのノードに来るために選んだ選択肢の文章
 //   children   : 次の分かれ道
+//   secret     : 隠された選択肢の先か（分岐図では、解放されるまで出さない）
 import { scenes, getEndingType } from './scenario'
 
 // next をたどって、次の「選択肢があるシーン」か「end のシーン」を探す
@@ -34,8 +35,8 @@ function buildNode(sceneId, key, choiceText) {
     sceneId: stopId,
     choiceText,
     // 選択肢ごとに、その先の木を作る（関数が自分自身を呼ぶ「再帰」）
-    children: stop.choices.map((choice, i) => buildNode(choice.next, key + i, choice.text)),
+    children: stop.choices.map((choice, i) => ({ ...buildNode(choice.next, key + i, choice.text), secret: Boolean(choice.secret) })),
   }
 }
 
-export const routeTree = buildNode('start', '', null)
+export const routeTree = buildNode('lunch', '', null)

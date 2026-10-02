@@ -131,6 +131,12 @@ src/
 | 観測計の大写し | NixieMeter 部品を CSS で拡大し、光の輪と走査線を重ねる | MeterBurst.vue |
 | シネマ字幕 | `cinema: true` のセリフは、黒帯を入れて画面中央に大きく出す | CinemaText.vue |
 | 目のアップ（カットイン） | 立ち絵部品を巨大に拡大し、`data/faces.js` の目の位置が帯の中心に来るようにずらす。まばたき・口パクもそのまま動く | CutIn.vue |
+| 斜め・縦のカット | 窓の箱を `rotate` で傾けた斜めの帯（diagonal / slash）、縦長の帯で片目だけ（vertical）、縦3本で左目・口・右目（triptych）。傾きは外側の箱、登場の動きは内側の箱に分けて付ける | CutIn.vue |
+| タイムリープ | ①吸いこみ（景色が渦を巻いて一点へ縮む CSS アニメ）→ ②時間のトンネル（canvas で奥行きを計算。光の筋・時計の輪・通りすぎる景色・巻き戻る時計）→ ③着地（ぶれが止まり、色ずれが重なり、衝撃の輪）。音も Web Audio で「吸いこみ・うなり・加速する秒針・着地」を作る | TimeLeap.vue / MoviePlayer.vue |
+| 3Dの舞台 | 舞台に `perspective` を付け、背景は奥（translateZ -320px）・立ち絵は真ん中・光の玉は手前（+220px）に置く。マウスで舞台ごと回すと、奥ほど大きくずれて奥行きが出る。カメラワーク orbit（回りこみ）・crane（降りてくる）・vertigo（perspective を変えて背景だけ遠のかせる、めまいショット） | StageLayer.vue |
+| ターゲットロック（scan） | キャラの顔に照準が吸いつき、解析データ（存在率のゲージなど）が打ち出される。顔の位置は faces.js から計算。警告モードは赤 | ScanLock.vue |
+| ホログラム端末（terminal） | 空中に斜めに浮かぶ半透明の画面に、ログが1文字ずつ打ちこまれる（ブラウン管のように点く・ちらつく） | HoloTerminal.vue |
+| 世界の書き換え（fx: 'rewrite'） | 光の線が走り、通りすぎたところから色が戻る。下側は mix-blend-mode: saturation で白黒に、線の上には方眼のワイヤーフレーム | RewriteScan.vue |
 | 携帯演出 | ロック画面の通知・トーク画面・履歴が消える演出。`{choice0}` は実際に選んだ文章に置き換わる | PhoneScreen.vue |
 | 光漏れ | ぼかした色の光を `mix-blend-mode: screen` で流す | LightLeak.vue |
 | ホイップ・クラッシュズーム・ピント送り | セリフの `fx` を CSS クラスにして、ブレ・急な拡大・ぼかしを付ける | GameView.vue |
@@ -154,6 +160,34 @@ src/
 | `scope: 'wide'` | 黒帯が広がって画面が横長に | 黒帯の高さを `transition` で変える |
 | `movie`（セリフ） | 走馬灯 | セリフに来たとき1回だけムービーを流す。カットにキャラを立たせ、色あせたフィルム風にする |
 | `camera` の追加 | 見上げる・引いて孤独を見せる・漂う | `tilt-up` / `pull-back` / `drift`（StageLayer.vue） |
+
+### 遊びの要素
+
+| しくみ | 使っている機能 | 場所 |
+|---|---|---|
+| 調査パート | セリフの `investigate`。止まった背景を 16:9 の箱に入れ、調べる場所を「絵の◯%」で置く。手がかりを `need` 個見つけたら次へ | InvestigateLayer.vue |
+| 制限時間つきの選択 | シーンの `timer`。時間切れで `default` 番を自動で選ぶ。ほかのタブを見ている間（`document.hidden`）は止まる | ChoiceList.vue |
+| TIPS（用語集） | 本文にキーワードが出たら解放し、右上にお知らせ。`localStorage` に保存 | data/tips.js / useArchive.js / TipToast.vue |
+| 記録室 | エンディング（`visited` から判定・未見はヒント）、ギャラリー（見たスチル）、TIPS。全部の何割を見たかが「観測率」 | ArchiveView.vue（/archive） |
+| ゾクッとする仕掛け | 消える通知（phone の `vanish`）、2周目以降だけのセリフ（`replay`）、本文の `{runs}`（見たエンディングの数 + 1）、名札を「？？？」にして名前を失わせる | PhoneScreen.vue / stores/game.js / GameView.vue |
+| タイトルの影 | 「観測終了」を見たあと、フェンスのそばに残響の影がときどき現れる | TitleView.vue |
+| メインテーマ | 旋律（`melody`）のある曲。ピアノの音を合成し、8小節でひとまわり。セリフの `bgm` で途中から切り替える | useMusic.js / GameView.vue |
+| 手紙 | エンディング動画のあと、便せんに手書き風の文字が1文字ずつにじむように書かれる（エンディングの `letter`） | LetterCard.vue / EndingSequence.vue |
+| 思い出のアルバム | スタッフロールの横に、これまでに見たスチルを次々に表示 | EndingSequence.vue |
+| 決めゼリフ | cinema の `kinetic: true`。巨大な文字が跳ねて飛び込み、後ろで光が回る | CinemaText.vue |
+| 隠しエンディング | 選択肢に `secret: true`。ストアの `allEndingsSeen`（8つ全部見たか）が true のときだけ `visibleChoices` に出す。分岐図と記録室も、解放されるまで伏せる | stores/game.js / RouteView.vue / ArchiveView.vue |
+
+### 選び方で変わるイベント（when）
+
+セリフに `when` を付けると、選び方（ストアの `path`）に合うときだけ出ます。ストアの getter `lines` が、条件に合うセリフだけを絞り込みます。
+
+| when | 出る条件 |
+|---|---|
+| `'0'` | 1回目の選択で 0番 |
+| `'?1'` | 2回目の選択で 1番（`?` はどちらでもよい） |
+| `'10'` | 1回目が 1番、2回目が 0番 |
+
+大きなイベントは、選択肢の `next` を別のシーンにして分けています（屋上で「絶対に戻す」→ カップラーメン、「どうすれば」→ 嵐）。どちらも次の場面で合流します。
 
 ### エピローグとエンディング
 

@@ -1,6 +1,8 @@
 <script setup>
 // 背景と立ち絵を表示する部品。ゲーム画面・エンディング・分岐図で使い回す
-// 親が CSS 変数 --mx / --my（-1〜1。マウスの位置）を渡すと、背景と立ち絵が別々にずれて奥行きが出る（視差）
+// 舞台は本物の3D空間：背景は奥（translateZ がマイナス）、立ち絵は真ん中、光の玉は手前に置いてある。
+// 親が CSS 変数 --mx / --my（-1〜1。マウスの位置）を渡すと、舞台全体がそっちへ少し回る。
+// 奥のものほど大きくずれて見えるので、ただの絵なのに奥行きが生まれる（CSS の perspective と preserve-3d）
 import { ref, computed, watch, onUnmounted } from 'vue'
 import CharaSprite from './CharaSprite.vue'
 import LightRays from './effects/LightRays.vue'
@@ -13,6 +15,7 @@ const props = defineProps({
   talking: Boolean, // 立ち絵が口パクするか
   camera: String,   // カメラワーク：'close'（寄る） / 'push'（ゆっくり寄っていく） / 'dutch'（傾ける） / 'pan'（横に流す）
                     //   'tilt-up'（足元から顔へ見上げる） / 'pull-back'（寄りから引いて、ひとりぼっちを見せる） / 'drift'（ゆっくり横に漂う）
+                    //   3D：'orbit'（キャラのまわりを回りこむ） / 'crane'（上から降りてくる） / 'vertigo'（キャラはそのまま、背景だけが遠のく）
   ghost: String,    // 不在のカット：誰もいない場所に、このキャラの薄い残像を出して消していく
   handheld: Boolean, // 手持ちカメラのように、ずっと少し揺れる
   light: String,    // 光の筋：'sunset' / 'moon'
@@ -42,6 +45,15 @@ watch(
   },
 )
 onUnmounted(() => clearTimeout(cutTimer))
+
+// 手前に浮かぶ光の玉（ピンぼけした光）。位置や大きさは最初に一度だけ決める
+const bokeh = Array.from({ length: 9 }, (_, i) => ({
+  left: `${(i * 37 + 8) % 100}%`,
+  top: `${(i * 53 + 15) % 90}%`,
+  size: `${6 + ((i * 7) % 9)}vmin`,
+  delay: `${-i * 1.7}s`,
+  dur: `${9 + (i % 4) * 3}s`,
+}))
 </script>
 
 <template>
@@ -49,6 +61,8 @@ onUnmounted(() => clearTimeout(cutTimer))
     <!-- 手持ちカメラの揺れ（ずっと続く）と、カメラワーク（セリフごと）は別の箱で動かす -->
     <div class="handheld-box">
     <div class="cut-box" :class="{ cutting }">
+    <!-- マウスで舞台ごと回す箱（カメラワークの動きとぶつからないように、別の箱にしている） -->
+    <div class="orbit-box">
     <div class="camera">
       <!--
         <Transition>：中身が入れ替わるときに CSS アニメーションを付けてくれる。
@@ -74,14 +88,27 @@ onUnmounted(() => clearTimeout(cutTimer))
       </div>
 
       <LightRays :mode="light" />
+
+      <!-- いちばん手前：ピンぼけした光の玉。カメラに近いので、回すといちばん大きく動く -->
+      <div v-if="!stillSrc" class="layer-near">
+        <span
+          v-for="(b, i) in bokeh"
+          :key="i"
+          class="orb"
+          :style="{ left: b.left, top: b.top, width: b.size, height: b.size, animationDelay: b.delay, animationDuration: b.dur }"
+        ></span>
+      </div>
+    </div>
     </div>
     </div>
     </div>
 
-    <!-- スチル：白く光りながら現れ、ゆっくりズームする -->
-    <Transition name="still">
-      <img v-if="stillSrc" :key="stillSrc" :src="stillSrc" class="still" alt="" />
-    </Transition>
+    <!-- スチル：白く光りながら現れ、ゆっくりズームする。マウスで、額縁の絵をのぞきこむように少し傾く -->
+    <div class="still-tilt">
+      <Transition name="still">
+        <img v-if="stillSrc" :key="stillSrc" :src="stillSrc" class="still" alt="" />
+      </Transition>
+    </div>
   </div>
 </template>
 
@@ -90,10 +117,28 @@ onUnmounted(() => clearTimeout(cutTimer))
   position: absolute;
   inset: 0;
   overflow: hidden;
+  /* 3Dの「カメラ」：この距離（px）から舞台をのぞいている。小さいほど広角で、奥行きが強く出る */
+  perspective: 1000px;
+  perspective-origin: 50% 40%;
+}
+/* preserve-3d：子どもの3Dの位置（translateZ）を、平らにつぶさずにそのまま使う。
+   舞台からレイヤーまでの間の箱すべてに付けないと、途中で平らになってしまう */
+.handheld-box,
+.cut-box,
+.orbit-box,
+.camera {
+  transform-style: preserve-3d;
 }
 .handheld-box {
   position: absolute;
   inset: 0;
+}
+/* マウスのほうへ、舞台ごと少し回る */
+.orbit-box {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(calc(var(--mx, 0) * 5deg)) rotateX(calc(var(--my, 0) * -3deg));
+  transition: transform 0.9s ease-out;
 }
 /* 手持ちカメラ：ゆっくり不規則に、ほんの少し揺れ続ける */
 .handheld .handheld-box {
@@ -110,12 +155,19 @@ onUnmounted(() => clearTimeout(cutTimer))
   inset: 0;
 }
 /* カット：少し寄った位置から、ブレながら定位置に戻る */
+/* （filter を箱に付けると3Dが平らになってしまうので、ぼかしは中のレイヤーに付ける） */
 .cut-box.cutting {
   animation: cut 0.5s cubic-bezier(0.2, 0.9, 0.2, 1);
 }
+.cut-box.cutting .layer-chara {
+  animation: cut-blur 0.5s ease-out;
+}
 @keyframes cut {
-  from { transform: scale(1.045); filter: blur(3px); }
-  to { transform: scale(1); filter: blur(0); }
+  from { transform: scale(1.045); }
+  to { transform: scale(1); }
+}
+@keyframes cut-blur {
+  from { filter: blur(3px); }
 }
 .camera {
   position: absolute;
@@ -123,18 +175,36 @@ onUnmounted(() => clearTimeout(cutTimer))
   transform-origin: 50% 30%;
   transition: transform 1.4s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-/* 視差：背景は大きめに置いて、マウスと逆に少しずらす。立ち絵は同じ向きに少しだけ */
+/* 背景は奥へ 320px 下げる。遠くのものは小さく見えるので、そのぶん拡大して画面を埋める
+   （見た目の大きさ = 1000 / (1000 + 320) ≒ 0.76倍 → 1.42倍に拡大して、少し余裕を持たせる） */
 .layer-bg {
   position: absolute;
   inset: -4%;
-  transform: translate(calc(var(--mx, 0) * -1.6%), calc(var(--my, 0) * -1.2%));
-  transition: transform 0.8s ease-out, filter 1.4s;
+  transform: translateZ(-320px) scale(1.42);
+  transition: transform 1.2s cubic-bezier(0.3, 0, 0.2, 1), filter 1.4s;
 }
 .layer-chara {
   position: absolute;
   inset: 0;
-  transform: translate(calc(var(--mx, 0) * 0.9%), calc(var(--my, 0) * 0.5%));
-  transition: transform 0.8s ease-out;
+}
+/* いちばん手前の光の玉：カメラ側へ 220px 出す */
+.layer-near {
+  position: absolute;
+  inset: 0;
+  transform: translateZ(220px);
+  pointer-events: none;
+}
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 236, 200, 0.28), rgba(255, 200, 140, 0.1) 45%, transparent 70%);
+  filter: blur(3px);
+  mix-blend-mode: screen;
+  animation: orb-float 12s ease-in-out infinite alternate;
+}
+@keyframes orb-float {
+  from { transform: translate(0, 0) scale(1); opacity: 0.35; }
+  to { transform: translate(4vmin, -6vmin) scale(1.25); opacity: 0.9; }
 }
 /* ===== カメラワーク ===== */
 /* close：顔に寄る。背景だけぼかす（被写界深度） */
@@ -188,6 +258,37 @@ onUnmounted(() => clearTimeout(cutTimer))
   15% { opacity: 0.22; }
   100% { opacity: 0; }
 }
+/* ===== 3Dのカメラワーク ===== */
+/* orbit：キャラのまわりを回りこむ。キャラ（真ん中）はほぼそのまま、奥の背景だけが大きく流れる */
+.cam-orbit .camera {
+  animation: orbit 9s cubic-bezier(0.45, 0, 0.4, 1) both;
+}
+@keyframes orbit {
+  from { transform: rotateY(-12deg) scale(1.1); }
+  to { transform: rotateY(9deg) scale(1.1); }
+}
+/* crane：上からのぞきこむ位置から、ゆっくり降りてきて正面になる */
+.cam-crane .camera {
+  animation: crane 6s cubic-bezier(0.3, 0, 0.2, 1) both;
+}
+@keyframes crane {
+  from { transform: translateY(-10%) rotateX(18deg) scale(1.25); }
+  to { transform: none; }
+}
+/* vertigo（めまいショット）：カメラが下がりながら望遠→広角に変わる映画の技。
+   キャラ（奥行き 0）の大きさは perspective を変えても変わらないが、奥の背景だけは遠のいていく。
+   → 世界がぐにゃりと引き伸ばされる、ぞっとする感覚になる */
+.cam-vertigo {
+  animation: vertigo 5s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+@keyframes vertigo {
+  from { perspective: 2600px; }
+  to { perspective: 420px; }
+}
+.cam-vertigo .layer-bg {
+  transform: translateZ(-320px) scale(2.3);
+}
+
 /* pan：横にゆっくり流す */
 .cam-pan .camera {
   transform: translateX(-5%) scale(1.14);
@@ -255,6 +356,12 @@ onUnmounted(() => clearTimeout(cutTimer))
 }
 
 /* ===== スチル ===== */
+.still-tilt {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(calc(var(--mx, 0) * 2.5deg)) rotateX(calc(var(--my, 0) * -1.8deg)) scale(1.05);
+  transition: transform 0.9s ease-out;
+}
 .still {
   position: absolute;
   inset: 0;
@@ -282,7 +389,8 @@ onUnmounted(() => clearTimeout(cutTimer))
 }
 @media (prefers-reduced-motion: reduce) {
   .still { animation: none; }
-  .camera, .layer-bg, .layer-chara { transition: none; }
-  .handheld .handheld-box, .cut-box.cutting, .bg, .camera { animation: none; }
+  .camera, .layer-bg, .layer-chara, .orbit-box, .still-tilt { transition: none; }
+  .orbit-box, .still-tilt { transform: none; }
+  .handheld .handheld-box, .cut-box.cutting, .bg, .camera, .orb, .cam-vertigo, .cut-box.cutting .layer-chara { animation: none; }
 }
 </style>

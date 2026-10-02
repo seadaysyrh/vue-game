@@ -2,19 +2,21 @@
 // 選択肢。選ばれたものを親に知らせる部品
 //   variant 'message' … 過去へのメッセージを選ぶ画面（スマホの送信画面風。選ぶと「送信中」になってから決定）
 //   variant 'speech'  … セリフを選ぶ画面
-import { ref, onUnmounted } from 'vue'
+//   timer があると、制限時間つき。時間切れになると default 番の選択肢を自動で選ぶ
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 
 const props = defineProps({
   choices: Array,
   variant: { type: String, default: 'speech' },
   remaining: Number, // メッセージの残り送信回数（表示用）
+  timer: Object, // { seconds: 10, default: 1 }（制限時間と、時間切れのときに選ばれる番号）
 })
 const emit = defineEmits(['choose', 'pick'])
 
 const sending = ref(null) // 送信中の選択肢の番号
 const composed = ref('')  // 入力欄に打ちこまれていく文字
 const sent = ref(false)   // 送信ボタンが押されたか
-let timer = null
+let waitTimer = null // 決定までの待ち時間用（制限時間の props.timer とは別物）
 
 function select(choice, index) {
   if (sending.value !== null) return // 送信中は二重に押せない
@@ -22,26 +24,46 @@ function select(choice, index) {
   if (props.variant !== 'message') {
     // 選んだものに照準が絞りこみ、ほかが散ってから決定する
     sending.value = index
-    timer = setTimeout(() => emit('choose', choice), 550)
+    waitTimer = setTimeout(() => emit('choose', choice), 550)
     return
   }
   sending.value = index
   // 入力欄に1文字ずつ打ちこんで、最後に送信ボタンを押す
   let i = 0
-  timer = setInterval(() => {
+  waitTimer = setInterval(() => {
     i++
     composed.value = choice.text.slice(0, i)
     if (i >= choice.text.length) {
-      clearInterval(timer)
+      clearInterval(waitTimer)
       sent.value = true
-      timer = setTimeout(() => emit('choose', choice), 700)
+      waitTimer = setTimeout(() => emit('choose', choice), 700)
     }
   }, 45)
 }
 
+// ===== 制限時間 =====
+const left = ref(props.timer?.seconds ?? 0) // 残り秒数
+const ratio = computed(() => (props.timer ? left.value / props.timer.seconds : 0))
+let countdown = null
+
+// ほかのタブを見ている間は止める（戻ってきたら勝手に決まっていた、とならないように）
+function tick() {
+  if (document.hidden || sending.value !== null) return
+  left.value = Math.max(0, left.value - 0.1)
+  if (left.value === 0) {
+    clearInterval(countdown)
+    const i = props.timer.default
+    select(props.choices[i], i) // 時間切れ：迷ったまま、選べなかったことになる
+  }
+}
+onMounted(() => {
+  if (props.timer) countdown = setInterval(tick, 100)
+})
+
 onUnmounted(() => {
-  clearInterval(timer)
-  clearTimeout(timer)
+  clearInterval(waitTimer)
+  clearTimeout(waitTimer)
+  clearInterval(countdown)
 })
 </script>
 
@@ -59,7 +81,7 @@ onUnmounted(() => {
         v-for="(choice, i) in choices"
         :key="choice.text"
         class="draft"
-        :class="{ sending: sending === i, dim: sending !== null && sending !== i }"
+        :class="{ sending: sending === i, dim: sending !== null && sending !== i, secret: choice.secret }"
         :style="{ animationDelay: `${0.15 + i * 0.12}s` }"
         @click="select(choice, i)"
       >
@@ -76,6 +98,11 @@ onUnmounted(() => {
     <!-- ===== セリフの選択 ===== -->
     <template v-else>
       <p class="label">CHOOSE YOUR WORDS</p>
+      <!-- 制限時間のバー：だんだん短くなり、残りわずかでオレンジから赤になる -->
+      <div v-if="timer" class="timer" :class="{ urgent: left <= 3 }">
+        <span class="bar" :style="{ transform: `scaleX(${ratio})` }"></span>
+        <span class="sec">{{ left.toFixed(1) }}</span>
+      </div>
       <button
         v-for="(choice, i) in choices"
         :key="choice.text"
@@ -160,6 +187,13 @@ onUnmounted(() => {
 .draft.sending { border-color: #6dffb0; transform: scale(1.02); }
 .draft.sending .status { animation: blink 0.3s steps(2) infinite; }
 .draft.dim { opacity: 0.25; }
+/* 隠された選択肢：むらさきに光る */
+.draft.secret {
+  border-color: rgba(200, 160, 255, 0.7);
+  background: rgba(60, 30, 90, 0.6);
+  box-shadow: 0 0 20px rgba(180, 130, 255, 0.4);
+}
+.draft.secret .status { color: #d4b8ff; }
 .composer {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -200,6 +234,38 @@ onUnmounted(() => {
   transform: scale(1.12);
 }
 @keyframes blink { 50% { opacity: 0.2; } }
+
+/* ===== 制限時間 ===== */
+.timer {
+  position: relative;
+  width: min(560px, 100%);
+  height: 4px;
+  background: rgba(255, 255, 255, 0.12);
+}
+.timer .bar {
+  position: absolute;
+  inset: 0;
+  background: #ff9a3c;
+  box-shadow: 0 0 10px #ff7b00;
+  transform-origin: left;
+  transition: transform 0.1s linear, background 0.3s;
+}
+.timer .sec {
+  position: absolute;
+  right: 0;
+  top: 8px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.8rem;
+  color: #ffb066;
+  font-variant-numeric: tabular-nums;
+}
+.timer.urgent .bar {
+  background: #ff3b3b;
+  box-shadow: 0 0 14px #ff3b3b;
+}
+.timer.urgent .sec {
+  color: #ff6b6b;
+}
 
 /* ===== セリフ ===== */
 .label {
