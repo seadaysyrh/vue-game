@@ -1709,4 +1709,115 @@ export const DIAGRAMS = {
     ],
     edges: [],
   },
+  // ===== インターネット・ブラウザのしくみの図 =====
+  internet: {
+    title: 'インターネット（ネットワークのネットワーク）',
+    nodes: [
+      { id: 'home', x: 8, y: 20, w: 100, h: 60, label: '家', sub: 'Wi-Fi ルーター' },
+      { id: 'isp', x: 150, y: 20, w: 100, h: 60, label: 'ISP', sub: 'プロバイダー' },
+      { id: 'isp', x: 150, y: 170, w: 100, h: 60, label: 'ISP', sub: '別の会社' },
+      { id: 'router', x: 292, y: 95, w: 100, h: 60, label: 'ルーター', sub: 'バケツリレー' },
+      { id: 'dc', x: 8, y: 170, w: 100, h: 60, label: 'データセンター', sub: 'サーバー' },
+    ],
+    edges: [
+      { id: 'isp', d: 'M108 50 L150 50' },
+      { id: 'router', d: 'M250 50 L292 115', both: true },
+      { id: 'router', d: 'M250 200 L292 135', both: true },
+      { id: 'isp', d: 'M200 80 L200 170', both: true, label: 'つながりあう', lx: 208, ly: 128 },
+      { id: 'dc', d: 'M108 200 L150 200', both: true },
+    ],
+    pulse: { path: 'M58 50 L200 50 L342 125 L200 200 L58 200', dur: '3s' },
+  },
+  nat: {
+    title: 'プライベート IP と NAT',
+    nodes: [
+      { id: 'lan', x: 8, y: 10, w: 180, h: 230, label: '家の中（プライベート）', top: true },
+      { id: 'lan', x: 20, y: 44, w: 156, h: 40, label: 'パソコン', sub: '192.168.1.10', mono: false },
+      { id: 'lan', x: 20, y: 92, w: 156, h: 40, label: 'スマホ', sub: '192.168.1.11' },
+      { id: 'lan', x: 20, y: 140, w: 156, h: 40, label: 'ゲーム機', sub: '192.168.1.12' },
+      { id: 'router', x: 210, y: 92, w: 80, h: 60, label: 'ルーター', sub: 'NAT' },
+      { id: 'wan', x: 312, y: 92, w: 80, h: 60, label: '外', sub: '203.0.113.5' },
+    ],
+    edges: [
+      { id: 'router', d: 'M176 112 L210 122' },
+      { id: 'wan', d: 'M290 122 L312 122', label: '1つの住所に', lx: 301, ly: 86, anchor: 'middle' },
+    ],
+  },
+  tcphand: seq('TCP のあいさつと送り直し', [
+    { id: 'client', label: 'ブラウザ', sub: 'つなぎたい' },
+    { id: 'net', label: 'ネットワーク', sub: 'なくなることも' },
+    { id: 'server', label: 'サーバー', sub: '443 番で待つ' },
+  ], [
+    { id: 'syn', from: 0, to: 2, y: 74, label: '① SYN（つないでいい？）' },
+    { id: 'syn', from: 2, to: 0, y: 102, label: '② SYN+ACK（いいよ）' },
+    { id: 'syn', from: 0, to: 2, y: 130, label: '③ ACK（了解）' },
+    { id: 'lost', from: 0, to: 1, y: 170, label: '④ データ（なくなった）' },
+    { id: 'retry', from: 0, to: 2, y: 206, label: '⑤ 届かないので送り直し' },
+  ]),
+  dnsresolve: seq('DNS で名前を調べる', [
+    { id: 'pc', label: 'パソコン', sub: 'github.com は？' },
+    { id: 'resolver', label: 'リゾルバー', sub: 'ISP など' },
+    { id: 'auth', label: '名前の係', sub: 'ルート→.com→本人' },
+  ], [
+    { id: 'q1', from: 0, to: 1, y: 78, label: '① github.com は？' },
+    { id: 'q3', from: 1, to: 2, y: 112, label: '② 順番にたずねる' },
+    { id: 'q3', from: 2, to: 1, y: 146, label: '③ 20.27.177.113' },
+    { id: 'a', from: 1, to: 0, y: 184, label: '④ 答え（TTL のあいだ覚える）' },
+  ]),
+  netlayers: {
+    title: 'ネットワークの層',
+    nodes: [
+      { id: 'app', x: 40, y: 10, w: 320, h: 50, label: 'アプリ', sub: 'HTTP・DNS・TLS' },
+      { id: 'transport', x: 40, y: 68, w: 320, h: 50, label: '届け方', sub: 'TCP・UDP（ポート番号）' },
+      { id: 'ip', x: 40, y: 126, w: 320, h: 50, label: '住所', sub: 'IP（IP アドレス）' },
+      { id: 'link', x: 40, y: 184, w: 320, h: 50, label: '線・電波', sub: 'イーサネット・Wi-Fi・5G' },
+    ],
+    edges: [
+      { id: 'note', d: 'M376 20 L376 224', label: '送るとき：上から封筒に入れる', lx: 368, ly: 248, anchor: 'end' },
+    ],
+  },
+  browserparts: {
+    title: 'ブラウザの部品',
+    nodes: [
+      { id: 'ui', x: 8, y: 8, w: 384, h: 40, label: 'UI（アドレスバー・タブ・戻るボタン）' },
+      { id: 'render', x: 8, y: 60, w: 186, h: 80, label: 'レンダリングエンジン', sub: 'Blink・Gecko・WebKit' },
+      { id: 'js', x: 206, y: 60, w: 186, h: 80, label: 'JS エンジン', sub: 'V8・SpiderMonkey・JSC' },
+      { id: 'net', x: 8, y: 152, w: 186, h: 88, label: '通信', sub: 'HTTP・TLS・キャッシュ' },
+      { id: 'net', x: 206, y: 152, w: 186, h: 88, label: '保存', sub: 'Cookie・localStorage・IndexedDB' },
+    ],
+    edges: [
+      { id: 'js', d: 'M194 100 L206 100', both: true },
+    ],
+  },
+  processes: {
+    title: 'タブごとのプロセスとサンドボックス',
+    nodes: [
+      { id: 'browser', x: 8, y: 8, w: 384, h: 44, label: 'ブラウザのプロセス', sub: 'ファイル・通信など強い権限' },
+      { id: 'sandbox', x: 8, y: 70, w: 384, h: 170, label: 'サンドボックス（砂場）', top: true },
+      { id: 'site', x: 20, y: 104, w: 112, h: 120, label: 'タブ A', sub: 'このゲーム' },
+      { id: 'site', x: 144, y: 104, w: 112, h: 120, label: 'タブ B', sub: '銀行' },
+      { id: 'site', x: 268, y: 104, w: 112, h: 120, label: 'タブ C', sub: '動画' },
+    ],
+    edges: [
+      { id: 'site', d: 'M132 164 L144 164', plain: true, dashed: true },
+      { id: 'site', d: 'M256 164 L268 164', plain: true, dashed: true },
+    ],
+  },
+  loadorder: {
+    title: 'script の読みこみ方',
+    nodes: [
+      { id: 'block', x: 8, y: 10, w: 384, h: 22, label: 'ふつうの <script>', mono: false },
+      { id: 'block', x: 8, y: 38, w: 110, h: 30, label: 'HTML を読む' },
+      { id: 'block', x: 122, y: 38, w: 150, h: 30, label: '止まる：DL＋実行' },
+      { id: 'block', x: 276, y: 38, w: 116, h: 30, label: 'HTML の続き' },
+      { id: 'defer', x: 8, y: 92, w: 384, h: 22, label: 'defer・type="module"' },
+      { id: 'defer', x: 8, y: 120, w: 264, h: 30, label: 'HTML を読む（止まらない）' },
+      { id: 'defer', x: 8, y: 156, w: 200, h: 30, label: '並行してダウンロード' },
+      { id: 'defer', x: 276, y: 120, w: 116, h: 30, label: '実行' },
+      { id: 'note', x: 8, y: 204, w: 384, h: 38, label: '画面が早く出る' },
+    ],
+    edges: [
+      { id: 'axis', d: 'M8 78 L392 78', plain: true, dashed: true },
+    ],
+  },
 }

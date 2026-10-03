@@ -28,9 +28,19 @@ export const TRACKS = {
 }
 export const EDITIONS = [
   {
-    id: 'webhttp', menu: 'lesson_menu_webhttp', track: 'basic', thumb: 'journey', glyph: 'WEB',
-    title: 'Web と HTTP', desc: 'ブラウザ・通信のしくみ',
+    id: 'webhttp', menu: 'lesson_menu_webhttp', track: 'basic', thumb: 'internet', glyph: 'NET',
+    title: 'インターネットと Web', desc: 'ネット・ブラウザ・HTTP',
     lessons: [
+      { id: 'lesson_net_internet', title: "インターネットとは", desc: "ネットワークのネットワーク", section: 'インターネットのしくみ' },
+      { id: 'lesson_net_ip', title: "IP アドレスとポート", desc: "あて先の住所と部屋番号", section: 'インターネットのしくみ' },
+      { id: 'lesson_net_tcp', title: "TCP と UDP", desc: "とどけ方の2つの約束", section: 'インターネットのしくみ' },
+      { id: 'lesson_net_dns', title: "DNS くわしく", desc: "名前から住所を調べる", section: 'インターネットのしくみ' },
+      { id: 'lesson_net_layers', title: "階層と速さ", desc: "何層にも重なる約束・遅延と帯域", section: 'インターネットのしくみ' },
+      { id: 'lesson_br_parts', title: "ブラウザの部品", desc: "エンジン・JS エンジン", section: 'ブラウザのしくみ' },
+      { id: 'lesson_br_process', title: "タブとサンドボックス", desc: "ブラウザの安全なしくみ", section: 'ブラウザのしくみ' },
+      { id: 'lesson_br_loading', title: "読みこみの順番", desc: "script・defer・preload", section: 'ブラウザのしくみ' },
+      { id: 'lesson_br_storage', title: "ブラウザの保存場所", desc: "キャッシュ・Cookie・IndexedDB", section: 'ブラウザのしくみ' },
+      { id: 'lesson_br_standards', title: "標準とブラウザのちがい", desc: "W3C・WHATWG・Can I use", section: 'ブラウザのしくみ' },
       { id: 'lesson_http', title: 'URL とサーバー', desc: 'Web ページが届くまで', section: 'Web のしくみ' },
       { id: 'lesson_devtools', title: '開発者ツール', desc: '画面の裏側をのぞく', section: 'Web のしくみ' },
       { id: 'lesson_js', title: 'JavaScript のきほん', desc: '変数・配列・関数・if', section: 'Web のしくみ' },
@@ -4618,6 +4628,55 @@ p {
   check: (el) => { const m = el.querySelector('.metan'); return Boolean(m) && getComputedStyle(m).color !== 'rgb(0, 0, 0)' },
 }
 
+// ===== インターネット・ブラウザのしくみのコード =====
+const CV_NET_DIG = {
+  view: true,
+  title: "名前と道のりを調べるコマンド",
+  file: "コマンドの例（Windows ならかっこの中）",
+  task: "ネットワークの中のようすは、コマンドでのぞけるのだ",
+  marks: { 1: "A レコード", 3: "キャッシュしてよい秒数", 8: "往復の時間", 9: "通り道", 12: "HTTPS は 443 番" },
+  code: `
+$ dig github.com           # 名前 → IP アドレス（nslookup github.com）
+  github.com.   60   IN   A   20.27.177.113
+                 ↑ TTL（60秒は覚えておいてよい）
+
+$ dig github.com MX        # メールの届け先
+$ dig github.com TXT       # 持ち主の確認などに使う文字
+
+$ ping github.com          # 届くか・往復に何ミリ秒か
+$ traceroute github.com    # 途中のルーターを順番に表示（tracert）
+
+$ curl -v https://github.com/ 2>&1 | head
+  * Connected to github.com (20.27.177.113) port 443
+  * SSL connection using TLSv1.3
+`,
+}
+
+const CV_SCRIPT_LOAD = {
+  view: true,
+  title: "スクリプトの読みこみ方",
+  file: "（例）index.html",
+  task: "書き方で、HTML を読むのを止めるかどうかが変わるのだ",
+  marks: { 2: "表示が止まる", 5: "読み終わってから順番に", 8: "届いたらすぐ", 10: "defer と同じ", 14: "先に取りに行く" },
+  code: `
+<!-- ✕ ふつうの script：ここで HTML を読むのを止めて、ダウンロードして実行 -->
+<script src="big.js"></script>
+
+<!-- ◯ defer：ダウンロードは並行。HTML を読み終わってから、順番に実行 -->
+<script defer src="app.js"></script>
+
+<!-- ◯ async：ダウンロードは並行。届いたらすぐ実行（順番はばらばら） -->
+<script async src="analytics.js"></script>
+
+<!-- type="module" は、最初から defer と同じ動き（このゲームもこれ） -->
+<script type="module" src="/src/main.js"></script>
+
+<!-- 大事なものは先に知らせておく -->
+<link rel="preload" href="/fonts/zen.woff2" as="font" crossorigin />
+<link rel="preconnect" href="https://fonts.gstatic.com" />
+`,
+}
+
 export const lessonScenes = {
   lesson_intro: {
     chapter: { no: 'EX', title: '放課後テックゼミ', sub: 'AFTER SCHOOL TECH SEMINAR' },
@@ -4652,7 +4711,7 @@ export const lessonScenes = {
     meter: '0.000000',
     lessonMenu: 'webhttp', // components/LessonMenu.vue で目次を出す
     lines: [
-      { speaker: 'ずんだもん', chara: 'zun_normal', text: '*Web と HTTP*のコースなのだ。見出しごとに、やさしい順に並んでいるのだ。' },
+      { speaker: 'ずんだもん', chara: 'zun_normal', text: '*インターネットと Web*のコースなのだ。見出しごとに、やさしい順に並んでいるのだ。' },
     ],
     choices: WEBHTTP_MENU,
   },
@@ -7622,6 +7681,181 @@ export const lessonScenes = {
       { speaker: "僕", chara: 'metan_normal', text: "「名札を付ければ、好きな場所だけ変えられるのか」" },
     ],
     next: 'lesson_menu_htmlcss',
+  },
+
+  // ----- インターネット・ブラウザのしくみ -----
+  lesson_net_internet: {
+    place: { name: 'NET 01 インターネットとは', time: '15:01' },
+    bg: 'lab_night',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000191',
+    lines: [
+      { speaker: 'ずんだもん', chara: 'zun_normal', diagram: 'internet', text: "インターネットは、1本の大きなケーブルじゃないのだ。家・会社・学校・データセンターの*小さなネットワークが、たくさんつながったもの*なのだ。" },
+      { speaker: '四国めたん', chara: 'metan_normal', diagram: { type: 'internet', focus: 'isp' }, text: "家のネットワークは、Wi-Fi のルーターから、プロバイダー（ISP）につながります。ISP どうしがつながって、世界中に届きますの。" },
+      { speaker: 'ずんだもん', chara: 'zun_proud', diagram: { type: 'internet', focus: 'router' }, text: "データは、小さな*パケット*に分けて送るのだ。1つ1つに「あて先」が書いてあって、途中のルーターがバケツリレーで運ぶのだ。" },
+      { speaker: '四国めたん', chara: 'metan_smug', text: "道は1本ではありませんの。混んでいたり切れていたりしたら、別の道を通りますわ。だから、どこかがこわれても、全体は止まりにくいんですの。" },
+      { speaker: 'ずんだもん', chara: 'zun_normal', text: "海の底には、大陸どうしをつなぐ*海底ケーブル*が通っているのだ。日本からアメリカのサーバーまでも、光でほんの一瞬なのだ。" },
+      { speaker: '僕', chara: 'zun_normal', text: "「インターネットは、ネットワークどうしのつながりなのか」" },
+    ],
+    next: 'lesson_menu_webhttp',
+  },
+
+  lesson_net_ip: {
+    place: { name: 'NET 02 IP アドレスとポート', time: '15:02' },
+    bg: 'lab_night',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000191',
+    lines: [
+      { speaker: 'ずんだもん', chara: 'zun_normal', terminal: ["IPv4：20.27.177.113", "  （0〜255 を4つ・約43億通り）", "IPv6：2001:db8::1", "  （ほぼ無限・足りなくなった", "   IPv4 の代わり）"], text: "パケットのあて先は、*IP アドレス*という番号なのだ。インターネット上の住所なのだ。" },
+      { speaker: '四国めたん', chara: 'metan_normal', diagram: 'nat', text: "家の中のパソコンやスマホは、192.168.〇〇 のような*プライベート IP* を使っていて、外に出るときにルーターが1つの住所にまとめますの。これを NAT と言いますわ。" },
+      { speaker: 'ずんだもん', chara: 'zun_proud', terminal: ["80   … HTTP", "443  … HTTPS", "22   … SSH", "5432 … PostgreSQL", "5173 … Vite の開発サーバー", "3000 … よく使う API の番号"], text: "そして、住所の中の「どの部屋か」が*ポート番号*なのだ。1台のサーバーで、いろいろなサービスを動かせるのだ。" },
+      { speaker: '四国めたん', chara: 'metan_smug', text: "バックエンド編のセキュリティグループや Docker の ports も、このポートの話でしたのよ。" },
+      { speaker: '僕', chara: 'metan_smug', text: "「住所が IP アドレスで、部屋番号がポートなのか」" },
+    ],
+    next: 'lesson_menu_webhttp',
+  },
+
+  lesson_net_tcp: {
+    place: { name: 'NET 03 TCP と UDP', time: '15:03' },
+    bg: 'lab_night',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000191',
+    lines: [
+      { speaker: 'ずんだもん', chara: 'zun_normal', text: "パケットは、とちゅうでなくなったり、順番が入れかわったりすることがあるのだ。" },
+      { speaker: '四国めたん', chara: 'metan_normal', diagram: 'tcphand', text: "*TCP* は、それを全部面倒みてくれる約束。最初にあいさつをして、届いたかを確かめ、なくなったら送り直し、順番もそろえますの。" },
+      { speaker: 'ずんだもん', chara: 'zun_proud', diagram: { type: 'tcphand', focus: 'syn' }, text: "最初のあいさつは3回なのだ。「つないでいい？」「いいよ、こっちも」「了解」。*3ウェイハンドシェイク*なのだ。" },
+      { speaker: '四国めたん', chara: 'metan_smug', text: "*UDP* は、確かめずにどんどん送る約束。少しなくなってもいいから速さがほしい、動画通話やゲーム、DNS で使いますわ。" },
+      { speaker: 'ずんだもん', chara: 'zun_normal', text: "HTTP/1.1 と HTTP/2 は TCP の上、HTTP/3 は UDP の上の QUIC で動いているのだ。HTTP 編の話とつながったのだ。" },
+      { speaker: '四国めたん', chara: 'metan_normal', terminal: ["TCP … 確実・順番どおり", "      Web・メール・ファイル", "UDP … 速い・確かめない", "      通話・ゲーム・DNS", "QUIC … UDP の上で TCP の", "       よいところを作り直した"], text: "くらべるとこうですわ。" },
+      { speaker: '僕', chara: 'metan_normal', text: "「確実さと速さの、どちらをとるかなのか」" },
+    ],
+    next: 'lesson_menu_webhttp',
+  },
+
+  lesson_net_dns: {
+    place: { name: 'NET 04 DNS くわしく', time: '15:04' },
+    bg: 'lab_night',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000191',
+    lines: [
+      { speaker: 'ずんだもん', chara: 'zun_normal', diagram: 'dnsresolve', text: "人は github.com のような*名前*で覚えるけど、パケットには IP アドレスが必要なのだ。名前を住所に変えるのが *DNS* なのだ。" },
+      { speaker: '四国めたん', chara: 'metan_normal', diagram: { type: 'dnsresolve', focus: 'q1' }, text: "パソコンは、まずプロバイダーなどの*リゾルバー*に聞きますの。" },
+      { speaker: 'ずんだもん', chara: 'zun_proud', diagram: { type: 'dnsresolve', focus: 'q3' }, text: "リゾルバーは知らなかったら、ルート → .com の係 → github.com の係、と順番にたずねていくのだ。" },
+      { speaker: '四国めたん', chara: 'metan_smug', diagram: { type: 'dnsresolve', focus: 'a' }, text: "答えは、決められた時間（TTL）のあいだ、あちこちでキャッシュされますわ。だから DNS を変えても、すぐには全員に伝わりませんの。" },
+      { speaker: 'ずんだもん', chara: 'zun_normal', terminal: ["A     … 名前 → IPv4", "AAAA  … 名前 → IPv6", "CNAME … 名前 → 別の名前", "MX    … メールの届け先", "TXT   … 持ち主の確認など"], text: "DNS には、いろいろな種類の記録（レコード）があるのだ。" },
+      { speaker: '四国めたん', chara: 'metan_normal', playground: CV_NET_DIG, text: "コマンドで、実際に調べられますわ。" },
+      { speaker: 'ずんだもん', chara: 'zun_surprise', fx: "shake", text: "サイトを引っ越すときは、前もって TTL を短くしておくのだ。そうしないと、古い住所に行く人がしばらく残るのだ！" },
+      { speaker: '僕', chara: 'zun_surprise', text: "「名前で覚えた住所を、毎回だれかが調べてくれていたのか」" },
+    ],
+    next: 'lesson_menu_webhttp',
+  },
+
+  lesson_net_layers: {
+    place: { name: 'NET 05 階層と速さ', time: '15:05' },
+    bg: 'lab_night',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000191',
+    lines: [
+      { speaker: 'ずんだもん', chara: 'zun_normal', diagram: 'netlayers', text: "ネットワークの約束は、*層*になっているのだ。それぞれの層が、自分の仕事だけをするのだ。" },
+      { speaker: '四国めたん', chara: 'metan_normal', diagram: { type: 'netlayers', focus: 'app' }, text: "いちばん上がアプリの約束（HTTP・DNS）。その下が届け方（TCP・UDP）、住所（IP）、そして実際の電線や電波（イーサネット・Wi-Fi）ですわ。" },
+      { speaker: 'ずんだもん', chara: 'zun_proud', diagram: { type: 'netlayers', focus: 'link' }, text: "送るときは、上から順番に「封筒」に入れていくのだ。受け取る側は、下から順番に開けていくのだ。だから Wi-Fi でも有線でも、HTTP はそのまま使えるのだ。" },
+      { speaker: '四国めたん', chara: 'metan_smug', terminal: ["遅延（ms）… 道の長さ", "  東京→東京 数ms", "  東京→アメリカ 100ms 以上", "帯域（Mbps）… 道の太さ", "  動画や大きなファイルに効く"], text: "速さには2種類ありますの。*遅延*（行って帰るまでの時間）と、*帯域*（一度に運べる量）。" },
+      { speaker: 'ずんだもん', chara: 'zun_normal', text: "Web ページは小さなファイルをたくさん取りに行くから、帯域より*遅延*がきくことが多いのだ。だから CDN で、近くの場所から配るのだ。" },
+      { speaker: '僕', chara: 'zun_normal', text: "「近くに置くだけで速くなるのは、道が短くなるからなのか」" },
+    ],
+    next: 'lesson_menu_webhttp',
+  },
+
+  lesson_br_parts: {
+    place: { name: 'BROWSER 01 ブラウザの部品', time: '15:01' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000191',
+    lines: [
+      { speaker: 'ずんだもん', chara: 'zun_normal', diagram: 'browserparts', text: "ブラウザは、いくつもの部品の組み合わせなのだ。" },
+      { speaker: '四国めたん', chara: 'metan_normal', diagram: { type: 'browserparts', focus: 'render' }, text: "HTML と CSS を読んで画面にするのが*レンダリングエンジン*。Chrome と Edge は Blink、Firefox は Gecko、Safari は WebKit ですわ。" },
+      { speaker: 'ずんだもん', chara: 'zun_proud', diagram: { type: 'browserparts', focus: 'js' }, text: "JavaScript を動かすのが *JS エンジン*なのだ。Chrome の V8、Firefox の SpiderMonkey、Safari の JavaScriptCore なのだ。Node.js の中身も V8 なのだ。" },
+      { speaker: '四国めたん', chara: 'metan_smug', diagram: { type: 'browserparts', focus: 'net' }, text: "ほかにも、通信の部品、Cookie やキャッシュをしまう部品、アドレスバーやタブの UI がありますの。" },
+      { speaker: 'ずんだもん', chara: 'zun_normal', text: "iPhone では、どのブラウザも中身は WebKit なのだ。だから「iPhone の Chrome」でも、Safari と同じ不具合が出ることがあるのだ。" },
+      { speaker: '僕', chara: 'zun_normal', text: "「同じ HTML でも、ブラウザによって読む部品がちがうのか」" },
+    ],
+    next: 'lesson_menu_webhttp',
+  },
+
+  lesson_br_process: {
+    place: { name: 'BROWSER 02 タブとサンドボックス', time: '15:02' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000191',
+    lines: [
+      { speaker: 'ずんだもん', chara: 'zun_normal', text: "タブが1つ固まっても、ほかのタブは動き続けるのだ。どうしてなのだ？" },
+      { speaker: '四国めたん', chara: 'metan_normal', diagram: 'processes', text: "いまのブラウザは、タブやサイトごとに、別々の*プロセス*で動かしていますの。" },
+      { speaker: 'ずんだもん', chara: 'zun_proud', diagram: { type: 'processes', focus: 'sandbox' }, text: "しかも、ページを動かすプロセスは*サンドボックス*（砂場）の中に閉じこめられているのだ。パソコンのファイルを勝手に読んだりできないのだ。" },
+      { speaker: '四国めたん', chara: 'metan_smug', diagram: { type: 'processes', focus: 'site' }, text: "さらに、サイトがちがえばプロセスも分ける*サイト分離*。悪いサイトが、同じブラウザで開いている銀行のページのメモリを、のぞけないようにしていますの。" },
+      { speaker: 'ずんだもん', chara: 'zun_normal', text: "だから、ブラウザはメモリをたくさん使うのだ。安全と引きかえなのだ。" },
+      { speaker: '四国めたん', chara: 'metan_normal', text: "Electron の回で「画面から Node.js を使わせない」と話したのも、この砂場を守るためでしたのよ。" },
+      { speaker: '僕', chara: 'metan_normal', text: "「ブラウザは、ページを砂場に閉じこめて守っているのか」" },
+    ],
+    next: 'lesson_menu_webhttp',
+  },
+
+  lesson_br_loading: {
+    place: { name: 'BROWSER 03 読みこみの順番', time: '15:03' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000191',
+    lines: [
+      { speaker: 'ずんだもん', chara: 'zun_normal', text: "ブラウザは、HTML を上から順に読みながら、必要なファイルを取りに行くのだ。" },
+      { speaker: '四国めたん', chara: 'metan_normal', diagram: { type: 'loadorder', focus: 'block' }, text: "ところが、ふつうの <script> に出会うと、HTML を読むのを止めて、ダウンロードと実行を待ちますの。画面がなかなか出ない原因ですわ。" },
+      { speaker: 'ずんだもん', chara: 'zun_proud', diagram: { type: 'loadorder', focus: 'defer' }, text: "defer を付ければ、ダウンロードは並行して、HTML を読み終わってから実行するのだ。" },
+      { speaker: '四国めたん', chara: 'metan_smug', playground: CV_SCRIPT_LOAD, text: "書き方をまとめると、こうですわ。" },
+      { speaker: 'ずんだもん', chara: 'zun_normal', text: "CSS も、読みこみ終わるまで画面を描かないのだ。チラつきを防ぐためなのだ。だから、大事な CSS は小さく、先に読ませるのだ。" },
+      { speaker: '四国めたん', chara: 'metan_normal', text: "このゲームの index.html も、フォントのサーバーに preconnect で先につないでおいて、main.js は type=\"module\" で読みこんでいますの。" },
+      { speaker: '僕', chara: 'metan_normal', text: "「読む順番を工夫するだけで、画面が早く出るのか」" },
+    ],
+    next: 'lesson_menu_webhttp',
+  },
+
+  lesson_br_storage: {
+    place: { name: 'BROWSER 04 ブラウザの保存場所', time: '15:04' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000191',
+    lines: [
+      { speaker: 'ずんだもん', chara: 'zun_normal', terminal: ["HTTP キャッシュ … ファイルのコピー", "Cookie … 毎回サーバーに送る小さな札", "localStorage … 文字（5MB くらい）", "sessionStorage … タブを閉じると消える", "IndexedDB … 大きなデータ・ファイル", "Cache Storage … Service Worker 用"], text: "ブラウザは、いろいろな場所にデータをしまっているのだ。" },
+      { speaker: '四国めたん', chara: 'metan_normal', text: "開発者ツールの Application タブで、全部の中身が見られますわ。このゲームのセーブも、localStorage にありますの。" },
+      { speaker: 'ずんだもん', chara: 'zun_proud', text: "戻るボタンで一瞬で前のページが出るのは、*bfcache* なのだ。ページをまるごと、しばらくメモリに取っておくのだ。" },
+      { speaker: '四国めたん', chara: 'metan_smug', text: "どれも、そのブラウザの中だけ。消されることもありますの。シークレットモードや、空き容量が少ないとき、Safari では使われないサイトのデータが消されることもありますわ。" },
+      { speaker: 'ずんだもん', chara: 'zun_normal', terminal: ["✔ 大事なデータはサーバーにも", "✔ ログインは HttpOnly の Cookie", "✔ 小さな設定は localStorage", "✔ 大きなデータは IndexedDB", "✔ 消えても困らないように作る"], text: "使い分けのコツなのだ。" },
+      { speaker: '僕', chara: 'zun_normal', text: "「ブラウザの中にも、いろいろな引き出しがあるのか」" },
+    ],
+    next: 'lesson_menu_webhttp',
+  },
+
+  lesson_br_standards: {
+    place: { name: 'BROWSER 05 標準とブラウザのちがい', time: '15:05' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000191',
+    lines: [
+      { speaker: 'ずんだもん', chara: 'zun_normal', text: "HTML や CSS や JavaScript のルールは、だれが決めているのだ？" },
+      { speaker: '四国めたん', chara: 'metan_normal', text: "HTML や DOM は WHATWG、CSS は W3C、JavaScript は TC39 という集まりが、*標準*として決めていますの。ブラウザの会社も参加していますわ。" },
+      { speaker: 'ずんだもん', chara: 'zun_proud', text: "新しい機能は、ブラウザごとに使えるようになる時期がちがうのだ。使う前に、MDN や Can I use で確かめるのだ。" },
+      { speaker: '四国めたん', chara: 'metan_smug', text: "まだ使えないブラウザのために、同じ動きをまねるコード（ポリフィル）を足すこともありますわ。Baseline という目安で「主なブラウザで使えるか」もわかりますの。" },
+      { speaker: 'ずんだもん', chara: 'zun_normal', terminal: ["✔ 使う前に Can I use", "✔ Chrome だけで確かめない", "  （Safari・Firefox も）", "✔ 使えないときの代わりを用意", "✔ ブラウザの種類で分けず、", "  機能があるかで分ける"], text: "ブラウザのちがいで困らないためのコツなのだ。" },
+      { speaker: '僕', chara: 'zun_normal', text: "「Web は、みんなで決めたルールの上に立っているのか」" },
+    ],
+    next: 'lesson_menu_webhttp',
   },
 
   // ===================================================================

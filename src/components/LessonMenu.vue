@@ -34,7 +34,7 @@ const groups = computed(() => {
 // 授業の数で、一覧の詰め方を変える（多いほど列を増やして、メッセージ欄にかからないようにする）
 const density = computed(() => {
   const n = edition.value?.lessons.length ?? 0
-  return n > 16 ? 'huge' : n > 10 ? 'dense' : ''
+  return n > 24 ? 'huge giant' : n > 16 ? 'huge' : n > 10 ? 'dense' : ''
 })
 
 // 授業のサムネイル：その授業で最初に出てくる図。図がない授業は、編の図を使う
@@ -322,6 +322,8 @@ h2 {
   gap: 6px;
 }
 .rows.huge .row { padding: 6px 10px; gap: 8px; }
+/* さらに多いコース（25以上）は5列 */
+.rows.giant { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 .rows.huge .row-thumb,
 .rows.huge .row-text small { display: none; }
 .rows.huge .row-num { width: 22px; font-size: 0.85rem; }
