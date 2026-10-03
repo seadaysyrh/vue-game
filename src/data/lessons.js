@@ -21,6 +21,7 @@ export const TRACKS = {
   build: 'つくる',
   ship: '公開する',
   direct: '演出',
+  eco: 'ライブラリ',
   server: 'サーバー',
   secure: 'セキュリティ',
 }
@@ -33,7 +34,10 @@ export const EDITIONS = [
       { id: 'lesson_devtools', title: '開発者ツール', desc: '画面の裏側をのぞく' },
       { id: 'lesson_js', title: 'JavaScript のきほん', desc: '変数・配列・関数・if' },
       { id: 'lesson_dom', title: 'DOM とイベント', desc: '画面を動かすしくみ' },
+      { id: 'lesson_render', title: '描画のしくみ', desc: 'なぜ重くなるのか' },
       { id: 'lesson_storage', title: 'localStorage', desc: 'ブラウザにしまう' },
+      { id: 'lesson_web_apis', title: "ブラウザの便利な API", desc: "見えたら・コピー・通知 など" },
+      { id: 'lesson_web_pwa', title: "Service Worker と PWA", desc: "オフラインで動く Web" },
     ],
   },
   {
@@ -47,6 +51,8 @@ export const EDITIONS = [
       { id: 'lesson_http_cookie', title: 'Cookie とセッション', desc: 'ログインを覚えるしくみ' },
       { id: 'lesson_http_cors', title: '同一オリジンと CORS', desc: 'プリフライトの下見' },
       { id: 'lesson_http_https', title: 'HTTPS と HTTP/2・3', desc: 'TLS・証明書・新しい版' },
+      { id: 'lesson_http_realtime', title: "リアルタイム通信", desc: "WebSocket・SSE" },
+      { id: 'lesson_http_api_styles', title: "REST・GraphQL・gRPC", desc: "API の形いろいろ" },
     ],
   },
   {
@@ -59,6 +65,9 @@ export const EDITIONS = [
       { id: 'lesson_flex', title: 'flex', desc: '横や縦に並べる' },
       { id: 'lesson_layer', title: 'position・z-index', desc: '重ねる' },
       { id: 'lesson_anim', title: 'アニメーション', desc: '動かす' },
+      { id: 'lesson_form', title: 'フォーム', desc: 'label・入力の種類・チェック' },
+      { id: 'lesson_a11y', title: 'アクセシビリティ', desc: 'だれでも使える画面' },
+      { id: 'lesson_css_arch', title: "CSS の設計", desc: "名前の付け方・scoped・Modules" },
     ],
   },
   {
@@ -66,15 +75,17 @@ export const EDITIONS = [
     title: 'CSS もっと', desc: 'hover・grid・スマホ対応',
     lessons: [
       { id: 'lesson_units', title: '大きさと色', desc: 'px・%・vw・rgba' },
+      { id: 'lesson_cssvars', title: 'CSS 変数', desc: '色や値をまとめて変える' },
       { id: 'lesson_pseudo', title: ':hover・::before', desc: 'マウスを乗せたら' },
       { id: 'lesson_transition', title: 'transition', desc: 'なめらかに変える' },
       { id: 'lesson_effects', title: '色づくり', desc: 'グラデーション・影・フィルター' },
       { id: 'lesson_grid', title: 'grid', desc: 'マス目に並べる' },
       { id: 'lesson_responsive', title: 'レスポンシブ', desc: 'スマホ対応' },
+      { id: 'lesson_dark', title: "ダークモード", desc: "prefers-color-scheme" },
     ],
   },
   {
-    id: 'async', menu: 'lesson_menu_async', track: 'build', thumb: 'eventloop', glyph: 'async',
+    id: 'async', menu: 'lesson_menu_async', track: 'build', thumb: 'eventloop', glyph: 'ASYNC',
     title: '非同期 JS', desc: 'Promise・async/await',
     lessons: [
       { id: 'lesson_async_why', title: 'なぜ非同期？', desc: 'JavaScript の手は1本' },
@@ -83,6 +94,8 @@ export const EDITIONS = [
       { id: 'lesson_async_await', title: 'async / await', desc: '順番に待つ・まとめて待つ' },
       { id: 'lesson_async_tools', title: 'まとめて待つ・取り消す', desc: 'Promise.all・AbortController' },
       { id: 'lesson_async_ui', title: '画面での非同期', desc: 'ローディング・古い結果の上書き' },
+      { id: 'lesson_async_retry', title: "失敗とやり直し", desc: "タイムアウト・リトライ" },
+      { id: 'lesson_async_worker', title: "Web Worker", desc: "重い計算を別の手に" },
     ],
   },
   {
@@ -93,9 +106,15 @@ export const EDITIONS = [
       { id: 'lesson_reactive', title: 'ref・computed', desc: '値が変わると画面も変わる' },
       { id: 'lesson_directive', title: 'v-if・v-for', desc: '出す・消す・くり返す' },
       { id: 'lesson_props', title: 'props・emit', desc: '部品どうしの会話' },
+      { id: 'lesson_vmodel', title: 'v-model とフォーム', desc: '入力と値をつなぐ' },
+      { id: 'lesson_slot', title: 'スロット', desc: '部品に中身を差しこむ' },
       { id: 'lesson_watch', title: 'watch', desc: '変化を見張る' },
+      { id: 'lesson_lifecycle', title: 'ライフサイクル', desc: '作られる・消える・後片付け' },
+      { id: 'lesson_composable', title: 'コンポーザブル', desc: 'ロジックを使い回す' },
+      { id: 'lesson_vue_transition', title: 'Transition', desc: '出入りのアニメーション' },
       { id: 'lesson_pinia', title: 'Pinia', desc: 'みんなの共有データ' },
       { id: 'lesson_router', title: 'Vue Router', desc: 'ページの切り替え' },
+      { id: 'lesson_vue_perf', title: 'Vue を速くする', desc: 'computed・遅延読みこみ' },
     ],
   },
   {
@@ -105,9 +124,26 @@ export const EDITIONS = [
       { id: 'lesson_ts_why', title: 'なぜ TypeScript', desc: '型チェックとは' },
       { id: 'lesson_ts_types', title: '型のきほん', desc: 'type・interface・union' },
       { id: 'lesson_ts_func', title: '関数と any', desc: 'ジェネリクス・unknown' },
+      { id: 'lesson_ts_narrow', title: '型の絞りこみ', desc: 'union・switch・never' },
+      { id: 'lesson_ts_util', title: 'ユーティリティ型', desc: 'Partial・Pick・as const・satisfies' },
       { id: 'lesson_ts_vue', title: 'Vue と TypeScript', desc: 'props・emit に型' },
       { id: 'lesson_ts_data', title: '外から来るデータ', desc: '型ガード・null' },
       { id: 'lesson_ts_config', title: 'tsconfig と運用', desc: 'strict・CI での型チェック' },
+    ],
+  },
+  {
+    id: 'design', menu: 'lesson_menu_design', track: 'build', thumb: 'layers2', glyph: 'ARCH',
+    title: '設計', desc: '変えやすいコードの作り方',
+    lessons: [
+      { id: 'lesson_ds_good', title: '良い設計とは', desc: '凝集と結合' },
+      { id: 'lesson_ds_srp', title: '役目を分ける', desc: '責務の分離・レイヤー' },
+      { id: 'lesson_ds_di', title: '依存の向き', desc: '入れかえやすく・テストしやすく' },
+      { id: 'lesson_ds_state', title: '状態の置き場所', desc: '1か所に・計算できるものは持たない' },
+      { id: 'lesson_ds_data', title: 'データで動かす', desc: 'このゲームの設計' },
+      { id: 'lesson_ds_principles', title: '原則とアンチパターン', desc: 'DRY・KISS・YAGNI・SOLID' },
+      { id: 'lesson_ds_test', title: "テストしやすい設計", desc: "ピラミッド・依存を外に" },
+      { id: 'lesson_ds_naming', title: "名前とコメント", desc: "読める コードのために" },
+      { id: 'lesson_ds_arch', title: 'アーキテクチャと進め方', desc: 'モノリス・ADR・リファクタリング' },
     ],
   },
   {
@@ -118,8 +154,25 @@ export const EDITIONS = [
       { id: 'lesson_npm', title: 'npm', desc: '道具の倉庫' },
       { id: 'lesson_modules', title: 'import・export', desc: 'ファイルどうしをつなぐ' },
       { id: 'lesson_dev', title: 'Vite', desc: '保存したらすぐ映る' },
+      { id: 'lesson_lint', title: 'ESLint と Prettier', desc: 'まちがいと見た目をそろえる' },
+      { id: 'lesson_git', title: 'Git と GitHub', desc: 'ブランチ・PR・レビュー' },
       { id: 'lesson_build', title: 'ビルド', desc: '配れる形にまとめる' },
       { id: 'lesson_deploy', title: '公開', desc: 'みんなに遊んでもらう' },
+      { id: 'lesson_cicd', title: "CI/CD", desc: "自動でテストして公開" },
+      { id: 'lesson_monorepo', title: "パッケージ管理とモノレポ", desc: "npm・pnpm・ワークスペース" },
+    ],
+  },
+  {
+    id: 'node', menu: 'lesson_menu_node', track: 'server', thumb: 'nodeloop', glyph: 'Node',
+    title: 'Node.js', desc: 'サーバーで動く JS',
+    lessons: [
+      { id: 'lesson_node_what', title: 'Node.js とは', desc: 'ブラウザの外の JavaScript' },
+      { id: 'lesson_node_modules', title: 'モジュール', desc: 'ESM と CommonJS' },
+      { id: 'lesson_node_io', title: 'ノンブロッキング I/O', desc: '1本の手でたくさんさばく' },
+      { id: 'lesson_node_stream', title: 'ストリーム', desc: '大きなデータを少しずつ' },
+      { id: 'lesson_node_http', title: 'HTTP サーバーとミドルウェア', desc: 'Node だけ・Express' },
+      { id: 'lesson_node_errors', title: 'エラーと止まり方', desc: '落ちたとき・止めるとき' },
+      { id: 'lesson_node_tools', title: 'バージョンと道具', desc: 'LTS・nvm・--watch' },
     ],
   },
   {
@@ -135,6 +188,8 @@ export const EDITIONS = [
       { id: 'lesson_be_compose', title: 'docker compose', desc: '手元でまとめて動かす' },
       { id: 'lesson_be_prod', title: '本番で動かす', desc: '環境変数・ログ・デプロイ' },
       { id: 'lesson_be_scale', title: 'スケールとキャッシュ', desc: 'たくさんの人が来たとき' },
+      { id: 'lesson_be_paging', title: "一覧と検索", desc: "ページング・インデックス" },
+      { id: 'lesson_be_observability', title: "可観測性", desc: "ログ・メトリクス・トレース" },
     ],
   },
   {
@@ -148,6 +203,7 @@ export const EDITIONS = [
       { id: 'lesson_sec_csrf', title: 'CSRF・クリックジャッキング', desc: 'なりすましの操作' },
       { id: 'lesson_sec_secrets', title: '秘密と依存ライブラリ', desc: '.env・npm audit' },
       { id: 'lesson_sec_ops', title: 'ログと事故対応', desc: '気づいて、すぐ動く' },
+      { id: 'lesson_sec_threat', title: "脅威モデリング", desc: "作る前に攻め方を考える" },
     ],
   },
   {
@@ -163,6 +219,23 @@ export const EDITIONS = [
       { id: 'lesson_aws_data', title: 'DB とネットワーク', desc: 'RDS・DynamoDB・VPC' },
       { id: 'lesson_aws_auth', title: 'アプリのログイン', desc: 'Cognito・JWT' },
       { id: 'lesson_aws_ops', title: '監視・監査・コスト', desc: 'CloudWatch・IaC' },
+      { id: 'lesson_aws_s3more', title: "S3 くわしく", desc: "署名付き URL・ライフサイクル" },
+    ],
+  },
+  {
+    id: 'eco', menu: 'lesson_menu_eco', track: 'eco', thumb: 'ecomap', glyph: 'LIB',
+    title: 'ライブラリ', desc: 'Electron・Tauri など',
+    lessons: [
+      { id: 'lesson_eco_map', title: '全体の地図', desc: 'どの道具が何をするか' },
+      { id: 'lesson_eco_front', title: 'フロントのフレームワーク', desc: 'React・Vue・Svelte・Angular' },
+      { id: 'lesson_eco_meta', title: 'メタフレームワーク', desc: 'Next.js・Nuxt・SSR・SSG' },
+      { id: 'lesson_eco_desktop', title: 'デスクトップアプリ', desc: 'Electron と Tauri' },
+      { id: 'lesson_eco_mobile', title: 'スマホアプリ', desc: 'React Native・Flutter・Capacitor' },
+      { id: 'lesson_eco_ui', title: 'UI・状態・データ取得', desc: 'Tailwind・TanStack Query' },
+      { id: 'lesson_eco_server', title: 'サーバーとデータベース', desc: 'NestJS・Hono・Prisma・zod' },
+      { id: 'lesson_eco_choose', title: 'テストの道具と選び方', desc: 'Vitest・Playwright・選ぶ基準' },
+      { id: 'lesson_eco_graphics', title: "グラフィックスの道具", desc: "Canvas・Three.js・PixiJS" },
+      { id: 'lesson_eco_ai', title: "AI を組みこむ道具", desc: "LLM の SDK・気をつけること" },
     ],
   },
   {
@@ -196,6 +269,9 @@ const CSS2_MENU = menuOf('css2')
 const TS_MENU = menuOf('ts')
 const AWS_MENU = menuOf('aws')
 const FX_MENU = menuOf('fx')
+const ECO_MENU = menuOf('eco')
+const DESIGN_MENU = menuOf('design')
+const NODE_MENU = menuOf('node')
 const ASYNC_MENU = menuOf('async')
 const SECURITY_MENU = menuOf('security')
 const HTTP_MENU = menuOf('http')
@@ -1499,14 +1575,14 @@ const CV_GRID = {
   title: "目次のカード",
   file: "src/components/LessonMenu.vue",
   task: "この授業の目次のカードも、grid で並べているのだ",
-  marks: { 3: "マス目にする", 4: "同じ幅の列を6つ", 5: "すきま", 12: "こちらは2列" },
+  marks: { 3: "マス目にする", 4: "同じ幅の列を8つ", 5: "すきま", 12: "こちらは2列" },
   code: `
-/* 編のカード：同じ幅の列を6つ */
+/* 編のカード：同じ幅の列を8つ */
 .cards {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 12px;
-  width: min(960px, 100%);
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 10px;
+  width: min(1200px, 100%);
 }
 
 /* 授業の一覧：同じ幅の列を2つ */
@@ -3342,6 +3418,1076 @@ logger.info({
 `,
 }
 
+// ===== 授業の拡充で足したコード =====
+const CV_LIFECYCLE = {
+  view: true,
+  title: "作られる・消えるときの後片付け",
+  file: "views/GameView.vue",
+  task: "ゲーム画面が出たらキーを見張りはじめて、消えたら見張りをやめるのだ",
+  marks: { 1: "画面に出たら", 2: "見張りを始める", 6: "画面から消えたら", 7: "見張りをやめる", 10: "タイマーも止める" },
+  code: `
+onMounted(() => {
+  window.addEventListener('keydown', onKeyDown)
+  window.addEventListener('keyup', onKeyUp)
+  window.addEventListener('blur', stopSkip)
+})
+onUnmounted(() => {
+  window.removeEventListener('keydown', onKeyDown)
+  window.removeEventListener('keyup', onKeyUp)
+  window.removeEventListener('blur', stopSkip)
+  clearInterval(skipTimer)
+})
+`,
+}
+
+const CV_COMPOSABLE = {
+  view: true,
+  title: "コンポーザブル",
+  file: "composables/useLessonProgress.js",
+  task: "「見終わった授業」の記録を、目次とゲーム画面の両方で使い回しているのだ",
+  marks: { 12: "外に置くと、みんなで共有", 14: "use〇〇 という名前にする", 20: "使う側に渡すもの" },
+  code: `
+const KEY = 'after-school-rewrite:lessons'
+
+function load() {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(KEY)) ?? [])
+  } catch {
+    return new Set()
+  }
+}
+
+// 関数の外に置いて、目次とゲーム画面で同じものを共有する
+const seen = ref(load())
+
+export function useLessonProgress() {
+  function markSeen(id) {
+    if (seen.value.has(id)) return
+    seen.value = new Set([...seen.value, id])
+    // …
+  }
+  return { seen, markSeen }
+}
+`,
+}
+
+const CV_COMPOSABLE_USE = {
+  view: true,
+  title: "コンポーザブルを使う側",
+  file: "GameView.vue ／ LessonMenu.vue",
+  task: "使う側は、呼ぶだけなのだ",
+  marks: { 2: "記録する側", 5: "読む側" },
+  code: `
+// GameView.vue：授業を見終わったら記録する
+const { markSeen } = useLessonProgress()
+
+// LessonMenu.vue：記録を見て ✓ を付ける
+const { seen } = useLessonProgress()
+`,
+}
+
+const CV_VUE_TRANSITION = {
+  view: true,
+  title: "立ち絵の出入り",
+  file: "components/StageLayer.vue",
+  task: "<Transition> で囲むと、出るとき・消えるときに CSS のクラスが付くのだ",
+  marks: { 1: "残響のときは別の出方", 2: "key が変わると入れかわる", 6: "出るあいだ", 12: "出はじめの見た目", 16: "消えおわりの見た目" },
+  code: `
+<Transition :name="echo ? 'chara-glitch' : 'chara-fade'" mode="out-in">
+  <CharaSprite v-if="chara && !stillSrc" :key="charaKey" :name="chara" :echo="echo" :talking="talking" class="chara" />
+</Transition>
+
+/* Transition name="chara-fade"（立ち絵）：下からふわっと登場 */
+.chara-fade-enter-active {
+  transition: opacity 0.35s, transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.chara-fade-leave-active {
+  transition: opacity 0.2s;
+}
+.chara-fade-enter-from {
+  opacity: 0;
+  transform: translate(-50%, 24px);
+}
+.chara-fade-leave-to {
+  opacity: 0;
+}
+`,
+}
+
+const CV_SLOT = {
+  view: true,
+  title: "スロット",
+  file: "（例）Card.vue と使う側",
+  task: "部品に「穴」をあけておいて、使う側が中身を入れるのだ",
+  marks: { 4: "名前つきの穴", 5: "ふつうの穴", 6: "何も入れないときの中身", 12: "名前つきの穴に入れる" },
+  code: `
+<!-- Card.vue：枠だけを持つ部品 -->
+<template>
+  <div class="card">
+    <header><slot name="title" /></header>
+    <slot />                       <!-- 名前なし＝ふつうの中身 -->
+    <footer><slot name="footer">閉じる</slot></footer>
+  </div>
+</template>
+
+<!-- 使う側：中身を差しこむ -->
+<Card>
+  <template #title>ずんだもんの手紙</template>
+  <p>今夜は屋上で、カップラーメンなのだ。</p>
+  <template #footer><button>返事を書く</button></template>
+</Card>
+`,
+}
+
+const CV_CSSVAR = {
+  view: true,
+  title: "CSS 変数",
+  file: "LessonMenu.vue ／ GameView.vue ／ StageLayer.vue",
+  task: "-- で始まる名前に値を入れて、var() で使うのだ",
+  marks: { 2: "変数に色を入れる", 3: "変数を使う", 7: "JS から値を渡す", 10: "なければ 0" },
+  code: `
+/* LessonMenu.vue：編ごとの色を、変数1つで切りかえる */
+.track-basic { --accent: #6fc3ff; }
+  border-top: 3px solid var(--accent);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 45%, transparent);
+
+<!-- GameView.vue：マウスの位置を、JS から変数として渡す -->
+    :style="{ '--mx': mouse.x, '--my': mouse.y }"
+
+/* StageLayer.vue：その変数で、舞台を回す */
+  transform: rotateY(calc(var(--mx, 0) * 5deg)) rotateX(calc(var(--my, 0) * -3deg));
+`,
+}
+
+const CV_RENDER = {
+  view: true,
+  title: "重くなる CSS・軽い CSS",
+  file: "（例）",
+  task: "動かすプロパティで、ブラウザの仕事の量が変わるのだ",
+  marks: { 2: "レイアウトからやり直し", 5: "合成だけで軽い", 9: "読み書きを交互にしている", 13: "先にまとめて読む" },
+  code: `
+/* ✕ 重い：位置や大きさを変える → レイアウトからやり直し */
+.box { transition: left 0.3s, width 0.3s; }
+
+/* ◯ 軽い：見た目を動かすだけ → 合成だけで済む */
+.box { transition: transform 0.3s, opacity 0.3s; }
+
+// ✕ 読む・書くを交互にすると、そのたびにレイアウトし直す（強制リフロー）
+for (const el of items) {
+  el.style.width = box.offsetWidth + 'px'   // 読む → 書く → 読む → …
+}
+
+// ◯ 先にまとめて読んでから、まとめて書く
+const width = box.offsetWidth
+for (const el of items) {
+  el.style.width = width + 'px'
+}
+`,
+}
+
+// ===== Node.js 編のコード =====
+const CV_NODE_REAL = {
+  view: true,
+  title: "このゲームの中の Node.js",
+  file: "package.json ／ vite.config.js",
+  task: "このゲームも、ビルドや開発サーバーは Node.js で動いているのだ",
+  marks: { 2: "import / export で書く", 5: "npm run build で Node が Vite を動かす", 8: "Node の環境変数" },
+  code: `
+// package.json：Node に「このプロジェクトは ESM で書く」と伝える
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+
+// vite.config.js：Node で動く設定ファイル（process は Node の道具）
+  base: process.env.BASE_PATH ?? '/',
+`,
+}
+
+const CV_NODE_MODULES = {
+  view: true,
+  title: "ESM と CommonJS",
+  file: "（例）",
+  task: "モジュールの書き方は2種類あるのだ",
+  marks: { 2: "ESM の読みこみ", 7: "CommonJS の読みこみ", 8: "CommonJS の書き出し", 10: "組みこみの道具の目印" },
+  code: `
+// ESM（いまの標準）… package.json に "type": "module" と書く
+import fs from 'node:fs/promises'
+import { createServer } from 'node:http'
+export function hello() {}
+
+// CommonJS（昔からある書き方）… 古いライブラリや設定ファイルで見る
+const fs = require('node:fs')
+module.exports = { hello }
+
+// node: を付けると「Node に最初から入っている道具」だとはっきりする
+// .mjs は ESM、.cjs は CommonJS として、いつでも扱われる
+`,
+}
+
+const CV_NODE_BLOCKING = {
+  view: true,
+  title: "みんなを待たせる書き方",
+  file: "（例）Express",
+  task: "1本の手が止まると、ほかの人のリクエストも全部止まるのだ",
+  marks: { 3: "Sync は止まる", 9: "待つのは OS にまかせる", 15: "計算は手が止まる" },
+  code: `
+// ✕ 同期の API：読み終わるまで、ほかのリクエストを全部止める
+app.get('/save', (req, res) => {
+  const data = fs.readFileSync('big.json', 'utf8')
+  res.send(data)
+})
+
+// ◯ 非同期の API：読んでいる間も、ほかのリクエストに応えられる
+app.get('/save', async (req, res) => {
+  const data = await fs.promises.readFile('big.json', 'utf8')
+  res.send(data)
+})
+
+// ✕ 重い計算も、ほかを全部止める → worker_threads や別のサービスへ
+app.get('/report', (req, res) => {
+  res.json(heavyCalculation())   // 3秒かかると、その3秒はだれも使えない
+})
+`,
+}
+
+const CV_NODE_STREAM = {
+  view: true,
+  title: "ストリームで少しずつ流す",
+  file: "（例）",
+  task: "大きなファイルは、全部読まずに流すのだ",
+  marks: { 6: "全部メモリに乗る", 11: "流しながら圧縮", 13: "背圧・後片付け" },
+  code: `
+import { createReadStream } from 'node:fs'
+import { pipeline } from 'node:stream/promises'
+import { createGzip } from 'node:zlib'
+
+// ✕ 1GB のログを、全部メモリに読みこむ
+const text = await fs.promises.readFile('access.log', 'utf8')
+
+// ◯ 少しずつ読んで、圧縮しながら、少しずつ返す
+app.get('/log', async (req, res) => {
+  res.setHeader('Content-Encoding', 'gzip')
+  await pipeline(createReadStream('access.log'), createGzip(), res)
+})
+// pipeline は、相手が受け取れないときは読むのを待ってくれる（背圧）
+// とちゅうで失敗したら、全部をきちんと閉じてくれる
+`,
+}
+
+const CV_NODE_HTTP = {
+  view: true,
+  title: "Node だけで作る HTTP サーバー",
+  file: "（例）",
+  task: "Node には、最初から HTTP サーバーの道具が入っているのだ",
+  marks: { 3: "リクエストのたびに呼ばれる", 4: "自分で振り分ける", 5: "ステータスとヘッダー", 11: "3000番で待つ" },
+  code: `
+import { createServer } from 'node:http'
+
+const server = createServer((req, res) => {
+  if (req.method === 'GET' && req.url === '/health') {
+    res.writeHead(200, { 'Content-Type': 'text/plain' })
+    return res.end('ok')
+  }
+  res.writeHead(404).end()
+})
+
+server.listen(3000, () => console.log('http://localhost:3000'))
+`,
+}
+
+const CV_NODE_MIDDLEWARE = {
+  view: true,
+  title: "ミドルウェアの順番",
+  file: "（例）Express",
+  task: "リクエストは、上から順番に通っていくのだ",
+  marks: { 3: "最初に通る", 5: "ここで止めることもできる", 10: "エラーの受け皿は最後", 15: "次へ進む" },
+  code: `
+const app = express()
+
+app.use(express.json())           // ① JSON を読む
+app.use(requestLogger)            // ② ログを残す
+app.use('/api', requireLogin)     // ③ /api はログインが必要
+
+app.get('/api/saves/me', getSave) // ④ 本番の処理
+
+// ⑤ エラーをまとめて受け止める（引数が4つ）
+app.use((err, req, res, next) => {
+  logger.error({ err, path: req.path })
+  res.status(500).json({ error: 'サーバーで問題が起きました' })
+})
+
+// ミドルウェアの形：次へ進むなら next() を呼ぶ
+function requestLogger(req, res, next) {
+  console.log(req.method, req.url)
+  next()
+}
+`,
+}
+
+const CV_NODE_ERRORS = {
+  view: true,
+  title: "エラーと止まり方",
+  file: "（例）",
+  task: "プロセスが落ちたとき・止めるときの作法なのだ",
+  marks: { 2: "だれも受け止めなかった例外", 4: "1 = 失敗で終わる", 12: "止めての合図", 16: "0 だけが成功" },
+  code: `
+// 受け止めそこねたエラー：記録して、プロセスを終わらせる（作り直してもらう）
+process.on('uncaughtException', (err) => {
+  logger.fatal({ err }, 'uncaughtException')
+  process.exit(1)
+})
+process.on('unhandledRejection', (reason) => {
+  logger.fatal({ reason }, 'unhandledRejection')
+  process.exit(1)
+})
+
+// 止めてと言われたら、受付をやめて、処理中のものを終えてから止まる
+process.on('SIGTERM', () => {
+  server.close(() => process.exit(0))
+})
+
+// 終わり方の番号：0 = 成功、それ以外 = 失敗（CI やコンテナはこれを見る）
+`,
+}
+
+const CV_NODE_TOOLS = {
+  view: true,
+  title: "バージョンと道具",
+  file: ".nvmrc ／ package.json ／ コマンド",
+  task: "チームで Node のバージョンをそろえるのだ",
+  marks: { 2: "バージョンを固定", 5: "動く範囲", 9: "開発で便利", 11: "dotenv がいらない" },
+  code: `
+# .nvmrc：チームでそろえる Node のバージョン
+24
+
+# package.json：動く Node のバージョンを書いておく
+"engines": { "node": ">=22" }
+
+# よく使うコマンド
+$ node --version
+$ node --watch server.js        # 保存したら自動で再起動
+$ node --test                   # 組みこみのテストを動かす
+$ node --env-file=.env app.js   # .env を読んでから動かす
+$ npx vitest                    # 入れなくても、道具を1回動かす
+`,
+}
+
+// ===== 資料拡充（2回目）で足したコード =====
+const CV_TS_NARROW = {
+  view: true,
+  title: "型の絞りこみ",
+  file: "（例）このゲームの演出の型",
+  task: "if で確かめると、TypeScript がその先の型を絞ってくれるのだ",
+  marks: { 2: "type で見分けられる union", 7: "type で分ける", 11: "split のときだけ使える", 15: "全部書いたか確かめる" },
+  code: `
+type Cutin =
+  | { type: 'eyes' }
+  | { type: 'split'; left: string; right: string }
+  | { type: 'diagonal'; angle: number }
+
+function describe(c: Cutin): string {
+  switch (c.type) {
+    case 'eyes':
+      return '目のアップ'
+    case 'split':
+      return \`\${c.left} と \${c.right}\`   // ここでは left が使える
+    case 'diagonal':
+      return \`\${c.angle} 度の帯\`         // ここでは angle が使える
+    default: {
+      const never: never = c             // 書きわすれがあるとエラー
+      return never
+    }
+  }
+}
+`,
+}
+
+const CV_TS_UTIL = {
+  view: true,
+  title: "ユーティリティ型と satisfies",
+  file: "（例）",
+  task: "型から型を作る道具なのだ",
+  marks: { 3: "全部オプションに", 4: "取り出す", 5: "のぞく", 8: "文字そのものの型", 15: "確かめるだけ" },
+  code: `
+interface Scene { bg: string; bgm: string; lines: Line[]; next?: string }
+
+type SceneDraft = Partial<Scene>            // 全部「なくてもよい」に
+type SceneLook  = Pick<Scene, 'bg' | 'bgm'> // 一部だけ取り出す
+type NoLines    = Omit<Scene, 'lines'>      // 一部だけのぞく
+type Scenes     = Record<string, Scene>     // キー → 値 の表
+
+// as const：値を「その文字そのもの」の型にする
+const MOODS = ['normal', 'duck', 'muffle', 'cut', 'swell'] as const
+type Mood = (typeof MOODS)[number]          // 'normal' | 'duck' | …
+
+// satisfies：型に合っているか確かめつつ、細かい型は残す
+const scenes = {
+  lunch: { bg: 'roof_day', bgm: 'day', lines: [] },
+} satisfies Scenes
+scenes.lunch                                // lunch があると分かっている
+`,
+}
+
+const PG_FORM = {
+  title: "フォームを作る",
+  task: "メールの欄に type=\"email\" と required を付けて、変な値のまま送ってみるのだ",
+  code: `
+<script setup>
+const sent = ref('')
+function submit(e) {
+  sent.value = '送信した：' + new FormData(e.target).get('email')
+}
+</script>
+
+<template>
+  <form @submit.prevent="submit">
+    <label for="email">メールアドレス</label>
+    <input id="email" name="email" type="text" />
+    <button type="submit">登録する</button>
+  </form>
+  <p>{{ sent }}</p>
+</template>
+
+<style>
+label { display: block; font-size: 14px; }
+input { padding: 6px; font-size: 16px; width: 220px; }
+button { margin-left: 6px; padding: 6px 12px; font-size: 15px; }
+input:invalid { border: 2px solid #e05050; }
+</style>
+`,
+  check: (el) => Boolean(el.querySelector('input[type="email"][required]')),
+}
+
+const PG_A11Y = {
+  title: "だれでも使えるように",
+  task: "<div> のボタンを <button> に、画像に alt を付けるのだ（Tab キーで動かしてみるのだ）",
+  code: `
+<script setup>
+const count = ref(0)
+</script>
+
+<template>
+  <img src="images/chara/zun_smile.webp" width="80" />
+  <div class="btn" @click="count++">ずんだ餅をあげる</div>
+  <p>あげた数：{{ count }}</p>
+</template>
+
+<style>
+.btn {
+  display: inline-block;
+  padding: 6px 12px;
+  border: 1px solid #999;
+  font-size: 15px;
+  cursor: pointer;
+}
+</style>
+`,
+  check: (el) => Boolean(el.querySelector('button')) && Boolean(el.querySelector('img[alt]')?.getAttribute('alt')),
+}
+
+const CV_ESLINT = {
+  view: true,
+  title: "ESLint と Prettier",
+  file: "eslint.config.js ／ package.json（例）",
+  task: "見た目は Prettier、まちがいは ESLint に任せるのだ",
+  marks: { 6: "おすすめのルール", 7: "Vue 用のルール", 8: "使っていない変数はエラー", 13: "CI でも動かす", 14: "見た目をそろえる" },
+  code: `
+// eslint.config.js
+import js from '@eslint/js'
+import vue from 'eslint-plugin-vue'
+
+export default [
+  js.configs.recommended,
+  ...vue.configs['flat/recommended'],
+  { rules: { 'no-unused-vars': 'error' } },
+]
+
+// package.json
+"scripts": {
+  "lint": "eslint .",
+  "format": "prettier --write ."
+}
+`,
+}
+
+const CV_GIT = {
+  view: true,
+  title: "Git のよく使うコマンド",
+  file: "コマンドの例",
+  task: "毎日使うのは、だいたいこれだけなのだ",
+  marks: { 1: "main で直接作業しない", 4: "入れるものを選ぶ", 5: "何をしたか短く書く", 7: "レビューしてもらう", 11: "消えた変更は戻らない" },
+  code: `
+$ git switch -c feature/lesson-git   # 作業用のブランチを作る
+$ git status                         # 何が変わったか
+$ git diff                           # 変えた中身
+$ git add src/data/lessons.js        # コミットに入れるものを選ぶ
+$ git commit -m "Git の授業を追加"    # 記録する
+$ git push -u origin feature/lesson-git
+  → GitHub でプルリクエストを作る → レビュー → マージ
+
+$ git pull --rebase                  # みんなの変更を取りこむ
+$ git log --oneline                  # 歴史を見る
+$ git restore src/App.vue            # 変更を取り消す（注意）
+`,
+}
+
+// ===== ソフトウェア設計編のコード =====
+const CV_DS_SRP = {
+  view: true,
+  title: "役目を分ける",
+  file: "（例）セーブを読む処理",
+  task: "1つの関数に、いろいろな役目を詰めこまないのだ",
+  marks: { 2: "何でも屋の関数", 11: "通信の係", 12: "計算の係（純粋な関数）", 13: "保存の係", 18: "組み合わせるだけ" },
+  code: `
+// ✕ 画面・通信・計算・保存が、1つの関数にまざっている
+async function onClickLoad() {
+  const res = await fetch('/api/saves/me')
+  const save = await res.json()
+  const count = new Set(save.visited.filter((p) => p.length === 3)).size
+  localStorage.setItem('cache', JSON.stringify(save))
+  document.querySelector('#count').textContent = \`\${count} / 8\`
+}
+
+// ◯ 役目ごとに分ける（それぞれを別々に直せる・テストできる）
+const api = { loadSave: () => fetch('/api/saves/me').then((r) => r.json()) }
+const countEndings = (visited) => new Set(visited.filter((p) => p.length === 3)).size
+const cache = { put: (save) => localStorage.setItem('cache', JSON.stringify(save)) }
+
+async function onClickLoad() {
+  const save = await api.loadSave()
+  cache.put(save)
+  count.value = countEndings(save.visited)   // 画面は Vue に任せる
+}
+`,
+}
+
+const CV_DS_DI = {
+  view: true,
+  title: "依存の向きを逆にする",
+  file: "（例）セーブの保存先",
+  task: "「何に保存するか」を外から渡すと、入れかえやすいのだ",
+  marks: { 3: "具体的なものに直接つながっている", 8: "外から受け取る", 12: "どこに保存するかは知らない", 20: "テストでは入れかえる" },
+  code: `
+// ✕ 中で localStorage を直接使う → テストしにくい・入れかえられない
+function saveEnding(id) {
+  const list = JSON.parse(localStorage.getItem('endings') ?? '[]')
+  localStorage.setItem('endings', JSON.stringify([...list, id]))
+}
+
+// ◯ 「保存できるもの」を外から渡す
+function createEndingService(storage) {
+  return {
+    async saveEnding(id) {
+      const list = (await storage.get('endings')) ?? []
+      await storage.set('endings', [...list, id])
+    },
+  }
+}
+
+// 本番はブラウザ、あとでクラウド、テストでは中身を見られるニセモノ
+const service = createEndingService(localStorageAdapter)
+// const service = createEndingService(apiStorage)
+// const service = createEndingService(memoryStorageForTest)
+`,
+}
+
+const CV_DS_DERIVED = {
+  view: true,
+  title: "計算できるものは持たない",
+  file: "stores/game.js",
+  task: "見たエンディングの数は「覚える」のではなく、記録から「計算」しているのだ",
+  marks: { 2: "数は visited から計算", 4: "全部見たかも計算" },
+  code: `
+    // これまでに見たエンディングの数（最後まで選んだ選び方の数）
+    endingsSeenCount: (state) => new Set(state.visited.filter((p) => p.length === 3).map(getEndingType)).size,
+    // 隠しエンディング以外の、8つのエンディングをすべて見たか
+    allEndingsSeen: (state) =>
+      Object.entries(endingByPath)
+        .filter(([, id]) => !endings[id].secret)
+        .every(([path]) => state.visited.includes(path)),
+`,
+}
+
+const CV_DS_DATA = {
+  view: true,
+  title: "データで動かす",
+  file: "data/scenario.js ／ stores/game.js",
+  task: "中身はデータ、動かし方はコード。だから話を足してもコードは変えないのだ",
+  marks: { 2: "中身は1か所に", 6: "エンジンは読むだけ" },
+  code: `
+// ===== シナリオデータ =====
+// ゲームの「中身」はここだけに書く。コードを触らずに話を増やせるようにするため。
+
+// stores/game.js：データを読んで、いまのセリフを決めるだけ
+    line() {
+      return this.lines[this.lineIndex]
+    },
+    isLastLine() {
+      return this.lineIndex === this.lines.length - 1
+    },
+`,
+}
+
+const CV_DS_ADR = {
+  view: true,
+  title: "設計の記録（ADR）",
+  file: "docs/adr/0003-lesson-lazy-load.md（例）",
+  task: "「なぜそう決めたか」を残しておくのだ",
+  marks: { 3: "なぜ考えたか", 7: "何にしたか", 10: "選ばなかった理由", 14: "よくなったこと・がまんしたこと" },
+  code: `
+# 0003 授業のデータを、TECH DOCS を押したときに読みこむ
+
+## 状況
+授業が増えて、最初に読みこむ JS が 519KB になった。
+本編だけ遊ぶ人にも、授業のデータを配っている。
+
+## 決めたこと
+lessons.js と授業専用の部品を、動的 import で分ける。
+
+## ほかの案
+- 何もしない … 本編が遅いまま
+- 授業を別のサイトにする … 演出の部品を共有できない
+
+## 結果
+最初の JS は 243KB に。TECH DOCS を初めて押したときだけ少し待つ。
+`,
+}
+
+// ===== 有名なライブラリ編のコード（説明用の例） =====
+const CV_ECO_FRAMEWORKS = {
+  view: true,
+  title: "同じ部品を4つのフレームワークで",
+  file: "（例）ボタンを押すと数が増える部品",
+  task: "書き方はちがっても、考え方はほとんど同じなのだ",
+  marks: { 2: "Vue：ref", 7: "React：useState と JSX", 12: "Svelte：コンパイラが変換", 17: "Angular：シグナル" },
+  code: `
+<!-- Vue -->
+<script setup>const count = ref(0)</script>
+<button @click="count++">{{ count }}</button>
+
+// React
+function Counter() {
+  const [count, setCount] = useState(0)
+  return <button onClick={() => setCount(count + 1)}>{count}</button>
+}
+
+<!-- Svelte -->
+<script>let count = $state(0)</script>
+<button onclick={() => count++}>{count}</button>
+
+// Angular
+@Component({ selector: 'app-counter', template: \`<button (click)="count.set(count() + 1)">{{ count() }}</button>\` })
+export class Counter { count = signal(0) }
+`,
+}
+
+const CV_ECO_NUXT = {
+  view: true,
+  title: "メタフレームワークのページ",
+  file: "pages/endings/[id].vue（Nuxt の例）",
+  task: "ファイルを置くだけで URL になって、サーバーでデータを取れるのだ",
+  marks: { 1: "ファイルの場所が URL", 6: "サーバーでもブラウザでも動く", 14: "API も同じ場所に" },
+  code: `
+<!-- pages/endings/[id].vue → /endings/true のような URL になる -->
+<script setup>
+const route = useRoute()
+
+// サーバーで先にデータを取ってから HTML を作る（SSR）
+const { data: ending } = await useFetch(\`/api/endings/\${route.params.id}\`)
+</script>
+
+<template>
+  <h1>{{ ending.name }}</h1>
+  <p>{{ ending.text }}</p>
+</template>
+
+<!-- server/api/endings/[id].get.js：同じプロジェクトに API も書ける -->
+`,
+}
+
+const CV_ELECTRON = {
+  view: true,
+  title: "Electron のアプリ",
+  file: "main.js ／ preload.js（Electron の例）",
+  task: "画面はいつもの Web、OS の機能は main プロセスに頼むのだ",
+  marks: { 2: "main プロセス", 9: "安全のため必ず", 13: "Web の画面をそのまま", 15: "画面からの頼みを受ける", 19: "見せる機能を選ぶ" },
+  code: `
+// main.js（main プロセス：Node.js で動く。OS の機能が使える）
+const { app, BrowserWindow, ipcMain } = require('electron')
+const fs = require('node:fs/promises')
+
+app.whenReady().then(() => {
+  const win = new BrowserWindow({
+    webPreferences: {
+      preload: __dirname + '/preload.js',
+      contextIsolation: true,   // 画面と Node を切りはなす（必ず true）
+      nodeIntegration: false,   // 画面から Node を直接使わせない
+    },
+  })
+  win.loadFile('dist/index.html')   // このゲームの dist をそのまま表示できる
+})
+ipcMain.handle('load-save', () => fs.readFile('save.json', 'utf8'))
+
+// preload.js：画面に見せてよい機能だけを渡す「橋」
+const { contextBridge, ipcRenderer } = require('electron')
+contextBridge.exposeInMainWorld('api', {
+  loadSave: () => ipcRenderer.invoke('load-save'),
+})
+`,
+}
+
+const CV_TAURI = {
+  view: true,
+  title: "Tauri のアプリ",
+  file: "src-tauri/src/lib.rs ／ 画面の JS（Tauri 2 の例）",
+  task: "OS の機能は Rust で書いて、画面から呼ぶのだ",
+  marks: { 2: "画面から呼べる関数", 9: "登録する", 16: "画面から呼ぶ", 18: "許可した機能だけ使える" },
+  code: `
+// src-tauri/src/lib.rs（Rust：OS の機能を書く）
+#[tauri::command]
+fn load_save() -> Result<String, String> {
+    std::fs::read_to_string("save.json").map_err(|e| e.to_string())
+}
+
+pub fn run() {
+    tauri::Builder::default()
+        .invoke_handler(tauri::generate_handler![load_save])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}
+
+// 画面の JS（Vue でもそのまま使える）
+import { invoke } from '@tauri-apps/api/core'
+const save = await invoke('load_save')
+
+// src-tauri/capabilities/*.json で、使ってよい機能を1つずつ許可する
+`,
+}
+
+const CV_ECO_QUERY = {
+  view: true,
+  title: "サーバーのデータを扱う道具",
+  file: "（例）TanStack Query（Vue）",
+  task: "読みこみ中・エラー・キャッシュ・再取得を、まとめてやってくれるのだ",
+  marks: { 1: "書きこみ", 4: "同じキーなら同じキャッシュ", 6: "取り直すまでの時間", 12: "書いたら最新を取り直す" },
+  code: `
+import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
+
+const { data: save, isPending, error } = useQuery({
+  queryKey: ['save', 'me'],                 // キャッシュの名前
+  queryFn: () => fetch('/api/saves/me').then((r) => r.json()),
+  staleTime: 60_000,                        // 1分は取り直さない
+})
+
+const queryClient = useQueryClient()
+const { mutate: addEnding } = useMutation({
+  mutationFn: (id) => fetch('/api/endings', { method: 'POST', body: JSON.stringify({ id }) }),
+  onSuccess: () => queryClient.invalidateQueries({ queryKey: ['save', 'me'] }), // 取り直す
+})
+`,
+}
+
+const CV_ECO_SERVER = {
+  view: true,
+  title: "サーバー側の定番の組み合わせ",
+  file: "（例）Hono ＋ zod ＋ Drizzle",
+  task: "ルーティング・入力チェック・データベースを、それぞれの道具でつなぐのだ",
+  marks: { 5: "軽いフレームワーク", 6: "zod：形を決める", 9: "合わなければ 400", 12: "Drizzle：型つきで SQL" },
+  code: `
+import { Hono } from 'hono'
+import { z } from 'zod'
+import { db, clearedEndings } from './db'   // Drizzle で定義したテーブル
+
+const app = new Hono()
+const Body = z.object({ endingId: z.enum(['true', 'deja', 'lost']) })
+
+app.post('/api/endings', async (c) => {
+  const parsed = Body.safeParse(await c.req.json())
+  if (!parsed.success) return c.json({ error: parsed.error.issues }, 400)
+
+  await db.insert(clearedEndings).values({
+    userId: c.get('userId'),
+    endingId: parsed.data.endingId,
+  })
+  return c.json({ ok: true }, 201)
+})
+`,
+}
+
+const CV_ECO_TEST = {
+  view: true,
+  title: "テストの道具",
+  file: "（例）Vitest と Playwright",
+  task: "小さく速いテストと、本物のブラウザで動かすテストを組み合わせるのだ",
+  marks: { 2: "単体テスト", 6: "結果を確かめる", 10: "E2E テスト", 15: "画面の移り変わりを確かめる" },
+  code: `
+// Vitest：関数や部品のテスト（速い・たくさん書く）
+import { test, expect } from 'vitest'
+import { getEndingType } from '../src/data/scenario'
+
+test('101 を選ぶと TRUE END', () => {
+  expect(getEndingType('101')).toBe('true')
+})
+
+// Playwright：本物のブラウザで画面を操作する（遅い・大事な流れだけ）
+import { test, expect } from '@playwright/test'
+
+test('TECH DOCS から授業が始まる', async ({ page }) => {
+  await page.goto('/')
+  await page.getByText('TECH DOCS').click()
+  await expect(page).toHaveURL(/\\/docs$/)
+})
+`,
+}
+
+// ===== 各編に足した授業のコード =====
+const CV_CI_REAL = {
+  view: true,
+  title: "このゲームの CI/CD",
+  file: ".github/workflows/deploy.yml",
+  task: "main に push すると、GitHub Actions が自動でビルドして公開するのだ",
+  marks: { 3: "main に来たら動く", 5: "lock どおりに入れる", 6: "ビルド", 13: "GitHub Pages に公開" },
+  code: `
+on:
+  push:
+    branches: [main]
+# …
+      - run: npm ci
+      - run: npm run build
+        env:
+          BASE_PATH: /\${{ github.event.repository.name }}/
+      - run: cp dist/index.html dist/404.html
+      - uses: actions/upload-pages-artifact@v3
+# …
+      - id: deployment
+        uses: actions/deploy-pages@v4
+`,
+}
+
+const PG_VMODEL = {
+  title: "v-model",
+  task: "入力すると、下の文字も変わるのだ。チェックボックスにも v-model を付けてみるのだ",
+  code: `
+<script setup>
+const name = ref('')
+const agree = ref(false)
+</script>
+
+<template>
+  <input v-model="name" placeholder="キミの名前" />
+  <label><input type="checkbox" /> 部員になる</label>
+  <p>{{ name || '（名前なし）' }} ／ 入部：{{ agree ? 'する' : 'しない' }}</p>
+</template>
+
+<style>
+input { padding: 6px; font-size: 16px; }
+label { margin-left: 8px; font-size: 15px; }
+p { font-size: 16px; }
+</style>
+`,
+  check: (el) => { const cb = el.querySelector('input[type="checkbox"]'); return Boolean(cb?.checked) && el.textContent.includes('入部：する') },
+}
+
+const PG_DARK = {
+  title: "ダークモード",
+  task: "下の @media の中に、暗いときの色を足すのだ（--bg を #1c2033 に、--text を #f2f2f2 に）。OS が暗い設定なら、すぐ変わるのだ",
+  code: `
+<template>
+  <div class="card">
+    <h2>放課後リライト</h2>
+    <p>ダークモードにすると、色が入れかわるのだ。</p>
+  </div>
+</template>
+
+<style>
+.card {
+  --bg: #ffffff;
+  --text: #222222;
+  padding: 16px;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid #999;
+}
+@media (prefers-color-scheme: dark) {
+  .card {
+  }
+}
+</style>
+`,
+  check: (el) => /--bg:\s*#1c2033/i.test(el.parentNode.querySelector('style')?.textContent ?? ''),
+}
+
+const CV_RETRY = {
+  view: true,
+  title: "やり直しの作法",
+  file: "（例）",
+  task: "失敗したら、間をあけながら数回だけやり直すのだ",
+  marks: { 4: "1回ごとにタイムアウト", 5: "サーバーの失敗だけやり直す", 8: "回数を決める", 9: "だんだん間を広げる" },
+  code: `
+async function fetchWithRetry(url, { retries = 3 } = {}) {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      const res = await fetch(url, { signal: AbortSignal.timeout(5000) })
+      if (res.status >= 500 || res.status === 429) throw new Error(\`HTTP \${res.status}\`)
+      return res                                 // 4xx はやり直しても同じなので、そのまま返す
+    } catch (e) {
+      if (attempt >= retries) throw e            // 回数を使い切ったらあきらめる
+      const wait = 2 ** attempt * 500 + Math.random() * 300   // 0.5秒 → 1秒 → 2秒 …（＋ゆらぎ）
+      await new Promise((r) => setTimeout(r, wait))
+    }
+  }
+}
+`,
+}
+
+const CV_WORKER = {
+  view: true,
+  title: "Web Worker",
+  file: "（例）main.js ／ worker.js",
+  task: "重い計算は、別の手（スレッド）にお願いするのだ",
+  marks: { 2: "別の手を作る", 3: "メッセージでお願い", 9: "worker 側で受け取る", 11: "結果を返す" },
+  code: `
+// main.js（画面の手）
+const worker = new Worker(new URL('./worker.js', import.meta.url), { type: 'module' })
+worker.postMessage({ width: 1920, height: 1080 })   // お願いする
+worker.onmessage = (e) => {
+  draw(e.data)                                       // 結果が届いたら描く
+}
+
+// worker.js（別の手：画面にはさわれない）
+self.onmessage = (e) => {
+  const result = heavyImageProcessing(e.data)        // 何秒かかっても画面は止まらない
+  self.postMessage(result)
+}
+`,
+}
+
+const CV_SSE = {
+  view: true,
+  title: "サーバーからの知らせ",
+  file: "（例）WebSocket と SSE",
+  task: "サーバーから、つぎつぎに知らせを送ってもらうのだ",
+  marks: { 2: "wss = 暗号化した WebSocket", 4: "こちらからも送れる", 7: "SSE は受け取るだけ", 9: "自動で再接続" },
+  code: `
+// WebSocket：両方向にいつでも送れる（チャット・対戦ゲーム）
+const ws = new WebSocket('wss://game.example.com/room/1')
+ws.onmessage = (e) => showChat(JSON.parse(e.data))
+ws.send(JSON.stringify({ type: 'chat', text: 'こんにちはなのだ' }))
+
+// SSE（Server-Sent Events）：サーバー → ブラウザの一方向（通知・進み具合）
+const events = new EventSource('/api/notifications')
+events.onmessage = (e) => showToast(e.data)
+// 切れても、ブラウザが自動でつなぎ直してくれる
+`,
+}
+
+const CV_PAGING = {
+  view: true,
+  title: "一覧を区切って返す",
+  file: "（例）API と SQL",
+  task: "何万件もあるデータは、少しずつ返すのだ",
+  marks: { 2: "全件はダメ", 6: "奥ほど遅い", 9: "続きの目印", 11: "目印より後ろだけ", 14: "速さの鍵" },
+  code: `
+// ✕ 全件を返す → 遅い・重い・いつか落ちる
+GET /api/rankings
+
+// △ ページ番号（OFFSET）… 奥のページほど遅く、途中で増えるとずれる
+GET /api/rankings?page=500&limit=20
+SELECT * FROM rankings ORDER BY score DESC LIMIT 20 OFFSET 9980;
+
+// ◯ カーソル … 「前回の最後」から続きを取る（速く、ずれない）
+GET /api/rankings?after=9800_12345&limit=20
+SELECT * FROM rankings
+WHERE (score, id) < (9800, 12345)
+ORDER BY score DESC, id DESC
+LIMIT 20;
+-- (score, id) にインデックスを張っておく
+`,
+}
+
+const CV_PRESIGN = {
+  view: true,
+  title: "署名付き URL",
+  file: "（例）AWS SDK for JavaScript v3",
+  task: "サーバーを通さずに、ブラウザから S3 へ直接アップロードさせるのだ",
+  marks: { 2: "署名付き URL を作る", 8: "置き場所はサーバーが決める", 13: "5分で使えなくなる", 18: "ブラウザから直接" },
+  code: `
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+
+const s3 = new S3Client({ region: 'ap-northeast-1' })
+
+// API：ログインしている人に、「5分だけ・この場所に・置いてよい」URL を渡す
+app.post('/api/screenshots', requireLogin, async (req, res) => {
+  const key = \`screenshots/\${req.user.id}/\${crypto.randomUUID()}.webp\`
+  const url = await getSignedUrl(s3, new PutObjectCommand({
+    Bucket: 'after-school-uploads',
+    Key: key,
+    ContentType: 'image/webp',
+  }), { expiresIn: 300 })
+  res.json({ url, key })
+})
+
+// ブラウザ：もらった URL に、そのまま PUT する（S3 は非公開のまま）
+await fetch(url, { method: 'PUT', body: file, headers: { 'Content-Type': 'image/webp' } })
+`,
+}
+
+const CV_THREE = {
+  view: true,
+  title: "Three.js で 3D",
+  file: "（例）",
+  task: "このゲームは CSS で 3D を作ったけど、本格的な 3D は WebGL の道具を使うのだ",
+  marks: { 3: "舞台", 4: "カメラ", 7: "GPU で描く", 11: "形＋材質", 17: "毎フレーム描く" },
+  code: `
+import * as THREE from 'three'
+
+const scene = new THREE.Scene()
+const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 100)
+camera.position.z = 3
+
+const renderer = new THREE.WebGLRenderer({ antialias: true })
+renderer.setSize(innerWidth, innerHeight)
+document.body.appendChild(renderer.domElement)
+
+const mochi = new THREE.Mesh(
+  new THREE.SphereGeometry(1, 32, 32),
+  new THREE.MeshStandardMaterial({ color: '#8fd14f' }),  // ずんだ色
+)
+scene.add(mochi, new THREE.DirectionalLight('#ffffff', 2))
+
+renderer.setAnimationLoop(() => {
+  mochi.rotation.y += 0.01
+  renderer.render(scene, camera)
+})
+`,
+}
+
+const CV_TESTABLE = {
+  view: true,
+  title: "テストしやすいコード",
+  file: "（例）",
+  task: "時刻や乱数を外から渡すと、テストで結果を決められるのだ",
+  marks: { 3: "中で時刻を取っている", 8: "外から渡せる", 13: "テストで時刻を決める" },
+  code: `
+// ✕ 中で現在時刻を使う → テストのたびに結果が変わる
+function greeting() {
+  const h = new Date().getHours()
+  return h < 12 ? 'おはようなのだ' : 'こんにちはなのだ'
+}
+
+// ◯ 時刻を引数でもらう → テストで好きな時刻を渡せる
+function greeting(now = new Date()) {
+  return now.getHours() < 12 ? 'おはようなのだ' : 'こんにちはなのだ'
+}
+
+test('朝はおはよう', () => {
+  expect(greeting(new Date('2026-10-01T08:00'))).toBe('おはようなのだ')
+})
+`,
+}
+
 export const lessonScenes = {
   lesson_intro: {
     chapter: { no: 'EX', title: '放課後テックゼミ', sub: 'AFTER SCHOOL TECH SEMINAR' },
@@ -3363,7 +4509,7 @@ export const lessonScenes = {
       { speaker: 'ずんだもん', chara: 'zun_smile', diagram: { type: 'flow', focus: 'click' }, text: 'キミがクリックすると番号が1つ進んで、また画面が変わる。この*ぐるぐる*が、ノベルゲームの正体なのだ！' },
       { speaker: '僕', chara: 'zun_smile', diagram: 'flow', text: '「光の点が回ってるのが、その流れってことか」' },
       { speaker: '四国めたん', chara: 'metan_normal', playground: CV_SCENE, text: 'ちなみに、いま流れているこの会話も、ただの*データ*として書かれていますのよ。' },
-      { speaker: 'ずんだもん', chara: 'zun_proud', text: '授業は12の編に分かれているのだ。はじめてなら、1番から順番に聞くのがおすすめなのだ！' },
+      { speaker: 'ずんだもん', chara: 'zun_proud', text: '授業は15の編に分かれているのだ。はじめてなら、1番から順番に聞くのがおすすめなのだ！' },
     ],
     choices: MENU,
   },
@@ -3422,6 +4568,7 @@ export const lessonScenes = {
       { speaker: 'ずんだもん', chara: 'zun_proud', diagram: { type: 'tree', focus: 'CharaSprite' }, text: '部品の中に、さらに部品を入れることもできるのだ。StageLayer の中には、立ち絵1枚ぶんの CharaSprite が入っているのだ。' },
       { speaker: 'ずんだもん', chara: 'zun_proud', playground: CV_MESSAGEBOX, text: '1つの .vue ファイルには、見た目（template）・動き（script）・飾り（style）がまとめて入っているのだ。' },
       { speaker: '僕', chara: 'zun_proud', diagram: 'tree', text: '「部品ごとに分けておけば、直すときも探しやすいってことか」' },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ 1つの部品には1つの役目", "✔ 何百行にもなったら分ける", "✔ 名前は PascalCase", "  （MessageBox.vue など）", "✔ 見た目だけの部品と", "  データを扱う部品を分ける"], text: "部品を作るときの、仕事でのコツなのだ。" },
       { speaker: 'ずんだもん', chara: 'zun_smile', fx: 'flash', text: 'そのとおりなのだ！ 部品はコンポーネント、おぼえたのだ？' },
     ],
     next: 'lesson_menu_vue',
@@ -3447,6 +4594,7 @@ export const lessonScenes = {
       { speaker: '四国めたん', chara: 'metan_normal', playground: PG_COMPUTED, text: 'computed も、さわってたしかめてごらんなさいな。' },
       { speaker: 'ずんだもん', chara: 'zun_proud', playground: CV_TYPING, text: 'いま読んでいるこのセリフも、*本物のコード*ではこう書いてあるのだ。' },
       { speaker: 'ずんだもん', chara: 'zun_normal', diagram: { type: 'reactive', focus: 'computed' }, text: 'typedLength が変わると、isTyping も自動で計算し直されるのだ。図の下の値が、最後まで出すと false に変わるのを見るのだ。' },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ script では .value を忘れない", "  （template では不要）", "✔ reactive を分割代入すると", "  リアクティブでなくなる", "✔ computed の中で値を", "  書きかえない（副作用なし）"], text: "つまずきやすいところですわ。" },
       { speaker: 'ずんだもん', chara: 'zun_proud', diagram: 'reactive', text: 'ref は「箱」、computed は「箱から計算した答え」。おぼえたのだ？' },
     ],
     next: 'lesson_menu_vue',
@@ -3469,6 +4617,7 @@ export const lessonScenes = {
       { speaker: 'ずんだもん', chara: 'zun_smile', text: '{{ }} の中に書いたものは、その値が文字として画面に出るのだ。' },
       { speaker: '僕', chara: 'zun_smile', text: '「この目次が8個並んでるのも、v-for なのか」' },
       { speaker: 'ずんだもん', chara: 'zun_normal', playground: CV_CHOICES, text: 'そうなのだ。本物のコードでは、v-if と v-for がこう組み合わさっているのだ。' },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ v-for の key に配列の番号を", "  使わない（並べかえ・削除でずれる）", "✔ v-if と v-for を", "  同じタグに書かない", "✔ よく切りかえるなら v-show", "  （作り直さず、かくすだけ）"], text: "レビューでよく指摘されるところなのだ。" },
       { speaker: 'ずんだもん', chara: 'zun_proud', diagram: 'directive', fx: 'flash', text: 'そうなのだ！ 出す・消すは v-if、くり返すは v-for なのだ。' },
     ],
     next: 'lesson_menu_vue',
@@ -3489,6 +4638,7 @@ export const lessonScenes = {
       { speaker: 'ずんだもん', chara: 'zun_normal', diagram: { type: 'props', focus: 'emit' }, text: '青いお手紙が、下から上に戻っていくのだ。選択肢が押されたら、こうやって親に知らせるのだ。' },
       { speaker: '僕', chara: 'metan_smug', diagram: 'props', text: '「下に渡すのが props、上に知らせるのが emit……」' },
       { speaker: 'ずんだもん', chara: 'zun_smile', fx: 'burst', text: '完璧なのだ！ 役目を分けておくと、部品を別の場所でも使い回せるのだ。' },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 子で props を書きかえない", "  （親に emit でお願いする）", "✔ props と emit に型を付ける", "✔ 深い入れ子のバケツリレーは", "  provide / inject や Pinia を検討"], text: "仕事で守りたい約束ですわ。" },
       { speaker: '四国めたん', chara: 'metan_normal', playground: CV_PROPS, text: '本物のコードで、お手紙の行き来をたどってみましょう。' },
     ],
     next: 'lesson_menu_vue',
@@ -3496,7 +4646,7 @@ export const lessonScenes = {
 
   // ----- watch -----
   lesson_watch: {
-    place: { name: 'LESSON 05 watch', time: '17:00' },
+    place: { name: 'LESSON 07 watch', time: '17:00' },
     bg: 'lab_evening',
     bgm: 'day',
     ambient: 'dust',
@@ -3509,6 +4659,7 @@ export const lessonScenes = {
       { speaker: '四国めたん', chara: 'metan_smug', text: '音楽を切り替えるのも、文字を1つずつ出し始めるのも、この見張り番のお仕事ですのよ。' },
       { speaker: '僕', chara: 'metan_smug', text: '「さっきの揺れも、watch が気づいて動かしたわけか」' },
       { speaker: 'ずんだもん', chara: 'zun_smile', playground: CV_WATCH, text: '右上の観測計の数字がパラパラ回るのも、watch のおかげなのだ。' },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ computed で済むなら computed", "✔ タイマーやイベントは", "  onUnmounted で止める", "  （止めないとメモリリーク）", "✔ deep: true は重いので", "  必要なときだけ"], text: "watch を使うときの注意ですわ。" },
       { speaker: 'ずんだもん', chara: 'zun_proud', playground: PG_WATCH, text: '見張り番を、キミも作ってみるのだ。' },
     ],
     next: 'lesson_menu_vue',
@@ -3516,7 +4667,7 @@ export const lessonScenes = {
 
   // ----- Pinia -----
   lesson_pinia: {
-    place: { name: 'LESSON 06 Pinia', time: '17:02' },
+    place: { name: 'LESSON 11 Pinia', time: '17:02' },
     bg: 'lab_evening',
     bgm: 'day',
     ambient: 'dust',
@@ -3529,6 +4680,7 @@ export const lessonScenes = {
       { speaker: '四国めたん', chara: 'metan_smug', terminal: ['next() {', '  this.lineIndex++', '}'], text: 'キミが画面をクリックすると、この next() が呼ばれて、セリフの番号が1つ進みますの。' },
       { speaker: 'ずんだもん', chara: 'zun_smile', diagram: { type: 'flow', focus: 'click' }, text: '番号が進むと、ref と同じで画面が勝手に次のセリフになるのだ。さっきの話とつながったのだ？' },
       { speaker: '僕', chara: 'zun_smile', text: '「じゃあ、エンディングが分岐できるのも……」' },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ 何でもストアに入れない", "  画面の中だけの値は ref で", "✔ 分割代入は storeToRefs で", "✔ state はアクションで変える", "✔ ページを閉じると消える", "  （残すなら保存が必要）"], text: "ストアの使い方のコツなのだ。" },
       { speaker: 'ずんだもん', chara: 'zun_proud', fx: 'meter', text: 'path に、選んだ番号が「101」みたいに並んでいくのだ。それでエンディングが決まるのだ！' },
     ],
     next: 'lesson_menu_vue',
@@ -3536,7 +4688,7 @@ export const lessonScenes = {
 
   // ----- Vue Router -----
   lesson_router: {
-    place: { name: 'LESSON 07 Vue Router', time: '17:04' },
+    place: { name: 'LESSON 12 Vue Router', time: '17:04' },
     bg: 'lab_evening',
     bgm: 'day',
     ambient: 'dust',
@@ -3547,6 +4699,7 @@ export const lessonScenes = {
       { speaker: 'ずんだもん', chara: 'zun_proud', playground: CV_ROUTER, diagram: { type: 'router', focus: 'ending' }, text: ':type のところには、エンディングの名前が入るのだ。/ending/true なら TRUE END なのだ。' },
       { speaker: '四国めたん', chara: 'metan_smug', terminal: ['<RouterLink to="/credits">', '  CREDITS', '</RouterLink>', '', "router.push('/game')"], text: 'リンクで移るときは RouterLink、コードで移るときは router.push を使いますわ。' },
       { speaker: 'ずんだもん', chara: 'zun_smile', playground: CV_START, diagram: { type: 'router', focus: 'game' }, text: 'タイトルの START を押すと、router.push(\'/game\') でゲーム画面に来るのだ。' },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 存在しない URL 用の", "  404 ページを用意する", "✔ ページは () => import() で", "  あとから読みこむ（軽くなる）", "✔ 普通の URL を使うときは", "  サーバー側の設定も必要", "✔ ガードで画面を守っても、", "  本当の守りはサーバー側"], text: "ルーターで気をつけたいことですわ。" },
       { speaker: '僕', chara: 'zun_smile', text: '「ページを読みこみ直さずに切り替わるから、音楽も途切れないのか」' },
     ],
     next: 'lesson_menu_vue',
@@ -3583,6 +4736,7 @@ export const lessonScenes = {
       { speaker: '四国めたん', chara: 'metan_smug', playground: CV_HTML_MESSAGE, text: '本物の HTML を見てごらんなさいな。' },
       { speaker: 'ずんだもん', chara: 'zun_smile', playground: PG_HTML, text: 'キミも HTML を書いてみるのだ！' },
       { speaker: '僕', chara: 'zun_smile', text: '「1行足したら、箇条書きが1つ増えた」' },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ 見出しは h1→h2→h3 の順", "✔ <div> だらけにしない", "  （<nav> <main> <section>）", "✔ 入力欄には <label>", "✔ クリックするものは", "  <button> か <a>"], text: "HTML を書くときのコツなのだ。" },
       { speaker: '四国めたん', chara: 'metan_normal', text: 'class="〇〇" は、タグに付ける*名札*。次の授業で、CSS から名札を使って色を付けますわ。' },
     ],
     next: 'lesson_menu_css',
@@ -3601,6 +4755,7 @@ export const lessonScenes = {
       { speaker: 'ずんだもん', chara: 'zun_smile', playground: PG_SELECTOR, text: 'めたんのセリフに名札を付けて、色を変えてみるのだ！' },
       { speaker: '四国めたん', chara: 'metan_smug', playground: CV_SELECTOR, text: 'メッセージ欄の四隅のかざりは、名札を2つ組み合わせて書き分けていますのよ。' },
       { speaker: '僕', chara: 'metan_smug', text: '「共通のところは .bracket にまとめて、ちがうところだけ .tl とかに書くのか」' },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 強さ：#id > .class > タグ", "  強いセレクタが勝つ", "✔ !important は最後の手段", "✔ Vue では scoped で", "  ほかの部品に効かせない", "✔ class の名前の付け方を", "  チームでそろえる"], text: "CSS が増えてきたときに困らないためのコツですわ。" },
       { speaker: 'ずんだもん', chara: 'zun_proud', fx: 'flash', text: 'そうなのだ！ 同じことを何回も書かないのがコツなのだ。' },
     ],
     next: 'lesson_menu_css',
@@ -3620,6 +4775,7 @@ export const lessonScenes = {
       { speaker: '四国めたん', chara: 'metan_smug', diagram: { type: 'box', focus: 'margin' }, text: 'そして、となりの箱とのすきまが margin。外側の余白ですの。' },
       { speaker: 'ずんだもん', chara: 'zun_smile', playground: PG_BOX, text: '数字を変えて、どこがふくらむか見てみるのだ！' },
       { speaker: '四国めたん', chara: 'metan_normal', playground: CV_BOX_MESSAGE, text: 'メッセージ欄の箱は、こう書いてありますわ。' },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ 最初に全体へ", "  box-sizing: border-box", "✔ 余白は margin か padding か", "  ルールを決める", "✔ 高さを固定しない", "  （文字が増えるとはみ出す）"], text: "箱を扱うときのコツなのだ。" },
       { speaker: 'ずんだもん', chara: 'zun_proud', text: 'box-sizing: border-box を書いておくと、幅の中に padding と枠がふくまれるのだ。計算がらくになるのだ。' },
     ],
     next: 'lesson_menu_css',
@@ -3638,6 +4794,7 @@ export const lessonScenes = {
       { speaker: 'ずんだもん', chara: 'zun_normal', diagram: { type: 'flex', focus: 'axis' }, text: 'flex-direction: column にすると、縦に並ぶのだ。justify-content と align-items で、どこに寄せるか決めるのだ。' },
       { speaker: 'ずんだもん', chara: 'zun_smile', playground: PG_FLEX, text: 'タイトル画面のリンクを、並べ直してみるのだ！' },
       { speaker: '四国めたん', chara: 'metan_smug', playground: CV_FLEX_TITLE, text: '本物のタイトル画面は、縦と横の flex を組み合わせていますの。' },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 中身がはみ出すときは", "  min-width: 0 を疑う", "  （このゲームのエディタでも使用）", "✔ すきまは margin より gap", "✔ 1列は flex、", "  縦横のマス目は grid"], text: "flex でよくある困りごとですわ。" },
       { speaker: '僕', chara: 'metan_smug', text: '「ロゴと START が画面のまんなかにあるのは、これだったのか」' },
     ],
     next: 'lesson_menu_css',
@@ -3656,6 +4813,7 @@ export const lessonScenes = {
       { speaker: 'ずんだもん', chara: 'zun_normal', diagram: { type: 'layers', focus: 'axis' }, text: '重なったときにどれが手前か決めるのが z-index なのだ。数字が大きいほど手前なのだ。' },
       { speaker: 'ずんだもん', chara: 'zun_smile', playground: PG_LAYER, text: '重なりの順番を、入れかえてみるのだ！' },
       { speaker: '四国めたん', chara: 'metan_smug', playground: CV_ZINDEX, text: 'このゲームでは、こんなふうに数字を割りふっていますのよ。' },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ z-index は 1, 2, 10 など", "  ルールを決めて使う", "  （9999 合戦にしない）", "✔ transform や opacity で", "  新しい「重なりのグループ」が", "  できて、外と比べられなくなる"], text: "重なりで困らないためのコツなのだ。" },
       { speaker: '僕', chara: 'metan_smug', text: '「選択肢がメッセージ欄の上に出るのは、4 が 2 より大きいからか」' },
     ],
     next: 'lesson_menu_css',
@@ -3674,6 +4832,7 @@ export const lessonScenes = {
       { speaker: '四国めたん', chara: 'metan_smug', playground: CV_ANIM_TITLE, text: 'タイトル画面の START ボタンを光がなでていくのも、この方法ですの。' },
       { speaker: 'ずんだもん', chara: 'zun_proud', fx: 'shake', text: '画面が揺れるのも、CSS のアニメーションなのだ！' },
       { speaker: '僕', chara: 'zun_proud', text: '「HTML で中身を書いて、CSS で見た目と動きを付ける」' },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 動かすのは transform と", "  opacity が軽い", "  （width や top は重い）", "✔ 動きが苦手な人のために", "  prefers-reduced-motion", "  （このゲームも対応）"], text: "動きを付けるときの、仕事でのコツですわ。" },
       { speaker: 'ずんだもん', chara: 'zun_gentle', fx: 'leak', speed: 'slow', text: 'それがわかれば、どんな画面だって作れるのだ。' },
     ],
     next: 'lesson_menu_css',
@@ -3710,6 +4869,7 @@ export const lessonScenes = {
       { speaker: '四国めたん', chara: 'metan_normal', text: 'このやりとりのお約束が HTTP。https の s は、通信に鍵をかけているという意味ですの。' },
       { speaker: 'ずんだもん', chara: 'zun_smile', playground: PG_URL, text: 'URL を部品に分けてみるのだ！' },
       { speaker: '僕', chara: 'zun_smile', text: '「パスを変えると、サーバーの中の別の場所をお願いすることになるのか」' },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ GET は取得、POST は作成", "✔ 2xx 成功・4xx 送った側・", "  5xx サーバー側", "✔ https で鍵をかけて通信", "✔ くわしくは HTTP 編へ"], text: "HTTP は、HTTP 編でもっとくわしくやるのだ。ここでは基本だけ覚えるのだ。" },
       { speaker: 'ずんだもん', chara: 'zun_proud', text: 'HTTP は、*HTTP 編*でもっとくわしく話すのだ。キャッシュや Cookie や CORS も、そっちで見るのだ！' },
     ],
     next: 'lesson_menu_web',
@@ -3729,6 +4889,7 @@ export const lessonScenes = {
       { speaker: 'ずんだもん', chara: 'zun_normal', diagram: { type: 'devtools', focus: 'network' }, text: 'Network では、さっきのリクエストとレスポンスが、1つずつ全部見られるのだ。' },
       { speaker: 'ずんだもん', chara: 'zun_smile', diagram: { type: 'devtools', focus: 'application' }, text: 'Application では、ブラウザにしまってあるデータが見られるのだ。このゲームのセーブデータも、ここにあるのだ。' },
       { speaker: '四国めたん', chara: 'metan_normal', playground: CV_SAVE, text: '見たエンディングは、こうやってしまってありますわ。' },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ Network で API の", "  リクエストと返事を確認", "✔ Disable cache で", "  キャッシュなしを再現", "✔ 回線を遅くして確かめる", "✔ Lighthouse で", "  速さ・使いやすさを点検"], text: "開発者ツールの、仕事での使いどころですわ。" },
       { speaker: '僕', chara: 'metan_normal', text: '「エンディングの記録が消えないのは、ブラウザにしまってあったからか」' },
     ],
     next: 'lesson_menu_web',
@@ -3747,6 +4908,7 @@ export const lessonScenes = {
       { speaker: '四国めたん', chara: 'metan_smug', terminal: ['function judge(count) {', '  if (count >= 5) {', '    return \'パーティー\'', '  }', '  return \'まだ\'', '}'], text: 'やることをまとめて名前を付けたのが*関数*。if で、条件によって分けられますの。' },
       { speaker: 'ずんだもん', chara: 'zun_smile', playground: PG_JS, text: '変数・配列・関数・if を、ぜんぶさわってみるのだ！' },
       { speaker: '四国めたん', chara: 'metan_normal', playground: CV_ENDING, text: 'エンディングの分かれ方も、オブジェクトと関数で書いてありますわ。' },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ 比べるときは === を使う", "  （== は型を変えて比べる）", "✔ 基本は const、", "  変えるときだけ let", "✔ 待つ処理は async / await", "  → 非同期 JS 編へ", "✔ 失敗しうる処理は try / catch"], text: "JavaScript の、仕事での書き方のコツなのだ。" },
       { speaker: '僕', chara: 'metan_normal', text: '「選んだ番号の並びを、対応表で引いているだけなのか」' },
     ],
     next: 'lesson_menu_web',
@@ -3765,13 +4927,14 @@ export const lessonScenes = {
       { speaker: '四国めたん', chara: 'metan_smug', playground: CV_VANILLA, text: 'Vue を使わずに書くと、こうなりますわ。' },
       { speaker: 'ずんだもん', chara: 'zun_normal', text: '要素を探して、イベントを待って、自分で書きかえる……。Vue は、このめんどうなところを代わりにやってくれているのだ。' },
       { speaker: 'ずんだもん', chara: 'zun_smile', playground: PG_DOM, text: 'イベントにはいろいろな種類があるのだ。ためしてみるのだ！' },
+      { speaker: "四国めたん", chara: 'metan_serious', terminal: ["✔ innerHTML や v-html に", "  外から来た文字を入れない", "  → XSS（セキュリティ編へ）", "✔ Vue の {{ }} は", "  自動で無害化される", "✔ 足したイベントは、外す"], text: "DOM をさわるときの、大事な注意ですわ。" },
       { speaker: '僕', chara: 'zun_smile', text: '「@click のほかにも、@mouseenter とか @input とかがあるのか」' },
     ],
     next: 'lesson_menu_web',
   },
 
   lesson_storage: {
-    place: { name: 'WEB 05 localStorage', time: '17:58' },
+    place: { name: 'WEB 06 localStorage', time: '17:58' },
     bg: 'lab_evening',
     bgm: 'day',
     ambient: 'dust',
@@ -3783,6 +4946,7 @@ export const lessonScenes = {
       { speaker: '四国めたん', chara: 'metan_smug', playground: CV_SAVE, text: 'このゲームのセーブも、まさにそのとおりですの。' },
       { speaker: 'ずんだもん', chara: 'zun_smile', playground: PG_STORAGE, text: 'キミのメモを、ブラウザにしまってみるのだ！' },
       { speaker: '四国めたん', chara: 'metan_normal', text: 'ただし、引き出しはそのブラウザだけのもの。別のスマホや別のブラウザからは見えませんわ。' },
+      { speaker: "四国めたん", chara: 'metan_serious', terminal: ["✔ パスワードやトークン、", "  個人情報を入れない", "  （XSS で読まれる）", "✔ 入るのは 5MB くらいまで", "✔ 中身は利用者が書きかえられる", "  → 信用しすぎない", "✔ sessionStorage は", "  タブを閉じると消える"], text: "localStorage で、やってはいけないことですわ。" },
       { speaker: '僕', chara: 'metan_normal', text: '「だからスマホで遊んだ記録は、パソコンには引きつがれないのか」' },
     ],
     next: 'lesson_menu_web',
@@ -3816,13 +4980,14 @@ export const lessonScenes = {
       { speaker: 'ずんだもん', chara: 'zun_proud', terminal: ['#ff7b00                … 赤・緑・青を16進数で', 'rgb(255, 123, 0)       … 0〜255 で', 'rgba(255, 123, 0, 0.5) … さいごは濃さ（0〜1）'], text: '色は、赤・緑・青のまぜ方で書くのだ。rgba の a は、すけぐあいなのだ。' },
       { speaker: 'ずんだもん', chara: 'zun_smile', playground: PG_UNITS, text: '単位と色を、変えてみるのだ！' },
       { speaker: '四国めたん', chara: 'metan_smug', playground: CV_UNITS, text: 'このゲームでは、こう使い分けていますの。min() や clamp() で、小さすぎず大きすぎずにしていますわ。' },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 文字の大きさは rem が", "  おすすめ（ブラウザの", "  文字サイズ設定に合わせる）", "✔ スマホの 100vh は", "  アドレスバーでずれる", "  → 100dvh を使う"], text: "単位のつまずきどころですわ。" },
       { speaker: '僕', chara: 'metan_smug', text: '「スマホでもパソコンでもちょうどいいのは、決まった px だけじゃないからか」' },
     ],
     next: 'lesson_menu_css2',
   },
 
   lesson_pseudo: {
-    place: { name: 'CSS+ 02 :hover と ::before', time: '18:02' },
+    place: { name: 'CSS+ 03 :hover と ::before', time: '18:02' },
     bg: 'lab_evening',
     bgm: 'day',
     ambient: 'dust',
@@ -3833,13 +4998,14 @@ export const lessonScenes = {
       { speaker: 'ずんだもん', chara: 'zun_proud', terminal: ['::before  … 中身の前に足す', '::after   … 中身のうしろに足す', '', 'content: \'▶ \';  … 足す中身'], text: ':: を2つ付けると、HTML に書いていない飾りを、CSS だけで足せるのだ。これが*疑似要素*なのだ。' },
       { speaker: 'ずんだもん', chara: 'zun_smile', playground: PG_PSEUDO, text: 'ボタンに、光るしかけと飾りを付けてみるのだ！' },
       { speaker: '四国めたん', chara: 'metan_smug', playground: CV_PSEUDO, text: 'タイトルのロゴがずれて光るのは、::before と ::after で同じ文字を重ねているからですわ。' },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ スマホには hover がない", "  → hover だけで大事な情報を", "  出さない", "✔ キーボード操作の枠は", "  :focus-visible で", "  消さずに見やすく"], text: "hover を使うときの注意なのだ。" },
       { speaker: '僕', chara: 'metan_smug', text: '「HTML は1つなのに、文字が3枚重なってたのか」' },
     ],
     next: 'lesson_menu_css2',
   },
 
   lesson_transition: {
-    place: { name: 'CSS+ 03 transition', time: '18:04' },
+    place: { name: 'CSS+ 04 transition', time: '18:04' },
     bg: 'lab_evening',
     bgm: 'day',
     ambient: 'dust',
@@ -3850,13 +5016,14 @@ export const lessonScenes = {
       { speaker: 'ずんだもん', chara: 'zun_proud', text: 'animation は自分で動き続けるけど、transition は「何かが変わったとき」だけ動くのだ。:hover と相性ばつぐんなのだ。' },
       { speaker: 'ずんだもん', chara: 'zun_smile', playground: PG_TRANSITION, text: 'カードを、ふわっと浮かせてみるのだ！' },
       { speaker: '四国めたん', chara: 'metan_smug', playground: CV_TRANSITION, text: '選択肢が出るとき、背景がゆっくり暗くなるのも transition ですの。' },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ transition: all は避ける", "  （思わぬものまで動く）", "✔ 0.15〜0.3 秒くらいが", "  ちょうどいいことが多い", "✔ will-change は", "  必要なところだけ"], text: "transition のコツですわ。" },
       { speaker: '僕', chara: 'metan_smug', text: '「クラスを1つ付けるだけで、ゆっくり変わるのか」' },
     ],
     next: 'lesson_menu_css2',
   },
 
   lesson_effects: {
-    place: { name: 'CSS+ 04 色づくり', time: '18:06' },
+    place: { name: 'CSS+ 05 色づくり', time: '18:06' },
     bg: 'lab_evening',
     bgm: 'day',
     ambient: 'dust',
@@ -3867,13 +5034,14 @@ export const lessonScenes = {
       { speaker: 'ずんだもん', chara: 'zun_proud', terminal: ['sepia(0.3)        … セピア色に', 'grayscale(1)      … 白黒に', 'hue-rotate(90deg) … 色相をずらす', 'blur(3px)         … ぼかす', 'brightness(0.8)   … 暗く'], text: 'filter は、写真アプリの加工みたいなものなのだ。いくつも並べて組み合わせられるのだ。' },
       { speaker: 'ずんだもん', chara: 'zun_smile', playground: PG_EFFECTS, text: '屋上の写真を、加工してみるのだ！' },
       { speaker: '四国めたん', chara: 'metan_smug', playground: CV_EFFECTS, text: 'シーンごとの色味や、メッセージ欄のすりガラスは、こう作っていますの。' },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ backdrop-filter と大きな blur は", "  スマホで重い", "✔ 背景と文字の色の差", "  （コントラスト）を十分に", "✔ 画像は webp などで軽く", "  （このゲームも webp）"], text: "色づくりの注意なのだ。" },
       { speaker: '僕', chara: 'metan_smug', text: '「同じ背景の絵でも、filter で夕方っぽくも冷たくもできるのか」' },
     ],
     next: 'lesson_menu_css2',
   },
 
   lesson_grid: {
-    place: { name: 'CSS+ 05 grid', time: '18:08' },
+    place: { name: 'CSS+ 06 grid', time: '18:08' },
     bg: 'lab_evening',
     bgm: 'day',
     ambient: 'dust',
@@ -3884,13 +5052,14 @@ export const lessonScenes = {
       { speaker: '四国めたん', chara: 'metan_normal', diagram: { type: 'grid', focus: 'col' }, text: '1fr は「残りを等分したうちの1つ」。repeat(3, 1fr) で、同じ幅の列が3つになりますわ。あふれた子どもは、自動で次の行に行きますの。' },
       { speaker: 'ずんだもん', chara: 'zun_smile', playground: PG_GRID, text: '列の数を変えてみるのだ！' },
       { speaker: '四国めたん', chara: 'metan_smug', playground: CV_GRID, text: 'この授業の目次のカードも、grid ですのよ。' },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 1fr はつぶれないことがある", "  → minmax(0, 1fr)", "  （このゲームの目次も）", "✔ auto-fill と minmax で", "  幅に合わせて列の数を自動に"], text: "grid のコツですわ。" },
       { speaker: '僕', chara: 'metan_smug', text: '「記録室のギャラリーみたいに並べるなら、grid が楽そうだ」' },
     ],
     next: 'lesson_menu_css2',
   },
 
   lesson_responsive: {
-    place: { name: 'CSS+ 06 スマホ対応', time: '18:10' },
+    place: { name: 'CSS+ 07 スマホ対応', time: '18:10' },
     bg: 'lab_evening',
     bgm: 'day',
     ambient: 'dust',
@@ -3903,6 +5072,7 @@ export const lessonScenes = {
       { speaker: '四国めたん', chara: 'metan_smug', playground: CV_MEDIA, text: 'この授業の目次も、スマホではカードが2列、授業が1列になりますのよ。' },
       { speaker: 'ずんだもん', chara: 'zun_smile', playground: PG_RESPONSIVE, text: '@container を使うと、画面じゃなくて*箱の幅*で変えられるのだ。枠をせまくしてみるのだ！' },
       { speaker: '僕', chara: 'zun_smile', text: '「せまくしたら、ちゃんと縦に並びかわった」' },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ スマホを先に作る", "  （モバイルファースト）", "✔ 本物のスマホで確かめる", "✔ タップする所は", "  44px 角くらいの大きさ", "✔ 横向きも確かめる"], text: "スマホ対応のコツなのだ。" },
       { speaker: 'ずんだもん', chara: 'zun_gentle', fx: 'leak', speed: 'slow', text: 'どんな画面で開いても、ちゃんと遊べる。それも、作る人のやさしさなのだ。' },
     ],
     next: 'lesson_menu_css2',
@@ -3981,7 +5151,7 @@ export const lessonScenes = {
   },
 
   lesson_ts_vue: {
-    place: { name: 'TS 04 Vue と TypeScript', time: '20:06' },
+    place: { name: 'TS 06 Vue と TypeScript', time: '20:06' },
     bg: 'lab_night',
     bgm: 'night',
     ambient: 'stars',
@@ -3999,7 +5169,7 @@ export const lessonScenes = {
   },
 
   lesson_ts_data: {
-    place: { name: 'TS 05 外から来るデータ', time: '20:08' },
+    place: { name: 'TS 07 外から来るデータ', time: '20:08' },
     bg: 'lab_night',
     bgm: 'night',
     ambient: 'stars',
@@ -4017,7 +5187,7 @@ export const lessonScenes = {
   },
 
   lesson_ts_config: {
-    place: { name: 'TS 06 tsconfig と運用', time: '20:10' },
+    place: { name: 'TS 08 tsconfig と運用', time: '20:10' },
     bg: 'lab_night',
     bgm: 'night',
     ambient: 'stars',
@@ -5204,6 +6374,1040 @@ export const lessonScenes = {
     ],
     next: 'lesson_menu_security',
   },
+  lesson_slot: {
+    place: { name: 'LESSON 06 スロット', time: '16:55' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000121',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "props では、文字や数字を部品に渡したのだ。でも「この部分には、好きな HTML を入れたい」こともあるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: 'slot', text: "そんなときは*スロット*。部品に「穴」をあけておいて、使う側が中身を差しこみますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: { type: 'slot', focus: 'child' }, text: "枠の部品は、見た目とレイアウトだけを持つのだ。中身は使う側が決めるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', playground: CV_SLOT, text: "名前つきの穴をいくつも作ることもできますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "ダイアログ、カード、表の1行……。形は同じで中身だけちがう部品は、スロットで作るとすっきりするのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 中身のちがいは slot で", "  見た目のちがいは props で", "✔ 何も入れないときの中身を", "  用意しておく", "✔ 穴を増やしすぎない", "  （使い方がわかりにくくなる）"], text: "スロットのコツですわ。" },
+      { speaker: "僕", chara: 'metan_normal', text: "「枠だけの部品に、好きな中身を入れられるのか」" },
+    ],
+    next: 'lesson_menu_vue',
+  },
+
+  lesson_lifecycle: {
+    place: { name: 'LESSON 08 ライフサイクル', time: '16:57' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000122',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', diagram: 'lifecycle', text: "部品には、*作られて、画面に出て、消える*という一生があるのだ。これを*ライフサイクル*っていうのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: { type: 'lifecycle', focus: 'setup' }, text: "script setup の中身は、部品が作られるときに1回だけ動きますの。まだ画面には出ていませんわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: { type: 'lifecycle', focus: 'mounted' }, text: "画面に出た直後に動くのが onMounted なのだ。画面の大きさを測ったり、ウィンドウのイベントを見張りはじめたりするのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', diagram: { type: 'lifecycle', focus: 'unmounted' }, text: "そして、いちばん大事なのが onUnmounted。部品が消えるときの*後片付け*ですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', playground: CV_LIFECYCLE, text: "このゲームでも、ゲーム画面が出たら Ctrl キーを見張りはじめて、消えたら見張りをやめているのだ。" },
+      { speaker: "ずんだもん", chara: 'zun_surprise', fx: "shake", text: "後片付けを忘れると、画面を何回も出し入れするたびに、見張り番がどんどん増えていくのだ！ メモリリークなのだ！" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["onMounted で始めたら", "onUnmounted で止める", "  addEventListener", "    → removeEventListener", "  setInterval → clearInterval", "  setTimeout → clearTimeout", "  fetch → AbortController"], text: "後片付けが必要なものですわ。" },
+      { speaker: "僕", chara: 'metan_normal', text: "「始めたものは、自分で終わらせるのか」" },
+    ],
+    next: 'lesson_menu_vue',
+  },
+
+  lesson_composable: {
+    place: { name: 'LESSON 09 コンポーザブル', time: '16:59' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000123',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "同じような処理を、いろいろな部品で使いたいことがあるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "そんなときは、ref や computed や関数をまとめて、1つの関数にしますの。それが*コンポーザブル*ですわ。名前は use〇〇 にするのが決まりですの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', playground: CV_COMPOSABLE, text: "このゲームでは、「見終わった授業」の記録がそうなのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', playground: CV_COMPOSABLE_USE, text: "使う側は、呼んで、ほしいものを受け取るだけですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "ref を関数の*外*に置くと、呼んだ部品どうしで同じ値を共有するのだ。*中*に置くと、呼ぶたびに別々の値になるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "ほかにも、このゲームの音（useSound）や音楽（useMusic）、記録室（useArchive）が、コンポーザブルになっていますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', terminal: ["コンポーザブル", "  ✔ ロジックの使い回し", "  ✔ 小さな共有", "Pinia", "  ✔ アプリ全体の状態", "  ✔ 開発者ツールで中身が見える", "✔ 中身がわかる名前を付ける"], text: "Pinia との使い分けなのだ。" },
+      { speaker: "僕", chara: 'zun_proud', text: "「部品じゃなくて、動きのほうを使い回すのか」" },
+    ],
+    next: 'lesson_menu_vue',
+  },
+
+  lesson_vue_transition: {
+    place: { name: 'LESSON 10 Transition', time: '17:01' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000124',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "v-if で出したり消したりすると、ふつうはパッと切りかわるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: 'vtransition', text: "<Transition> で囲むと、出るとき・消えるときに、Vue が自動で CSS のクラスを付けてくれますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: { type: 'vtransition', focus: 'enter' }, text: "出はじめは enter-from、出ているあいだは enter-active、消えおわりは leave-to……。このクラスに見た目を書けば、アニメーションになるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', playground: CV_VUE_TRANSITION, text: "このゲームで立ち絵がふわっと出てくるのも、これですのよ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', text: ":key を変えると、別のものとして入れかわるのだ。だから、キャラが変わったときだけフェードして、表情が変わったときはそのままにできるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "mode=\"out-in\" は「古いほうが消えてから、新しいほうを出す」。重なって見えないようにする指定ですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "一覧の並びかえは <TransitionGroup> を使うのだ。このゲームの図の中の選択肢が1つずつ増えるのも、それなのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 中に入れるのは1つだけ", "  （複数なら TransitionGroup）", "✔ v-if か v-show か :key で", "  出し入れする", "✔ 動きが苦手な人向けの", "  設定も忘れずに"], text: "Transition のコツですわ。" },
+      { speaker: "僕", chara: 'metan_normal', text: "「クラスの名前さえ覚えれば、CSS だけで動きを付けられるのか」" },
+    ],
+    next: 'lesson_menu_vue',
+  },
+
+  lesson_cssvars: {
+    place: { name: 'CSS+ 02 CSS 変数', time: '18:01' },
+    bg: 'roof_day',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000125',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "同じ色を、あちこちに何回も書いていると、変えるときに大変なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: [":root {", "  --brand: #ff7b00;", "}", ".button {", "  color: var(--brand);", "}"], text: "そこで *CSS 変数*。-- で始まる名前に値を入れて、var() で使いますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "変数は、親から子へ受けつがれるのだ。だから、親の変数を変えるだけで、中身の色をまとめて変えられるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', playground: CV_CSSVAR, text: "この授業の目次がまさにそう。編ごとに --accent だけを変えて、カードの線も光も番号も色が変わりますの。それに、JS から値を渡すこともできますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "マウスを動かすと舞台が回るのは、JS がマウスの位置を --mx に入れて、CSS がそれを使って回しているのだ。JS と CSS の受けわたしにも使えるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "ダークモードの切りかえも、変数の値を入れかえるだけ。色やすきまを変数にしておくのが、デザインをそろえるコツですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', terminal: ["✔ 色・すきま・角の丸みは変数に", "✔ 名前は役目で付ける", "  （--red より --danger）", "✔ var(--x, 0) で", "  なかったときの値を決める"], text: "CSS 変数のコツなのだ。" },
+      { speaker: "僕", chara: 'zun_proud', text: "「1か所変えれば、全部の色が変わるのか」" },
+    ],
+    next: 'lesson_menu_css2',
+  },
+
+  lesson_render: {
+    place: { name: 'WEB 05 描画のしくみ', time: '17:57' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000126',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', diagram: 'rendering', text: "ブラウザは、HTML と CSS から、どうやって画面を描いているのか。知っていると、「なぜ重いのか」がわかるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: { type: 'rendering', focus: 'parse' }, text: "まず HTML から DOM を、CSS から「どの要素にどんな見た目か」を作りますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: { type: 'rendering', focus: 'layout' }, text: "次に*レイアウト*。それぞれの箱の、位置と大きさを計算するのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', diagram: { type: 'rendering', focus: 'composite' }, text: "*ペイント*で色や文字を塗って、最後に*合成*で、重なった層を1枚にまとめますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_surprise', diagram: { type: 'rendering', focus: 'cheap' }, fx: "shake", text: "ここが大事なのだ！ 大きさや位置を変えると、レイアウトからやり直しになるのだ。でも transform や opacity なら、合成だけで済むのだ！" },
+      { speaker: "四国めたん", chara: 'metan_normal', playground: CV_RENDER, text: "JavaScript でも、読み書きの順番で重さが変わりますの。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "このゲームの演出も、ほとんど transform と opacity で動かしているのだ。たくさんの粒は Canvas に描いて、要素を増やさないようにしているのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', terminal: ["Core Web Vitals", "  LCP … 大事な絵が出るまで", "  INP … 押してから反応まで", "  CLS … 画面のガタつき", "✔ 開発者ツールの Performance", "  で、何に時間を使ったか見る", "✔ 測ってから直す"], text: "仕事で、速さを測るときの目安ですわ。" },
+      { speaker: "僕", chara: 'metan_smug', text: "「同じ動きでも、何を動かすかで重さがぜんぜんちがうのか」" },
+    ],
+    next: 'lesson_menu_web',
+  },
+
+  // ===================================================================
+  // Node.js 編
+  // ===================================================================
+
+  lesson_menu_node: {
+    bg: 'lab_night',
+    bgm: 'night',
+    ambient: 'stars',
+    meter: '0.000000',
+    lessonMenu: 'node', // components/LessonMenu.vue で目次を出す
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "*Node.js 編*なのだ。JavaScript を、ブラウザの外で動かす話なのだ。" },
+    ],
+    choices: NODE_MENU,
+  },
+
+  lesson_node_what: {
+    place: { name: 'NODE 01 Node.js とは', time: '20:40' },
+    bg: 'lab_night',
+    bgm: 'night',
+    ambient: 'stars',
+    meter: '0.000131',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', diagram: 'nodeworld', text: "JavaScript は、もともとブラウザの中で動く言葉だったのだ。それを*ブラウザの外*でも動かせるようにしたのが Node.js なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: { type: 'nodeworld', focus: 'engine' }, text: "言葉そのものは同じ。Chrome と同じ V8 というエンジンで動いていますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: { type: 'nodeworld', focus: 'node' }, text: "ちがうのは、使える道具なのだ。ブラウザには画面（document）や localStorage があって、Node にはファイル（fs）やサーバー（http）があるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', diagram: { type: 'nodeworld', focus: 'browser' }, text: "反対に、Node には画面がありませんから、document や window は使えませんわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "Node.js は、サーバーだけじゃなくて、*道具*を動かすのにも使われているのだ。npm も、Vite も、TypeScript の型チェックも、ぜんぶ Node の上で動いているのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', playground: CV_NODE_REAL, text: "このゲームも、ビルドや開発サーバーは Node.js で動いていますのよ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', terminal: ["得意", "  たくさんの通信を同時にさばく", "  （API・チャット・プロキシ）", "  フロントと同じ言葉で書ける", "苦手", "  重い計算（画像処理・機械学習）", "  → 別の言葉やサービスに任せる"], text: "Node が得意なことと、苦手なことなのだ。" },
+      { speaker: "僕", chara: 'zun_proud', text: "「フロントで覚えた JavaScript が、サーバーでも使えるのか」" },
+    ],
+    next: 'lesson_menu_node',
+  },
+
+  lesson_node_modules: {
+    place: { name: 'NODE 02 モジュール', time: '20:42' },
+    bg: 'lab_night',
+    bgm: 'night',
+    ambient: 'stars',
+    meter: '0.000132',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "Node.js のモジュールの書き方には、2種類あるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', playground: CV_NODE_MODULES, text: "いまの標準の *ESM*（import / export）と、昔からある *CommonJS*（require / module.exports）ですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "package.json に \"type\": \"module\" と書くと、.js のファイルが ESM として読まれるのだ。このゲームも、そう書いてあるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "古いライブラリや設定ファイルでは、まだ CommonJS を見かけますわ。ESM から CommonJS は読みこめますが、その逆は少し面倒ですの。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "組みこみの道具は、node:fs のように node: を付けるのがおすすめなのだ。npm から入れたものと見分けがつくのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 新しく書くなら ESM", "✔ \"type\": \"module\" をそろえる", "✔ 組みこみは node: を付ける", "✔ ESM では __dirname がない", "  → import.meta.dirname を使う"], text: "モジュールのコツですわ。" },
+      { speaker: "僕", chara: 'metan_normal', text: "「同じ import でも、決まりごとが2種類あるのか」" },
+    ],
+    next: 'lesson_menu_node',
+  },
+
+  lesson_node_io: {
+    place: { name: 'NODE 03 ノンブロッキング I/O', time: '20:44' },
+    bg: 'lab_night',
+    bgm: 'night',
+    ambient: 'stars',
+    meter: '0.000133',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', diagram: 'nodeloop', text: "JavaScript の手は1本だったのだ。それなのに、Node.js のサーバーは、何千人ものリクエストを同時にさばけるのだ。どうしてなのだ？" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: { type: 'nodeloop', focus: 'libuv' }, text: "答えは、*待つ仕事を手放す*こと。ファイルを読む・データベースの返事を待つ・通信する……。そういう待ち時間は、OS や裏のスレッドに任せますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: { type: 'nodeloop', focus: 'queue' }, text: "終わったら、続きの仕事が列に並ぶのだ。メインの手は、待たずに次のリクエストに取りかかれるのだ。非同期 JS 編のイベントループと同じなのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', playground: CV_NODE_BLOCKING, text: "だから、手を止めてしまう書き方は、サーバーでは大問題ですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_surprise', fx: "shake", text: "readFileSync みたいに Sync が付いた関数は、終わるまで手が止まるのだ！ その間、ほかのお客さんも全員待たされるのだ！" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "起動するときに1回だけ設定を読む、のような場面なら Sync でもかまいません。リクエストのたびに動くところでは、使わないことですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "重い計算も同じなのだ。どうしても必要なら、worker_threads で別の手を借りるか、別のサービスに任せるのだ。" },
+      { speaker: "僕", chara: 'zun_normal', text: "「1本の手でも、待たなければ、たくさんの人をさばけるのか」" },
+    ],
+    next: 'lesson_menu_node',
+  },
+
+  lesson_node_stream: {
+    place: { name: 'NODE 04 ストリーム', time: '20:46' },
+    bg: 'lab_night',
+    bgm: 'night',
+    ambient: 'stars',
+    meter: '0.000134',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "大きなファイルを全部メモリに読みこむと、サーバーのメモリがいっぱいになって、落ちてしまうのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: 'streamflow', text: "そこで*ストリーム*。データを小さなかたまりに分けて、少しずつ流しますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: { type: 'streamflow', focus: 'pipe' }, text: "読む・圧縮する・送る、をつなげておけば、かたまりが順番に流れていくのだ。メモリは少しだけで済むのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', playground: CV_NODE_STREAM, text: "コードにすると、こうですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "受け取る側が追いつかないときは、読むほうが待ってくれるのだ。これを*背圧*っていうのだ。pipeline を使えば、自動でやってくれるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "HTTP のリクエストもレスポンスも、じつはストリームですの。動画の配信や、大きな CSV の書き出しでよく使いますわ。" },
+      { speaker: "僕", chara: 'metan_normal', text: "「一気に運ばずに、流れ作業にするのか」" },
+    ],
+    next: 'lesson_menu_node',
+  },
+
+  lesson_node_http: {
+    place: { name: 'NODE 05 HTTP サーバーとミドルウェア', time: '20:48' },
+    bg: 'lab_night',
+    bgm: 'night',
+    ambient: 'stars',
+    meter: '0.000135',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', playground: CV_NODE_HTTP, text: "Node.js には、HTTP サーバーの道具が最初から入っているのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "でも、URL ごとの振り分けや、JSON の読みこみを全部自分で書くのは大変。だから仕事では、Express・Fastify・Hono などのフレームワークを使いますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: 'middleware', text: "フレームワークの中心にあるのが*ミドルウェア*なのだ。リクエストが、順番に関所を通っていくのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', diagram: { type: 'middleware', focus: 'auth' }, text: "JSON を読む関所、ログを残す関所、ログインを確かめる関所……。どこかで止めれば、そこでおしまいですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', diagram: { type: 'middleware', focus: 'error' }, text: "エラーは、最後の受け皿でまとめて受け止めるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', playground: CV_NODE_MIDDLEWARE, text: "Express のコードでは、こう書きますの。" },
+      { speaker: "ずんだもん", chara: 'zun_surprise', fx: "shake", text: "順番がとっても大事なのだ！ ログインの確認を、本番の処理より後に書いたら、確認する前に処理されちゃうのだ！" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "Express 5 からは、async の関数で起きたエラーも、自動でエラーの受け皿に届くようになりましたわ。古い 4 では、自分で next(err) を呼ぶ必要がありましたの。" },
+      { speaker: "僕", chara: 'metan_smug', text: "「関所を並べる順番が、そのまま守りの順番になるのか」" },
+    ],
+    next: 'lesson_menu_node',
+  },
+
+  lesson_node_errors: {
+    place: { name: 'NODE 06 エラーと止まり方', time: '20:50' },
+    bg: 'lab_night',
+    bgm: 'night',
+    ambient: 'stars',
+    meter: '0.000136',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "サーバーのプログラムは、ずっと動き続けるのだ。だから、エラーが起きたときと、止めるときの作法が大事なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', playground: CV_NODE_ERRORS, text: "だれも受け止めなかったエラーは、Node.js のプロセスを落とします。落ちたら、記録して、きちんと終わらせて、作り直してもらうのが基本ですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_surprise', fx: "glitch", text: "エラーを無視して動かし続けると、こわれた状態のまま動いて、もっと大変なことになるのだ！" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "作り直す係は、コンテナなら ECS や Kubernetes、サーバーなら systemd や pm2 ですの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "止めるときは、新しい受付をやめて、処理中のリクエストを終えてから止まるのだ。バックエンド編の SIGTERM の話なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "そして、終わり方の番号。0 なら成功、それ以外は失敗。CI もコンテナも、この番号で「うまくいったか」を判断しますの。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ 受け止めたら、記録して", "  適切に返す（握りつぶさない）", "✔ 想定外なら、落ちて作り直す", "✔ 予想できる失敗は", "  4xx でていねいに返す", "✔ 失敗したら 0 以外で終わる"], text: "エラー処理のコツなのだ。" },
+      { speaker: "僕", chara: 'zun_normal', text: "「落ちないように作るより、落ちても大丈夫なように作るのか」" },
+    ],
+    next: 'lesson_menu_node',
+  },
+
+  lesson_node_tools: {
+    place: { name: 'NODE 07 バージョンと道具', time: '20:52' },
+    bg: 'lab_night',
+    bgm: 'night',
+    ambient: 'stars',
+    meter: '0.000137',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "Node.js は、半年ごとに新しい版が出るのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "仕事で使うのは *LTS*（長くサポートされる版）。偶数の番号の版が、LTS になりますの。このゲームを作っているパソコンでは、24 を使っていますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', playground: CV_NODE_TOOLS, text: "人によってバージョンがちがうと、「ボクのパソコンでは動くのに」が起きるのだ。だから、チームでそろえるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "nvm・fnm・Volta などの道具を使うと、プロジェクトごとにバージョンを切りかえられますわ。.nvmrc を読んで、自動でそろえてくれますの。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "最近の Node は、前は別の道具が必要だったことが、最初からできるようになっているのだ。保存したら再起動する --watch、テストの --test、.env を読む --env-file なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ LTS を使う", "✔ サポートが終わる前に上げる", "✔ CI・本番・手元でそろえる", "  （Dockerfile の FROM も）", "✔ 上げたら、テストを全部通す"], text: "Node のバージョンアップの心得ですわ。" },
+      { speaker: "僕", chara: 'metan_normal', text: "「道具のバージョンも、チームの約束ごとなのか」" },
+      { speaker: "ずんだもん", chara: 'zun_smile', text: "これで、フロントからサーバーまで、同じ JavaScript で書けるのだ！ バックエンド編に進むと、もっと実践的になるのだ。" },
+    ],
+    next: 'lesson_menu_node',
+  },
+  lesson_ts_narrow: {
+    place: { name: 'TS 04 型の絞りこみ', time: '17:30' },
+    bg: 'lab_night',
+    bgm: 'night',
+    ambient: 'stars',
+    meter: '0.000141',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "union 型は「どれか1つ」だったのだ。でも、使うときには「いまはどれなのか」を知りたいのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: { type: 'tsnarrow', focus: 'union' }, text: "if や switch で確かめると、TypeScript がその先の型を自動で*絞りこみ*ますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: { type: 'tsnarrow', focus: 'branch' }, text: "いちばん便利なのは、type のような「見分けるための項目」を全部の形に付けておくことなのだ。*判別可能な union* っていうのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', playground: CV_TS_NARROW, text: "このゲームのカットインの書き方を、型にするとこうですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_surprise', diagram: { type: 'tsnarrow', focus: 'never' }, fx: "shake", text: "最後の never がすごいのだ！ 新しい種類のカットインを足したのに、switch に書きわすれたら、エラーで教えてくれるのだ！" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["typeof x === 'string'", "Array.isArray(x)", "'angle' in x", "x instanceof Error", "x !== null"], text: "ほかの絞りこみ方ですわ。" },
+      { speaker: "僕", chara: 'metan_normal', text: "「確かめた先では、安心してその項目を使えるのか」" },
+    ],
+    next: 'lesson_menu_ts',
+  },
+
+  lesson_ts_util: {
+    place: { name: 'TS 05 ユーティリティ型', time: '17:30' },
+    bg: 'lab_night',
+    bgm: 'night',
+    ambient: 'stars',
+    meter: '0.000141',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "同じような型を、何回も書くのはめんどうなのだ。型から型を作る道具があるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', playground: CV_TS_UTIL, text: "*ユーティリティ型*。Partial・Pick・Omit・Record あたりは、仕事で毎日のように見ますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "as const を付けると、配列の中身が「ただの文字」じゃなくて、「その文字そのもの」の型になるのだ。そこから union 型を作れるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "satisfies は「この型に合っているか確かめて。でも、細かい型は消さないで」という意味。設定やデータの表を書くときに便利ですの。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ 型の元は1か所にして", "  そこから作る", "✔ 何でも Partial にしない", "  （必須のものは必須に）", "✔ 型パズルに凝りすぎない", "  （読めることが大事）"], text: "型の道具のコツなのだ。" },
+      { speaker: "僕", chara: 'zun_normal', text: "「型も、コードと同じで使い回せるのか」" },
+    ],
+    next: 'lesson_menu_ts',
+  },
+
+  lesson_form: {
+    place: { name: 'CSS 07 フォーム', time: '17:30' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000141',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "入力してもらう画面、*フォーム*なのだ。ログイン・登録・検索……どのサービスにもあるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "大事なのは、<label> と入力欄をつなぐこと。ラベルを押しても入力欄が選ばれますし、読み上げソフトにも名前が伝わりますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', terminal: ["type=\"email\"    … @ が出る", "type=\"tel\"      … 数字のキー", "type=\"number\"   … 数だけ", "type=\"password\" … 伏せ字", "type=\"date\"     … カレンダー", "autocomplete=\"email\"", "  … ブラウザの自動入力"], text: "入力の種類を正しく書くと、スマホでぴったりのキーボードが出るのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', playground: PG_FORM, text: "required や pattern を付ければ、ブラウザが送る前にチェックしてくれますの。やってみましょう。" },
+      { speaker: "ずんだもん", chara: 'zun_surprise', fx: "shake", text: "でも！ ブラウザのチェックは、かんたんにすり抜けられるのだ。サーバーでも必ずチェックするのだ！" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ <label for> でつなぐ", "✔ エラーは欄のそばに、", "  何が悪いか具体的に", "✔ 送信中はボタンを押せなく", "  （二重送信を防ぐ）", "✔ 入力した内容を消さない", "✔ チェックはサーバーでも"], text: "フォームのコツですわ。" },
+      { speaker: "僕", chara: 'metan_normal', text: "「入力しやすさも、作る人の仕事なのか」" },
+    ],
+    next: 'lesson_menu_css',
+  },
+
+  lesson_a11y: {
+    place: { name: 'CSS 08 アクセシビリティ', time: '17:30' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000141',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "画面は、目で見てマウスで使う人だけのものじゃないのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "キーボードだけで使う人、読み上げソフトで聞く人、色が見分けにくい人、文字を大きくしている人……。だれでも使えるようにするのが*アクセシビリティ*ですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "いちばん大事なのは、*意味に合ったタグ*を使うことなのだ。<button> なら、Tab キーで選べて、Enter で押せて、読み上げで「ボタン」と伝わるのだ。<div> だと、どれも自分で作らないといけないのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', playground: PG_A11Y, text: "直してみましょう。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ Tab キーだけで操作できる", "✔ 選んでいる場所の枠が見える", "✔ 画像に alt（飾りなら alt=\"\"）", "✔ 文字と背景の色の差", "✔ 色だけで情報を伝えない", "✔ 文字を200%にしても崩れない"], text: "チェックするところなのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "aria- の属性は、最後の手段。まずはふさわしいタグを使うこと。Lighthouse や axe という道具で、自動でも調べられますわ。" },
+      { speaker: "僕", chara: 'metan_normal', text: "「<div> を <button> にするだけで、使える人が増えるのか」" },
+    ],
+    next: 'lesson_menu_css',
+  },
+
+  lesson_lint: {
+    place: { name: 'TOOLS 05 ESLint と Prettier', time: '17:30' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000141',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "人によって書き方がバラバラだと、レビューで「ここに空白を」「セミコロンが」と言い合いになるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', playground: CV_ESLINT, text: "見た目は *Prettier*、まちがいやすい書き方は *ESLint* に任せますの。人は、中身の話に集中できますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "ESLint は、使っていない変数や、await の書きわすれ、Vue のよくないお作法を見つけてくれるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "エディタで保存したときに自動でかけて、CI でも npm run lint を動かす。通らなければマージできないようにしますの。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ ルールはチームで決めて固定", "✔ 保存時に自動で整える", "✔ CI でも必ず動かす", "✔ 警告を放置しない", "  （増えると全部無視される）", "✔ 無効にするときは理由を書く"], text: "道具のコツなのだ。" },
+      { speaker: "僕", chara: 'zun_normal', text: "「書き方の好みは、機械に決めてもらうのか」" },
+    ],
+    next: 'lesson_menu_tools',
+  },
+
+  lesson_git: {
+    place: { name: 'TOOLS 06 Git と GitHub', time: '17:30' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000141',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "Git は、コードの*歴史*を記録する道具なのだ。いつ・だれが・何を・なぜ変えたかが、全部残るのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: { type: 'gitflow', focus: 'branch' }, text: "チームでは、main に直接書きこまず、*ブランチ*を作って作業しますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: { type: 'gitflow', focus: 'pr' }, text: "作業がまとまったら、GitHub で*プルリクエスト*を出して、ほかの人に見てもらうのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', diagram: { type: 'gitflow', focus: 'merge' }, text: "CI のテストが通って、レビューで OK が出たら、main にマージ。そのあと自動で公開される……このゲームの GitHub Pages も、この流れですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', playground: CV_GIT, text: "毎日使うコマンドは、だいたいこれなのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "同じ場所を2人が変えると*コンフリクト*が起きます。あわてず、両方の変更を見比べて、正しい形に直してからコミットしますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', terminal: ["✔ 1つのコミットに1つの変更", "✔ メッセージに「なぜ」を書く", "✔ PR は小さく（読める量に）", "✔ 秘密を絶対にコミットしない", "✔ main への強制 push はしない", "✔ レビューは人ではなくコードに"], text: "コミットとプルリクエストのコツなのだ。" },
+      { speaker: "僕", chara: 'zun_proud', text: "「歴史が残るから、こわがらずに変えられるのか」" },
+    ],
+    next: 'lesson_menu_tools',
+  },
+
+  // ===================================================================
+  // ソフトウェア設計編
+  // ===================================================================
+
+  lesson_menu_design: {
+    bg: 'lab_evening',
+    bgm: 'evening',
+    ambient: 'dust',
+    meter: '0.000000',
+    lessonMenu: 'design', // components/LessonMenu.vue で目次を出す
+    lines: [
+      { speaker: "四国めたん", chara: 'metan_smug', text: "*ソフトウェア設計編*ですわ。動くコードの、その先のお話ですの。" },
+    ],
+    choices: DESIGN_MENU,
+  },
+
+  lesson_ds_good: {
+    place: { name: 'DESIGN 01 良い設計とは', time: '19:00' },
+    bg: 'lab_evening',
+    bgm: 'evening',
+    ambient: 'dust',
+    meter: '0.000151',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "動くコードは、だれでもいつかは書けるようになるのだ。でも仕事のコードは、何年も*書きかえられ続ける*のだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "だから設計の目標は、*変えやすいこと*。「ここを直したい」と思ったとき、直す場所がすぐわかって、ほかが壊れないことですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: 'cohesion', text: "そのための2つのものさしが、*凝集*と*結合*なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', diagram: { type: 'cohesion', focus: 'high' }, text: "凝集は「1つの部品の中身が、同じ目的でまとまっているか」。高いほどよいですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', diagram: { type: 'cohesion', focus: 'low' }, text: "結合は「部品どうしが、どれだけ深く知り合っているか」なのだ。低いほどよいのだ。相手の中身を知りすぎていると、相手を直したとき、こっちも壊れるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: { type: 'cohesion', focus: 'bad' }, text: "悪い例も見ておきましょう。なんでも知っている部品、あちこちから同じデータを書きかえる設計……。直すたびに別の場所が壊れますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', terminal: ["✔ 何を直すか、どこを見ればいい？", "✔ 1つ直すと、何か所変わる？", "✔ その部品だけテストできる？", "✔ 名前で中身がわかる？", "✔ 新しい人が読んでわかる？"], text: "いい設計かを確かめる質問なのだ。" },
+      { speaker: "僕", chara: 'zun_proud', text: "「動くかどうかより、直しやすいかどうかなのか」" },
+    ],
+    next: 'lesson_menu_design',
+  },
+
+  lesson_ds_srp: {
+    place: { name: 'DESIGN 02 役目を分ける', time: '19:00' },
+    bg: 'lab_evening',
+    bgm: 'evening',
+    ambient: 'dust',
+    meter: '0.000151',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "設計のいちばんの基本は、*役目を分ける*ことなのだ。1つの部品には、1つの役目なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', playground: CV_DS_SRP, text: "画面・通信・計算・保存が、1つの関数にまざっていると、どれか1つを変えるだけでも全部を読むことになりますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "計算の係は、入力から出力を返すだけの*純粋な関数*にしておくのだ。画面も通信もいらないから、テストがとっても簡単なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', diagram: 'layers2', text: "大きく分けると、たいていのアプリは*層*になっていますの。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', diagram: { type: 'layers2', focus: 'ui' }, text: "画面の層は、見せることと、操作を受け取ることだけなのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: { type: 'layers2', focus: 'domain' }, text: "真ん中に、そのアプリならではの決まりごと。このゲームなら「選び方からエンディングを決める」がそうですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: { type: 'layers2', focus: 'data' }, text: "いちばん下が、データを取ってくる・しまう層なのだ。API や localStorage なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "上の層は下の層を使ってよいけれど、下から上は呼ばない。この向きを守ると、画面を作りかえても、決まりごとはそのまま使えますの。" },
+      { speaker: "僕", chara: 'metan_smug', text: "「係を分けておけば、1人を入れかえても全員は困らないのか」" },
+    ],
+    next: 'lesson_menu_design',
+  },
+
+  lesson_ds_di: {
+    place: { name: 'DESIGN 03 依存の向き', time: '19:00' },
+    bg: 'lab_evening',
+    bgm: 'evening',
+    ambient: 'dust',
+    meter: '0.000151',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "「セーブは localStorage に保存する」と、コードの中に直接書いたとするのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: { type: 'depinv', focus: 'before' }, text: "あとで「クラウドに保存したい」となったら、セーブに関わる場所を全部書きかえることに。テストのときも、本物の localStorage が必要になりますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: { type: 'depinv', focus: 'after' }, text: "そこで、「保存できるもの」を*外から渡す*のだ。中の処理は「何かに保存する」とだけ知っていて、それが何かは知らないのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', playground: CV_DS_DI, text: "コードにすると、こうですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "これを*依存性の注入*っていうのだ。入れかえられるから、テストではニセモノを渡して、中身を確かめられるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "大事なのは「変わりやすいもの」を、外側に押し出すこと。保存先・通信・時刻・乱数……。こういうものを直接さわる場所を、少なくしますの。" },
+      { speaker: "ずんだもん", chara: 'zun_surprise', fx: "shake", text: "でも、なんでもかんでも入れかえられるようにすると、かえって読みにくくなるのだ！ 本当に入れかえるものだけにするのだ。" },
+      { speaker: "僕", chara: 'zun_surprise', text: "「直接つながず、つなぎ口を決めておくのか」" },
+    ],
+    next: 'lesson_menu_design',
+  },
+
+  lesson_ds_state: {
+    place: { name: 'DESIGN 04 状態の置き場所', time: '19:00' },
+    bg: 'lab_evening',
+    bgm: 'evening',
+    ambient: 'dust',
+    meter: '0.000151',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "アプリの不具合の多くは、*状態*（いまの値）の置き場所をまちがえることで起きるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: { type: 'statehome', focus: 'source' }, text: "同じ値を2か所に持つと、片方だけ更新されて、ずれてしまいますの。だから、同じ情報は*1か所*に。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', playground: CV_DS_DERIVED, text: "ほかの値から計算できるものは、持たずに*計算*するのだ。このゲームの「見たエンディングの数」も、覚えているんじゃなくて、記録から毎回数えているのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', diagram: 'statehome', text: "置き場所の目安ですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', diagram: { type: 'statehome', focus: 'local' }, text: "その部品の中だけで使うものは、部品の ref なのだ。入力中の文字や、開いているかどうかなのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: { type: 'statehome', focus: 'server' }, text: "画面をまたいで使うものはストア。サーバーにある本当のデータは、サーバーが持ち主ですわ。画面にあるのは、その写しにすぎませんの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: { type: 'statehome', focus: 'url' }, text: "URL に入れておくと便利なものもあるのだ。検索の言葉や、何ページ目かなのだ。再読み込みしても消えないし、人に送れるのだ。" },
+      { speaker: "僕", chara: 'zun_proud', text: "「値の持ち主を決めておけば、ずれないのか」" },
+    ],
+    next: 'lesson_menu_design',
+  },
+
+  lesson_ds_data: {
+    place: { name: 'DESIGN 05 データで動かす', time: '19:00' },
+    bg: 'lab_evening',
+    bgm: 'evening',
+    ambient: 'dust',
+    meter: '0.000151',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', diagram: 'datadriven', text: "このゲームの設計の、いちばん大事な考え方を紹介するのだ。*中身はデータ、動かし方はコード*なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', playground: CV_DS_DATA, text: "セリフ・選択肢・演出は、ぜんぶ scenario.js というデータ。ゲームのエンジンは、それを読んで画面に出すだけですの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: { type: 'datadriven', focus: 'data' }, text: "だから話を足すときは、データを書くだけなのだ。この授業の100個以上のセリフも、図も、ムービーも、ぜんぶデータなのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', diagram: { type: 'datadriven', focus: 'check' }, text: "書き方が決まっているので、データが正しいかを機械で調べることもできますわ。この授業を作るときも、背景の名前や図の名前がまちがっていないか、毎回自動で確かめていましたの。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', diagram: { type: 'datadriven', focus: 'engine' }, text: "新しい演出がほしくなったら、エンジンに「fx: leak と書いたら光漏れ」という機能を1つ足すのだ。あとは、どのセリフでも使えるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 書き方の説明を残す", "  （scenario.js の先頭のように）", "✔ データを機械でチェックする", "✔ 何でもデータにしない", "  （複雑な処理はコードで）", "✔ データの形を変えるときは", "  全部をまとめて直す"], text: "気をつけたいところですわ。" },
+      { speaker: "僕", chara: 'metan_normal', text: "「エンジンとシナリオを分けたから、こんなに授業を増やせたのか」" },
+    ],
+    next: 'lesson_menu_design',
+  },
+
+  lesson_ds_principles: {
+    place: { name: 'DESIGN 06 原則とアンチパターン', time: '19:00' },
+    bg: 'lab_evening',
+    bgm: 'evening',
+    ambient: 'dust',
+    meter: '0.000151',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["DRY  同じ知識を2か所に書かない", "KISS できるだけシンプルに", "YAGNI いま要らないものは作らない", "SOLID", "  S 1つの役目", "  O 足すのは楽・中は変えない", "  L 入れかえても動く", "  I 使うものだけ見せる", "  D 具体ではなく約束に頼る"], text: "設計には、昔からの知恵をまとめた*原則*があるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "ただし、原則は道具。DRY を守ろうとして、たまたま似ているだけのものを無理にまとめると、かえって直しにくくなりますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "「同じ*理由*で変わるものだけをまとめる」のがコツなのだ。見た目が似ていても、変わる理由がちがうなら、別々のままでいいのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', terminal: ["✕ 神クラス", "  何でも知っている巨大な部品", "✕ 早すぎる共通化", "  使い道が1つなのに部品化", "✕ 設定だらけ", "  何でも切りかえられる", "✕ コピペの山", "✕ どこからでも書きかえる値"], text: "よくある悪い形、*アンチパターン*も覚えておきましょう。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "迷ったら、まずはシンプルに書いて、同じことが3回出てきたら、まとめることを考えるのだ。" },
+      { speaker: "僕", chara: 'zun_normal', text: "「原則を守ること自体が目的じゃないのか」" },
+    ],
+    next: 'lesson_menu_design',
+  },
+
+  lesson_ds_arch: {
+    place: { name: 'DESIGN 09 アーキテクチャと進め方', time: '19:00' },
+    bg: 'lab_evening',
+    bgm: 'evening',
+    ambient: 'dust',
+    meter: '0.000151',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', diagram: 'archstyles', text: "アプリ全体の大きな形を、*アーキテクチャ*っていうのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: { type: 'archstyles', focus: 'mono' }, text: "1つのアプリに全部入れる*モノリス*。わかりやすく、最初はこれで十分ですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: { type: 'archstyles', focus: 'micro' }, text: "機能ごとに別々のサービスに分ける*マイクロサービス*は、チームが大きくなったときに効くのだ。でも、通信・監視・データの整合など、大変なことが一気に増えるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "まずはモノリスの中で、きれいに役目を分けておく。必要になってから分けるのが、仕事ではよくある進め方ですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', playground: CV_DS_ADR, text: "大事な設計の判断は、*理由*といっしょに残しておくのだ。ADR（設計判断の記録）なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "そして設計は、一度決めたら終わりではありませんの。動きを変えずに中の作りを直す*リファクタリング*を、少しずつ続けますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', terminal: ["✔ 作る前に、紙や図で考える", "✔ 大事な判断は ADR に残す", "✔ 設計もレビューしてもらう", "✔ リファクタリングは小さく", "  テストで守りながら", "✔ 機能追加とまぜない"], text: "設計を進めるときのコツなのだ。" },
+      { speaker: "僕", chara: 'zun_proud', text: "「設計は、作りながら育てていくものなのか」" },
+      { speaker: "ずんだもん", chara: 'zun_gentle', fx: "leak", speed: "slow", text: "このゲームも、最初はもっと小さかったのだ。少しずつ形を変えながら、ここまで来たのだ。" },
+    ],
+    next: 'lesson_menu_design',
+  },
+
+  // ===================================================================
+  // 有名なライブラリ編
+  // ===================================================================
+
+  lesson_menu_eco: {
+    bg: 'classroom_evening',
+    bgm: 'evening',
+    ambient: 'dust',
+    meter: '0.000000',
+    lessonMenu: 'eco', // components/LessonMenu.vue で目次を出す
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "*有名なライブラリ編*なのだ。仕事の会話でよく出てくる名前を、地図にして覚えるのだ。" },
+    ],
+    choices: ECO_MENU,
+  },
+
+  lesson_eco_map: {
+    place: { name: 'LIB 01 全体の地図', time: '18:30' },
+    bg: 'classroom_evening',
+    bgm: 'evening',
+    ambient: 'dust',
+    meter: '0.000161',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', diagram: 'ecomap', text: "Web の世界には、ライブラリやフレームワークが*星の数ほど*あるのだ。全部覚える必要はないのだ。でも「どれが何をする道具か」の地図があると、会話についていけるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: { type: 'ecomap', focus: 'front' }, text: "まずは画面を作る道具。React・Vue・Svelte・Angular ですわ。このゲームは Vue ですの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: { type: 'ecomap', focus: 'meta' }, text: "それを土台に、ページや URL やサーバーの処理までまとめたのが、Next.js や Nuxt のような*メタフレームワーク*なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', diagram: { type: 'ecomap', focus: 'app' }, text: "Web の技術で、パソコンやスマホのアプリも作れますの。Electron・Tauri・React Native・Capacitor などですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', diagram: { type: 'ecomap', focus: 'server' }, text: "サーバー側には Express・NestJS・Hono、データベースには Prisma や Drizzle があるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: { type: 'ecomap', focus: 'tools' }, text: "そして、作るのを支える道具。Vite でビルド、Vitest や Playwright でテスト、ESLint で点検ですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', terminal: ["ライブラリ", "  自分のコードから呼んで使う道具", "  （例：zod・dayjs）", "フレームワーク", "  決まった形に自分のコードを", "  はめこむ土台（例：Nuxt）", "「呼ぶ」か「呼ばれる」かのちがい"], text: "言葉の整理なのだ。" },
+      { speaker: "僕", chara: 'zun_proud', text: "「名前を聞いたら、地図のどこにあるか考えればいいのか」" },
+    ],
+    next: 'lesson_menu_eco',
+  },
+
+  lesson_eco_front: {
+    place: { name: 'LIB 02 フロントのフレームワーク', time: '18:30' },
+    bg: 'classroom_evening',
+    bgm: 'evening',
+    ambient: 'dust',
+    meter: '0.000161',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', playground: CV_ECO_FRAMEWORKS, text: "画面を作るフレームワークの代表は、4つなのだ。同じ部品を書きくらべてみるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "*React* は Meta（旧 Facebook）が作った、いちばん使われているもの。HTML のような JSX を JavaScript の中に書きますの。仲間の道具や求人がとても多いですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "*Vue* は、このゲームなのだ。HTML・CSS・JS を1つのファイルに分けて書けて、はじめての人にもわかりやすいのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "*Svelte* はコンパイラで、ビルドのときにふつうの JavaScript に変えてしまいますの。動くときの道具が小さく、速いですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "*Angular* は Google が作った、全部入りのフレームワークなのだ。ルーターもフォームも通信も最初から入っていて、大きな会社のシステムでよく使われるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "最近はどれも「値が変わったところだけ画面を書きかえる」しくみ（シグナル）に近づいていますの。1つをしっかり覚えれば、ほかも読めますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', terminal: ["React   … 利用者・情報が最多", "Vue     … わかりやすい・日本で人気", "Svelte  … 小さく速い", "Angular … 全部入り・大規模向け", "どれも「部品＋状態＋画面」"], text: "くらべるとこうなのだ。" },
+      { speaker: "僕", chara: 'zun_proud', text: "「書き方はちがっても、考え方は同じなのか」" },
+    ],
+    next: 'lesson_menu_eco',
+  },
+
+  lesson_eco_meta: {
+    place: { name: 'LIB 03 メタフレームワーク', time: '18:30' },
+    bg: 'classroom_evening',
+    bgm: 'evening',
+    ambient: 'dust',
+    meter: '0.000161',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["React  → Next.js・Remix", "Vue    → Nuxt", "Svelte → SvelteKit", "どれでも → Astro（記事向き）"], text: "React や Vue だけだと、ページの切りかえやサーバーの処理は、自分で組み合わせることになるのだ。それをまとめてくれるのが*メタフレームワーク*なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: 'rendermode', text: "いちばんの違いは、HTML を*どこで作るか*ですの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: { type: 'rendermode', focus: 'csr' }, text: "このゲームは *CSR*。空っぽの HTML を送って、ブラウザの JavaScript が画面を作るのだ。ゲームみたいな動く画面に向いているのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', diagram: { type: 'rendermode', focus: 'ssr' }, text: "*SSR* は、リクエストのたびにサーバーで HTML を作って送りますわ。最初の表示が速く、検索エンジンにも内容が伝わりますの。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', diagram: { type: 'rendermode', focus: 'ssg' }, text: "*SSG* は、ビルドのときに HTML を全部作っておくのだ。ブログや説明書のように、あまり変わらないページに向いているのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', playground: CV_ECO_NUXT, text: "Nuxt なら、ファイルを置くだけで URL になり、同じプロジェクトに API まで書けますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', terminal: ["✔ 検索に出したい・速く見せたい", "  → SSR / SSG", "✔ ログイン後の管理画面・ゲーム", "  → CSR でも十分", "✔ ページごとに混ぜられる", "  フレームワークも多い"], text: "選び方なのだ。" },
+      { speaker: "僕", chara: 'zun_proud', text: "「どこで HTML を作るかで、向いているものが変わるのか」" },
+    ],
+    next: 'lesson_menu_eco',
+  },
+
+  lesson_eco_desktop: {
+    place: { name: 'LIB 04 デスクトップアプリ', time: '18:30' },
+    bg: 'classroom_evening',
+    bgm: 'evening',
+    ambient: 'dust',
+    meter: '0.000161',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', diagram: 'desktop', text: "VS Code・Slack・Discord・Figma のデスクトップ版……。これ、じつは中身が *Web の技術*なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: { type: 'desktop', focus: 'electron' }, text: "代表が *Electron*。Chromium（Chrome の中身）と Node.js を、アプリの中にまるごと入れて配りますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "どのパソコンでも同じ Chrome で動くから、見た目のちがいで困らないのだ。Node.js の道具もそのまま使えるのだ。でも、アプリの大きさが 100MB をこえることも多いし、メモリもたくさん使うのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', playground: CV_ELECTRON, text: "画面（renderer）と、OS の機能を使う main プロセスに分かれていて、その間を preload という「橋」でつなぎますの。" },
+      { speaker: "ずんだもん", chara: 'zun_surprise', diagram: { type: 'desktop', focus: 'bridge' }, fx: "shake", text: "ここは大事なのだ！ 画面から Node.js を直接使えるようにすると、XSS が1つあっただけで、パソコンのファイルを消されたりするのだ！ contextIsolation は必ず有効にして、渡す機能をしぼるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: { type: 'desktop', focus: 'tauri' }, text: "もう一方が *Tauri*。Chromium を入れずに、OS にもともとある WebView（Windows なら Edge の中身）を使いますの。裏の処理は Rust で書きますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', playground: CV_TAURI, text: "だからアプリがすごく小さいのだ。数 MB くらいで作れることもあるのだ。使ってよい機能を1つずつ許可するしくみで、安全にも気をつかっているのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "その代わり、OS ごとに WebView がちがうので、見た目や動きが少しずれることがありますの。Rust を書く人も必要ですわ。Tauri 2 からはスマホにも対応しましたの。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["Electron", "  ✔ どこでも同じ表示・情報が多い", "  ✔ 大きい・メモリを使う", "Tauri", "  ✔ 小さい・軽い・許可制", "  ✔ OS で表示が少しちがう", "  ✔ 裏の処理は Rust"], text: "どちらも、このゲームの dist をそのまま中に入れれば、デスクトップアプリにできるのだ。" },
+      { speaker: "僕", chara: 'zun_normal', text: "「Web の画面に、アプリの殻をかぶせているのか」" },
+    ],
+    next: 'lesson_menu_eco',
+  },
+
+  lesson_eco_mobile: {
+    place: { name: 'LIB 05 スマホアプリ', time: '18:30' },
+    bg: 'classroom_evening',
+    bgm: 'evening',
+    ambient: 'dust',
+    meter: '0.000161',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', diagram: 'mobile', text: "スマホアプリを作る道具も、いろいろあるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: { type: 'mobile', focus: 'rn' }, text: "*React Native* は、React の書き方で、本物のスマホの部品を動かしますの。画面の見た目は iPhone と Android それぞれのものになりますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: { type: 'mobile', focus: 'flutter' }, text: "*Flutter* は Google の道具なのだ。Dart という言葉で書いて、画面を全部自分で描くから、どの機種でも同じ見た目になるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', diagram: { type: 'mobile', focus: 'capacitor' }, text: "*Capacitor* は、Web の画面をそのままアプリの中で表示しますの。今ある Web アプリを、いちばん少ない手間でアプリにできますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', diagram: { type: 'mobile', focus: 'pwa' }, text: "そして *PWA*。アプリストアを通さずに、Web のままホーム画面に置けて、オフラインでも動くようにできるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ すでに Web がある・小さく始める", "  → PWA・Capacitor", "✔ React に慣れたチーム", "  → React Native（Expo）", "✔ 見た目を細かく作りこむ", "  → Flutter", "✔ カメラ・通知など本物の機能が", "  たくさん必要 → ネイティブも検討"], text: "選ぶときの目安ですわ。" },
+      { speaker: "僕", chara: 'metan_normal', text: "「Web の知識が、スマホでもかなり使えるのか」" },
+    ],
+    next: 'lesson_menu_eco',
+  },
+
+  lesson_eco_ui: {
+    place: { name: 'LIB 06 UI・状態・データ取得', time: '18:30' },
+    bg: 'classroom_evening',
+    bgm: 'evening',
+    ambient: 'dust',
+    meter: '0.000161',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "画面の見た目を作る道具も人気なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["<button class=\"px-4 py-2", "  rounded bg-orange-500", "  text-white hover:bg-orange-600\">", "  START", "</button>"], text: "*Tailwind CSS* は、class に「flex」「p-4」「text-lg」のような小さな部品を並べて、見た目を作りますの。CSS ファイルをほとんど書かなくて済みますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "ボタンやダイアログを最初からそろえた*部品集*もあるのだ。Vue なら Vuetify・PrimeVue、React なら MUI・shadcn/ui なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "状態を管理する道具は、Vue なら Pinia（このゲーム）、React なら Redux や Zustand ですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', playground: CV_ECO_QUERY, text: "最近とくに大事なのが、*サーバーのデータ*を扱う道具なのだ。読みこみ中・エラー・キャッシュ・取り直しを、全部やってくれるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "非同期 JS 編で自分で書いた「古い結果で上書きしない」なども、こういう道具が面倒を見てくれますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', terminal: ["zod        … データの形を確かめる", "dayjs      … 日付の計算", "VueUse     … 便利なコンポーザブル集", "i18n       … 多言語対応", "Chart.js   … グラフ"], text: "ほかにもよく見る道具なのだ。" },
+      { speaker: "僕", chara: 'zun_proud', text: "「よくある困りごとには、だいたい定番の道具があるのか」" },
+    ],
+    next: 'lesson_menu_eco',
+  },
+
+  lesson_eco_server: {
+    place: { name: 'LIB 07 サーバーとデータベース', time: '18:30' },
+    bg: 'classroom_evening',
+    bgm: 'evening',
+    ambient: 'dust',
+    meter: '0.000161',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["Express … いちばん古くて定番", "Fastify … 速い・型に強い", "Hono    … 軽い・どこでも動く", "NestJS  … 大きな会社向けの", "          全部入り（Angular 風）"], text: "Node.js のサーバーのフレームワークは、こんな顔ぶれなのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "データベースを扱う道具も人気ですわ。*Prisma* はテーブルの形を専用のファイルに書いて、型つきでデータを読み書きできますの。*Drizzle* は SQL に近い書き方で、軽いですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "そして *zod*。送られてきたデータの形を確かめて、TypeScript の型も作ってくれるのだ。セキュリティ編の「送られてきたものは全部うたがう」が、短く書けるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', playground: CV_ECO_SERVER, text: "組み合わせると、こうですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "ログインまわりは、自分で作らずに、Auth.js（NextAuth）や Better Auth、Firebase Authentication、AWS 編の Cognito のような道具やサービスを使うことが多いのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "サーバーを持たずに済ませるなら、*Firebase* や *Supabase* という選択肢もありますわ。データベース・ログイン・ファイル置き場が、まとめて手に入りますの。" },
+      { speaker: "僕", chara: 'metan_normal', text: "「サーバー側も、組み合わせ方の定番があるのか」" },
+    ],
+    next: 'lesson_menu_eco',
+  },
+
+  lesson_eco_choose: {
+    place: { name: 'LIB 08 テストの道具と選び方', time: '18:30' },
+    bg: 'classroom_evening',
+    bgm: 'evening',
+    ambient: 'dust',
+    meter: '0.000161',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "最後は、テストの道具と、ライブラリの選び方なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', playground: CV_ECO_TEST, text: "テストは2種類を組み合わせますの。関数や部品を小さく速く確かめる *Vitest*（や Jest）と、本物のブラウザで画面を操作する *Playwright*（や Cypress）ですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "じつは、この授業を作るときも、Playwright で画面を操作して確かめていたのだ。部品の見た目を一覧で確かめる *Storybook* も、よく使われるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "そしてライブラリの選び方。名前が有名かどうかだけで決めないことですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ 最近も更新されている？", "✔ 使っている人・情報は多い？", "✔ ドキュメントはわかりやすい？", "✔ 大きさ（重さ）は？", "✔ ライセンスは使える？", "✔ 型（TypeScript）はある？", "✔ 自分で数行で書けない？"], text: "ボクたちが見ているところなのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "入れたライブラリは、自分のアプリの一部になります。弱点が見つかれば更新し、使わなくなれば消す。セキュリティ編のサプライチェーンの話ですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "流行は毎年変わるのだ。でも、HTTP・JavaScript・設計のような*土台*は、ほとんど変わらないのだ。土台がわかっていれば、新しい道具もすぐ覚えられるのだ。" },
+      { speaker: "僕", chara: 'zun_proud', text: "「道具の名前より、何のための道具かを見るのか」" },
+      { speaker: "ずんだもん", chara: 'zun_gentle', fx: "leak", speed: "slow", text: "キミが気になった道具から、さわってみるのだ。このゲームも、Electron や Tauri でアプリにできるのだ。" },
+    ],
+    next: 'lesson_menu_eco',
+  },
+
+  // ----- 各編に足した授業 -----
+  lesson_web_apis: {
+    place: { name: 'WEB 07 ブラウザの便利な API', time: '18:00' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000171',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "ブラウザには、最初から便利な機能（Web API）がたくさん入っているのだ。ライブラリを入れる前に、まずこれを知っておくのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["IntersectionObserver", "  … 画面に見えたら知らせる", "  （画像の遅延読みこみ・無限スクロール）", "ResizeObserver … 大きさの変化", "Clipboard … コピー・貼りつけ", "Notification … 通知", "Geolocation … 位置", "matchMedia … ダーク・動きを減らす"], text: "よく使うものですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "このゲームでも、matchMedia で「動きを減らす」設定を見て、演出を止めているのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "カメラ・位置・通知のような機能は、使う人の*許可*が必要ですわ。しかも、HTTPS のページでないと使えないものが多いですの。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "使えるかどうかは、ブラウザによってちがうのだ。MDN や Can I use で確かめるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ ライブラリの前に、標準の API", "✔ 許可は、必要になった瞬間に", "  理由がわかる形でお願いする", "✔ 使えないブラウザでも", "  動くようにしておく", "✔ Observer は使い終わったら止める"], text: "コツですわ。" },
+      { speaker: "僕", chara: 'metan_normal', text: "「ブラウザだけで、思ったよりいろいろできるのか」" },
+    ],
+    next: 'lesson_menu_web',
+  },
+
+  lesson_web_pwa: {
+    place: { name: 'WEB 08 Service Worker と PWA', time: '18:00' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000171',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "Web ページなのに、電波がなくても開けて、ホーム画面に置けるのだ。それが *PWA* なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: 'sworker', text: "しくみの中心は *Service Worker*。ページとネットワークの間に立つ、小さな門番ですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: { type: 'sworker', focus: 'cache' }, text: "ページがリクエストを出すと、まず Service Worker が受け取るのだ。キャッシュにあれば、ネットにつながなくても返せるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "ホーム画面のアイコンや名前は、manifest というファイルに書きますの。Vite なら vite-plugin-pwa が、まとめて作ってくれますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_surprise', fx: "shake", text: "でも、キャッシュの更新をまちがえると、いつまでも古い版が出続けるのだ！ HTTP 編のキャッシュの話と同じなのだ！" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ HTTPS が必要", "✔ 新しい版が出たら知らせて", "  読みこみ直してもらう", "✔ 何をキャッシュするか決める", "  （API の個人データは慎重に）", "✔ iPhone は機能に制限がある"], text: "気をつけたいことですわ。" },
+      { speaker: "僕", chara: 'metan_normal', text: "「ページとネットの間に、門番を置くのか」" },
+    ],
+    next: 'lesson_menu_web',
+  },
+
+  lesson_http_realtime: {
+    place: { name: 'HTTP 08 リアルタイム通信', time: '18:00' },
+    bg: 'classroom_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000171',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', diagram: 'realtime', text: "HTTP は、ブラウザが聞いて、サーバーが答える形なのだ。でも、チャットや通知のように、*サーバーから*知らせたいこともあるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: { type: 'realtime', focus: 'poll' }, text: "昔は、数秒ごとに「何か来た？」と聞きに行っていましたの（ポーリング）。むだが多いですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: { type: 'realtime', focus: 'ws' }, text: "*WebSocket* は、1本の接続をつないだままにして、どちらからでも、いつでも送れるのだ。チャットや対戦ゲーム向きなのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', diagram: { type: 'realtime', focus: 'sse' }, text: "*SSE* は、サーバーからブラウザへの一方向。ふつうの HTTP の上で動くので簡単で、切れても自動でつなぎ直しますわ。通知や進み具合、AI の文章が少しずつ出てくる表示にも使われますの。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', playground: CV_SSE, text: "書き方はこうなのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 双方向なら WebSocket", "✔ 一方向なら SSE が簡単", "✔ 切れたときの再接続を考える", "✔ 台数を増やすときは、つなぎ先が", "  ばらばらになる → Redis などで共有", "✔ ログインの確認も忘れずに"], text: "つなぎっぱなしの通信は、サーバーの台数を増やすときに工夫が要りますわ。" },
+      { speaker: "僕", chara: 'metan_normal', text: "「聞きに行くんじゃなくて、知らせてもらうのか」" },
+    ],
+    next: 'lesson_menu_http',
+  },
+
+  lesson_http_api_styles: {
+    place: { name: 'HTTP 09 REST・GraphQL・gRPC', time: '18:00' },
+    bg: 'classroom_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000171',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "API の形は、REST だけじゃないのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["query {", "  me {", "    name", "    endings { id name }", "  }", "}"], text: "*GraphQL* は、1つの入口に「この項目だけほしい」と書いて送りますの。画面ごとに必要なものだけ取れて、取りすぎ・足りなさが減りますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "*gRPC* は、サーバーどうしの通信でよく使うのだ。決めた型にそって、小さく速いデータでやりとりするのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "*tRPC* は、TypeScript だけで作るときに、サーバーの関数をそのまま型つきで呼べる道具ですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["REST    … わかりやすい・キャッシュ", "          しやすい・いちばん定番", "GraphQL … 取る項目を選べる", "          画面が多いアプリ向き", "gRPC    … サーバー間・速い", "tRPC    … TS で一体のとき"], text: "くらべるとこうなのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "流行より、チームとアプリに合うかで選びますの。迷ったら REST から始めて困りませんわ。" },
+      { speaker: "僕", chara: 'metan_normal', text: "「API にも、いろいろな形があるのか」" },
+    ],
+    next: 'lesson_menu_http',
+  },
+
+  lesson_css_arch: {
+    place: { name: 'CSS 09 CSS の設計', time: '18:00' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000171',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "CSS は、どこからでもどこにでも効いてしまうのだ。大きくなると「ここを直したら、別の画面が崩れた」が起きるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["BEM … 名前でぶつけない", "  .card__title--large", "scoped（Vue）… 部品の中だけ", "CSS Modules … 名前を自動で変える", "Tailwind … class に直接書く", "@layer … 強さの順番を決める"], text: "そこで、ぶつからないための工夫がいくつもありますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "このゲームは Vue の *scoped* を使っているのだ。部品ごとの CSS が、ほかの部品に効かないのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "ただし、v-html で入れた中身や子の部品の中には効きませんの。そのときは :deep() を使いますわ。このゲームのエディタの色分けも、そうしていますの。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ やり方を1つに決める", "✔ 全体に効く CSS は最小限", "  （リセット・変数・文字だけ）", "✔ id や深い入れ子で強くしない", "✔ 色やすきまは CSS 変数で"], text: "チームでのコツなのだ。" },
+      { speaker: "僕", chara: 'zun_normal', text: "「CSS にも、ぶつからないための設計がいるのか」" },
+    ],
+    next: 'lesson_menu_css',
+  },
+
+  lesson_dark: {
+    place: { name: 'CSS+ 08 ダークモード', time: '18:00' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000171',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "OS を暗い見た目にしている人も多いのだ。ページも合わせられるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "@media (prefers-color-scheme: dark) で「暗い設定の人だけ」の CSS を書けますわ。色を CSS 変数にしておけば、変数を入れかえるだけですの。" },
+      { speaker: "ずんだもん", chara: 'zun_smile', playground: PG_DARK, text: "やってみるのだ！" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "手で切りかえるボタンも付けるなら、html に data-theme=\"dark\" を付けて、そのときも同じ変数を入れかえますの。選んだ設定は localStorage に覚えておきますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ 真っ黒・真っ白は目がつかれる", "✔ 画像やロゴも暗い背景で確かめる", "✔ 色の差（コントラスト）を確認", "✔ color-scheme: dark で", "  スクロールバーなども暗く"], text: "気をつけたいところなのだ。" },
+      { speaker: "僕", chara: 'zun_normal', text: "「CSS 変数にしておくと、こういうときに楽なのか」" },
+    ],
+    next: 'lesson_menu_css2',
+  },
+
+  lesson_async_retry: {
+    place: { name: 'ASYNC 07 失敗とやり直し', time: '18:00' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000171',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "通信は、ときどき失敗するのだ。電波が悪い、サーバーが混んでいる……。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "一時的な失敗なら、やり直せば成功することがありますわ。でも、すぐに何度も送り直すと、混んでいるサーバーにとどめを刺してしまいますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', playground: CV_RETRY, text: "だから、*間をだんだん広げながら*、決めた回数だけやり直すのだ。指数バックオフっていうのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "やり直してよいのは、何回送っても結果が同じになる処理だけ。お金の支払いを2回送ったら大変ですわ。そういう処理には、同じリクエストだとわかる番号（べき等キー）を付けますの。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ 5xx・429・通信エラーだけ", "  （4xx は直らない）", "✔ 回数の上限を決める", "✔ 間を広げて、ゆらぎも足す", "✔ べき等でない処理は慎重に", "✔ 最後は利用者にわかる形で伝える"], text: "やり直しの作法なのだ。" },
+      { speaker: "僕", chara: 'zun_normal', text: "「やり直すのにも、礼儀があるのか」" },
+    ],
+    next: 'lesson_menu_async',
+  },
+
+  lesson_async_worker: {
+    place: { name: 'ASYNC 08 Web Worker', time: '18:00' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000171',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "JavaScript の手は1本だったのだ。重い計算をすると、そのあいだ画面が固まるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', playground: CV_WORKER, text: "そんなときは *Web Worker*。別の手（スレッド）を作って、計算をお願いしますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "やりとりはメッセージだけなのだ。Worker は画面（DOM）にはさわれないのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "画像の加工、大きなファイルの解析、暗号の計算などで使いますわ。Comlink という道具を使うと、ふつうの関数のように呼べますの。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ 50ms をこえる計算は分ける", "  （画面がカクつきはじめる）", "✔ やりとりするデータは小さく", "✔ 小さな処理には使わない", "  （準備のほうが重い）"], text: "使いどころなのだ。" },
+      { speaker: "僕", chara: 'zun_normal', text: "「1本の手でも、助っ人を呼べるのか」" },
+    ],
+    next: 'lesson_menu_async',
+  },
+
+  lesson_vmodel: {
+    place: { name: 'LESSON 05 v-model とフォーム', time: '18:00' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000171',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "入力欄の文字と ref をつなぐのが *v-model* なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', playground: PG_VMODEL, text: "打てば ref が変わり、ref を変えれば入力欄も変わる。行き来がつながりますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "中身は :value と @input の組み合わせなのだ。自分で作った部品にも v-model を付けられるのだ。defineModel() を使うと、すぐ作れるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: ".trim で前後の空白を消したり、.number で数にしたりもできますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ 入力中の値は部品の ref に", "✔ 送るときにまとめてチェック", "✔ 大きなフォームは", "  VeeValidate などの道具も", "✔ チェックはサーバーでも"], text: "フォームのコツなのだ。" },
+      { speaker: "僕", chara: 'zun_normal', text: "「入力と値が、自動でいっしょに動くのか」" },
+    ],
+    next: 'lesson_menu_vue',
+  },
+
+  lesson_vue_perf: {
+    place: { name: 'LESSON 13 Vue を速くする', time: '18:00' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000171',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "Vue のアプリが重くなったときに、見直すところがあるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "まず、template の中で重い計算を毎回しないこと。computed にすれば、元の値が変わったときだけ計算し直しますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "このゲームでやったように、すぐ使わないページや部品は、*あとから読みこむ*のだ。defineAsyncComponent や () => import() なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', terminal: ["v-show … よく切りかえるもの", "v-once / v-memo", "  … 変わらない部分を固定", "shallowRef … 大きなデータを", "  中まで見張らない", "長い一覧 … 見える分だけ描く", "  （仮想スクロール）"], text: "ほかの道具ですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "でも、かんで直すのはダメなのだ。Vue Devtools や Performance で、本当に遅いところを測ってから直すのだ。" },
+      { speaker: "僕", chara: 'zun_normal', text: "「速くする道具はあるけど、まず測るのか」" },
+    ],
+    next: 'lesson_menu_vue',
+  },
+
+  lesson_ds_test: {
+    place: { name: 'DESIGN 07 テストしやすい設計', time: '18:00' },
+    bg: 'lab_evening',
+    bgm: 'evening',
+    ambient: 'dust',
+    meter: '0.000171',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "テストしにくいコードは、たいてい設計にも問題があるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', playground: CV_TESTABLE, text: "時刻・乱数・通信・保存……。変わりやすいものを中で直接使うと、テストのたびに結果が変わってしまいますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: 'testpyramid', text: "テストは、形で考えるのだ。*テストピラミッド*なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', diagram: { type: 'testpyramid', focus: 'unit' }, text: "下は、小さく速い単体テストをたくさん。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', diagram: { type: 'testpyramid', focus: 'e2e' }, text: "上は、本物のブラウザで動かす E2E テストを、大事な流れだけ少し。遅くて、こわれやすいのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 中の作りではなく、ふるまいを", "  確かめる", "✔ 1つのテストで1つのこと", "✔ 失敗したら原因がわかる名前", "✔ 不具合を直すときは", "  先にそのテストを書く"], text: "テストのコツですわ。" },
+      { speaker: "僕", chara: 'metan_normal', text: "「テストしやすくすると、設計もよくなるのか」" },
+    ],
+    next: 'lesson_menu_design',
+  },
+
+  lesson_ds_naming: {
+    place: { name: 'DESIGN 08 名前とコメント', time: '18:00' },
+    bg: 'lab_evening',
+    bgm: 'evening',
+    ambient: 'dust',
+    meter: '0.000171',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "コードは、書く時間より*読まれる*時間のほうがずっと長いのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✕ data・info・tmp・flag", "◯ endingsSeenCount", "◯ isLastLine（真偽は is・has）", "◯ loadSave（関数は動詞から）", "✔ 同じものに同じ名前", "✔ 略しすぎない"], text: "名前は、中身を説明するいちばん短い文書ですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "コメントには、*なぜ*を書くのだ。何をしているかは、コードを読めばわかるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "このゲームのコメントも、「hidden だとずれることがあるので clip にする」のように、理由を書いていますの。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ なぜ・注意点を書く", "✕ コードの言いかえ", "✕ 古くなったコメント", "✕ コメントアウトしたコードの山", "  （Git に残っている）"], text: "コメントのコツなのだ。" },
+      { speaker: "僕", chara: 'zun_normal', text: "「名前を考えることも、設計の一部なのか」" },
+    ],
+    next: 'lesson_menu_design',
+  },
+
+  lesson_cicd: {
+    place: { name: 'TOOLS 09 CI/CD', time: '18:00' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000171',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', diagram: 'cicd', text: "push するたびに、自動でテストして、ビルドして、公開する。それが *CI/CD* なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: { type: 'cicd', focus: 'ci' }, text: "CI は「まぜる前に自動で確かめる」。lint・型チェック・テストを動かして、だめならマージさせませんの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: { type: 'cicd', focus: 'cd' }, text: "CD は「自動で届ける」なのだ。このゲームも、main に push したら GitHub Pages に公開されるようにしてあるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', playground: CV_CI_REAL, text: "その設定ファイルが、これですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ 速く終わるようにする", "  （キャッシュ・並列）", "✔ 失敗をそのままにしない", "✔ 秘密は Secrets に", "  （コードに書かない）", "✔ 本番の前に確認用の環境", "✔ すぐ前の版に戻せるように"], text: "CI のコツなのだ。" },
+      { speaker: "僕", chara: 'zun_normal', text: "「人が手でやると忘れることを、機械が毎回やってくれるのか」" },
+    ],
+    next: 'lesson_menu_tools',
+  },
+
+  lesson_monorepo: {
+    place: { name: 'TOOLS 10 パッケージ管理とモノレポ', time: '18:00' },
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000171',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["npm  … Node に最初から入っている", "pnpm … 速い・ディスクを節約", "       （同じものを1つだけ置く）", "yarn … 昔から人気", "bun  … とても速い・実行環境も"], text: "npm のほかにも、パッケージを入れる道具があるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "どれを使うかはチームで1つに決めますの。lock ファイルがまざると、入る中身がずれますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "フロント・バックエンド・共通の部品を、1つのリポジトリにまとめるのが*モノレポ*なのだ。ワークスペースという機能で、中のパッケージどうしを使えるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "型を共有できて、変更を1つのプルリクエストにまとめられますの。大きくなったら Turborepo や Nx で、ビルドを速くしますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ 道具はチームで1つに", "✔ lock ファイルは1種類だけ", "✔ モノレポは CI が重くなりがち", "  → 変わったところだけ動かす"], text: "気をつけたいところなのだ。" },
+      { speaker: "僕", chara: 'zun_normal', text: "「道具の選び方も、チームの約束なのか」" },
+    ],
+    next: 'lesson_menu_tools',
+  },
+
+  lesson_be_paging: {
+    place: { name: 'BE 10 一覧と検索', time: '18:00' },
+    bg: 'classroom_night',
+    bgm: 'night',
+    ambient: 'stars',
+    meter: '0.000171',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "ランキングが何万件にもなったら、全部を一度に返すわけにはいかないのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', playground: CV_PAGING, text: "少しずつ返す*ページング*。やり方は2つありますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "ページ番号のやり方は、わかりやすいけど、奥のページほど遅くなるのだ。とちゅうでデータが増えると、同じものが2回出たりもするのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "*カーソル*のやり方は「前回の最後」から続きを取るので、どこでも速く、ずれませんわ。無限スクロールにぴったりですの。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "文字で検索する機能を作るなら、データベースの LIKE '%ずんだ%' は遅いのだ。全文検索や、Elasticsearch・OpenSearch のような専用の道具を使うのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 1回の上限を決める", "  （limit は 100 まで など）", "✔ 並び順を必ず決める", "✔ 条件に使う列にインデックス", "✔ 合計の件数は重いことがある"], text: "一覧の API のコツですわ。" },
+      { speaker: "僕", chara: 'metan_normal', text: "「たくさんのデータは、少しずつ渡すのか」" },
+    ],
+    next: 'lesson_menu_backend',
+  },
+
+  lesson_be_observability: {
+    place: { name: 'BE 11 可観測性', time: '18:00' },
+    bg: 'classroom_night',
+    bgm: 'night',
+    ambient: 'stars',
+    meter: '0.000171',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "本番で「なんだか遅い」と言われたとき、どこが遅いのか、わからないと直せないのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', diagram: 'observe', text: "中のようすを外から見えるようにすること。それが*可観測性*ですわ。3本の柱がありますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', diagram: { type: 'observe', focus: 'logs' }, text: "*ログ*は「何が起きたか」の記録なのだ。JSON で、リクエストごとの番号を付けておくのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', diagram: { type: 'observe', focus: 'metrics' }, text: "*メトリクス*は数字の変化。リクエストの数・エラーの割合・かかった時間ですわ。アラームはこれを見ますの。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', diagram: { type: 'observe', focus: 'traces' }, text: "*トレース*は、1つのリクエストが、どのサービスで、どれだけ時間を使ったかをつないで見るのだ。OpenTelemetry という共通の道具があるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ エラーの割合", "✔ かかった時間（平均より p95・p99）", "✔ リクエストの数", "✔ CPU・メモリ", "✔ 目標（SLO）を決めて見張る"], text: "よく見る数字ですわ。" },
+      { speaker: "僕", chara: 'metan_normal', text: "「動いているあいだも、ようすが見えるようにするのか」" },
+    ],
+    next: 'lesson_menu_backend',
+  },
+
+  lesson_sec_threat: {
+    place: { name: 'SEC 08 脅威モデリング', time: '18:00' },
+    bg: 'lab_night',
+    bgm: 'tension',
+    ambient: 'echo',
+    meter: '0.000171',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "セキュリティは、作ってから考えると高くつくのだ。*作る前に*「どう攻められるか」を考えるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "それが*脅威モデリング*。データの流れを図にして、守るもの・入口・境界を書き出しますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', terminal: ["S なりすまし", "T 改ざん", "R やってないと言い張る", "I 情報もれ", "D 使えなくする（DoS）", "E 権限を勝手に上げる"], text: "考えるきっかけには、STRIDE という6つの観点が便利なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "たとえば「セーブの API」なら……他人のふりで呼べないか、中身を書きかえられないか、他人のセーブが見えないか、大量に呼ばれたら？ と1つずつ考えますの。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ 設計レビューのときに一緒に", "✔ 完璧をめざさず、大きい順に", "✔ 対策と、残すリスクを記録", "✔ 機能が変わったら見直す"], text: "進め方のコツなのだ。" },
+      { speaker: "僕", chara: 'zun_normal', text: "「守り方の前に、攻め方を想像するのか」" },
+    ],
+    next: 'lesson_menu_security',
+  },
+
+  lesson_aws_s3more: {
+    place: { name: 'AWS 10 S3 くわしく', time: '18:00' },
+    bg: 'lab_night',
+    bgm: 'night',
+    ambient: 'stars',
+    meter: '0.000171',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "S3 は、静的なサイトを置くだけじゃないのだ。利用者がアップロードした画像や、ログ、バックアップの置き場所にもなるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', playground: CV_PRESIGN, text: "大事なのは、S3 を公開しないまま、必要な人にだけ使わせること。そのための*署名付き URL* ですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "ファイルがサーバーを通らないから、サーバーが重くならないのだ。URL は数分で使えなくなるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', terminal: ["バージョニング", "  … 上書き・削除から戻せる", "ライフサイクル", "  … 古いものを安い保存先へ・削除", "暗号化 … 最初から有効", "パブリックアクセスのブロック", "  … アカウント全体で有効に"], text: "ほかにも便利な機能がありますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_surprise', fx: "shake", text: "S3 を「みんなが見られる」設定にしたまま、個人情報を置いてしまう事故は、本当に多いのだ！" },
+      { speaker: "僕", chara: 'zun_surprise', text: "「置き場所は公開せず、鍵を短く貸すのか」" },
+    ],
+    next: 'lesson_menu_aws',
+  },
+
+  lesson_eco_graphics: {
+    place: { name: 'LIB 09 グラフィックスの道具', time: '18:00' },
+    bg: 'classroom_evening',
+    bgm: 'evening',
+    ambient: 'dust',
+    meter: '0.000171',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["Canvas 2D … このゲームの粒・トンネル", "Three.js  … 3D の定番（WebGL）", "PixiJS    … 2D を GPU で速く", "Babylon.js … 3D ゲーム向け", "D3.js     … データのグラフ", "GSAP      … アニメーション"], text: "このゲームの演出は、CSS と Canvas で作っているのだ。もっと本格的な絵や 3D には、専用の道具があるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', playground: CV_THREE, text: "Three.js なら、こんなふうに 3D の舞台を作れますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "Vue と組み合わせるなら TresJS、React なら React Three Fiber という道具もあるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "新しい WebGPU という仕組みも、使えるブラウザが増えてきましたわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ ちょっとした動き → CSS", "✔ たくさんの粒・線 → Canvas", "✔ 3D・大量の絵 → WebGL の道具", "✔ スマホの電池と重さに注意"], text: "選び方なのだ。" },
+      { speaker: "僕", chara: 'zun_normal', text: "「表現したいものの大きさで、道具を選ぶのか」" },
+    ],
+    next: 'lesson_menu_eco',
+  },
+
+  lesson_eco_ai: {
+    place: { name: 'LIB 10 AI を組みこむ道具', time: '18:00' },
+    bg: 'classroom_evening',
+    bgm: 'evening',
+    ambient: 'dust',
+    meter: '0.000171',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "最近は、アプリに AI（大規模言語モデル）を組みこむことも増えたのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "各社が JavaScript の SDK を出していて、API を呼ぶと文章が返ってきますの。SSE で少しずつ受け取れば、文字がだんだん出てくる表示にもできますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_surprise', fx: "shake", text: "ここで大事なのは、API キーを*ブラウザに置かない*ことなのだ！ VITE_ の変数に入れたら、だれでも使えてしまうのだ！" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "必ずバックエンドを通して呼びますの。セキュリティ編の秘密の話と同じですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ キーはサーバーだけに", "✔ 使う量と料金に上限を", "✔ 個人情報を送ってよいか確認", "✔ 答えがまちがうこともある", "  → 大事な判断は人が確かめる", "✔ 入力で指示を書きかえられる", "  （プロンプトインジェクション）"], text: "気をつけたいことなのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "このゲームの授業も、AI といっしょに作ったものですのよ。最後に人が確かめる、というのが大事ですわ。" },
+      { speaker: "僕", chara: 'metan_normal', text: "「便利な道具ほど、使い方の約束が大事なのか」" },
+    ],
+    next: 'lesson_menu_eco',
+  },
 
   // ===================================================================
   // Web の道具編
@@ -5226,6 +7430,7 @@ export const lessonScenes = {
       { speaker: 'ずんだもん', chara: 'zun_smile', playground: PG_WEB, text: '3つの材料を、さわってみるのだ。見た目を変えるのは CSS の役目なのだ。' },
       { speaker: '四国めたん', chara: 'metan_normal', terminal: ['<template>  … HTML（骨組み）', '<script>    … JavaScript（動き）', '<style>     … CSS（見た目）'], text: 'Vue の .vue ファイルにあった3つの区切りも、ちょうどこの3つに分かれていますのよ。' },
       { speaker: '僕', chara: 'metan_normal', text: '「じゃあ Vue は、この3つを書きやすくしてくれる道具なのか」' },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 意味に合ったタグを使う", "  （ボタンは <button>）", "✔ 画像には alt を書く", "✔ キーボードだけでも", "  操作できるようにする", "  → アクセシビリティ"], text: "仕事で意識したいことですわ。" },
       { speaker: 'ずんだもん', chara: 'zun_proud', fx: 'flash', text: 'そういうことなのだ！' },
     ],
     next: 'lesson_menu_tools',
@@ -5246,6 +7451,7 @@ export const lessonScenes = {
       { speaker: '四国めたん', chara: 'metan_smug', diagram: { type: 'npm', focus: 'install' }, text: 'npm install と打つと、リストを読んで、倉庫から道具をまとめて取ってきてくれますの。' },
       { speaker: 'ずんだもん', chara: 'zun_smile', diagram: { type: 'npm', focus: 'nm' }, text: '取ってきた道具は、node_modules というフォルダに入るのだ。中身はものすごく多いけど、自分では触らなくていいのだ。' },
       { speaker: '僕', chara: 'zun_smile', text: '「リストさえあれば、誰のパソコンでも同じ道具がそろうのか」' },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ package-lock.json はコミット", "✔ CI では npm ci を使う", "  （lock どおりに入れる）", "✔ ^3.5.43 は 3.5.43 以上 4 未満", "✔ npm audit で弱点を確認", "✔ 知らないパッケージを", "  気軽に入れない"], text: "npm の仕事での作法なのだ。" },
       { speaker: '四国めたん', chara: 'metan_normal', terminal: ['"scripts": {', '  "dev": "vite",', '  "build": "vite build",', '  "preview": "vite preview"', '}'], text: 'package.json には、よく使う命令のあだ名も書けますわ。npm run dev は「vite を動かして」という意味ですの。' },
     ],
     next: 'lesson_menu_tools',
@@ -5266,6 +7472,7 @@ export const lessonScenes = {
       { speaker: 'ずんだもん', chara: 'zun_normal', diagram: { type: 'modules', focus: 'views' }, text: 'こうやってたどっていくと、最後はタイトル画面やゲーム画面にたどり着くのだ。' },
       { speaker: '四国めたん', chara: 'metan_normal', playground: CV_EXPORT, text: '反対に、ファイルの中身を外に貸すときは export と書きますわ。lessons.js も export で、この授業のセリフを貸していますの。' },
       { speaker: '僕', chara: 'metan_normal', text: '「export で貸して、import で借りる」' },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 名前付き export が無難", "  （名前がそろう・探しやすい）", "✔ ファイルどうしが", "  たがいに import しあう", "  「循環参照」に注意", "✔ 1ファイルに1つの役目"], text: "分け方のコツですわ。" },
       { speaker: 'ずんだもん', chara: 'zun_smile', fx: 'burst', text: 'それでファイルを分けても、ちゃんと1つのゲームとして動くのだ！' },
     ],
     next: 'lesson_menu_tools',
@@ -5287,6 +7494,7 @@ export const lessonScenes = {
       { speaker: '四国めたん', chara: 'metan_smug', playground: CV_HMR, text: 'このゲームでは、ストアを書きかえたときも差し替わるように、こんな一文を足してありますわ。' },
       { speaker: 'ずんだもん', chara: 'zun_normal', diagram: { type: 'dev', focus: 'vite' }, text: '.vue ファイルは、本当はブラウザには読めないのだ。Vite が、その場で読める形に変えて渡してくれているのだ。' },
       { speaker: '四国めたん', chara: 'metan_normal', playground: CV_VITECONFIG, text: 'その仕事を Vite に頼んでいるのが、vite.config.js ですわ。' },
+      { speaker: "四国めたん", chara: 'metan_serious', terminal: ["✔ 設定は .env に書く", "✔ VITE_ で始まる変数は", "  ブラウザに公開される", "  → 秘密のキーを入れない", "✔ .env は Git に入れない", "  .env.example をコミット"], text: "仕事でとても大事な、環境変数の話ですわ。" },
       { speaker: '僕', chara: 'zun_normal', text: '「書いて、保存して、すぐ見る。だから試しながら作れるのか」' },
     ],
     next: 'lesson_menu_tools',
@@ -5294,7 +7502,7 @@ export const lessonScenes = {
 
   // ----- ビルド -----
   lesson_build: {
-    place: { name: 'TOOLS 05 build', time: '17:18' },
+    place: { name: 'TOOLS 07 build', time: '17:18' },
     bg: 'lab_evening',
     bgm: 'day',
     ambient: 'dust',
@@ -5308,6 +7516,7 @@ export const lessonScenes = {
       { speaker: 'ずんだもん', chara: 'zun_normal', diagram: { type: 'build', focus: 'dist' }, text: 'xxxx のところは、中身が変わるたびに変わる名前なのだ。古いファイルが残って、昔のゲームが出ちゃうのを防いでいるのだ。' },
       { speaker: '四国めたん', chara: 'metan_normal', diagram: { type: 'build', focus: 'public' }, text: 'public の中の画像や動画は、変換せずにそのまま dist にコピーされますの。技術解説のページも、ここに置いてありますわ。' },
       { speaker: '僕', chara: 'metan_normal', text: '「作るときは src、配るときは dist」' },
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ ファイルの大きさを見張る", "  （重いとスマホで遅い）", "✔ 使うときだけ読みこむ", "  （このゲームの授業も、", "  TECH DOCS で読みこむ）", "✔ ソースマップの公開に注意"], text: "ビルドで見ておきたいところなのだ。" },
       { speaker: 'ずんだもん', chara: 'zun_smile', fx: 'flash', text: 'そうなのだ！ npm run preview で、できあがった dist をお試しで開くこともできるのだ。' },
     ],
     next: 'lesson_menu_tools',
@@ -5315,7 +7524,7 @@ export const lessonScenes = {
 
   // ----- 公開 -----
   lesson_deploy: {
-    place: { name: 'TOOLS 06 deploy', time: '17:20' },
+    place: { name: 'TOOLS 08 deploy', time: '17:20' },
     bg: 'lab_evening',
     bgm: 'day',
     ambient: 'dust',
@@ -5328,6 +7537,7 @@ export const lessonScenes = {
       { speaker: '四国めたん', chara: 'metan_normal', playground: CV_BASE, text: 'ただし、URL の途中のフォルダに置くときは、vite.config.js にその場所（base）を書いておく必要がありますわ。' },
       { speaker: 'ずんだもん', chara: 'zun_normal', diagram: 'deploy', text: 'それを忘れると、画像やプログラムが見つからなくて、まっ白な画面になっちゃうのだ。' },
       { speaker: '僕', chara: 'zun_normal', text: '「書いて、試して、まとめて、置く。それで誰かのスマホに届くのか」' },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 手作業でアップしない", "  → CI/CD で自動化", "✔ 本番の前に確認用の環境", "✔ 何かあったら、すぐ前の版に", "  戻せるようにしておく", "✔ AWS 編・バックエンド編も見てね"], text: "公開の作法ですわ。" },
       { speaker: 'ずんだもん', chara: 'zun_gentle', fx: 'leak', speed: 'slow', text: 'キミの作ったものが、知らない誰かの放課後に届くのだ。……すごいことなのだ。' },
     ],
     next: 'lesson_menu_tools',

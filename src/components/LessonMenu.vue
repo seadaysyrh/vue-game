@@ -69,7 +69,7 @@ function lessonThumb(id) {
 
     <!-- ===== 編の目次：授業の一覧 ===== -->
     <template v-else>
-      <header class="edition-head" :class="`track-${edition.track}`">
+      <header class="edition-head" :class="[`track-${edition.track}`, { dense: edition.lessons.length > 10 }]">
         <DiagramThumb class="head-thumb" :type="edition.thumb" :glyph="edition.glyph" />
         <div class="head-text">
           <span class="track">{{ TRACKS[edition.track] }}</span>
@@ -78,7 +78,8 @@ function lessonThumb(id) {
         </div>
         <button class="back" @click="emit('choose', 'lesson_menu')">← もくじ</button>
       </header>
-      <ol class="rows" :class="`track-${edition.track}`">
+      <!-- 授業が多い編（11以上）は、3列に詰めてメッセージ欄にかからないようにする -->
+      <ol class="rows" :class="[`track-${edition.track}`, { dense: edition.lessons.length > 10 }]">
         <li v-for="(l, i) in edition.lessons" :key="l.id" :style="{ animationDelay: `${0.05 + i * 0.04}s` }">
           <button class="row" :class="{ done: seen.has(l.id), next: l === nextLesson }" @click="emit('choose', l.id)">
             <DiagramThumb class="row-thumb" :type="lessonThumb(l.id)" />
@@ -114,11 +115,12 @@ function lessonThumb(id) {
 @keyframes fade-in { from { opacity: 0; } }
 @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
 
-/* 編ごとの色：きほん＝青、つくる＝緑、公開する＝オレンジ、サーバー＝むらさき、セキュリティ＝赤、演出＝ピンク */
+/* 編ごとの色：きほん＝青、つくる＝緑、公開する＝オレンジ、サーバー＝むらさき、セキュリティ＝赤、ライブラリ＝黄、演出＝ピンク */
 .track-basic { --accent: #6fc3ff; }
 .track-build { --accent: #6dffb0; }
 .track-ship { --accent: #ffb066; }
 .track-direct { --accent: #ff8ad8; }
+.track-eco { --accent: #ffe066; }
 .track-server { --accent: #b48cff; }
 .track-secure { --accent: #ff6b6b; }
 
@@ -127,7 +129,7 @@ function lessonThumb(id) {
   display: flex;
   align-items: flex-end;
   gap: 14px;
-  width: min(960px, 100%);
+  width: min(1200px, 100%);
   text-align: left;
 }
 .eyebrow {
@@ -152,9 +154,9 @@ h2 {
 /* ===== 編のカード ===== */
 .cards {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 12px;
-  width: min(960px, 100%);
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 10px;
+  width: min(1200px, 100%);
 }
 .card {
   position: relative;
@@ -275,6 +277,12 @@ h2 {
   padding: 0;
   list-style: none;
 }
+.edition-head.dense { width: min(1200px, 100%); }
+.rows.dense {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: min(1200px, 100%);
+}
+.rows.dense .row-thumb { width: 56px; }
 .rows li {
   animation: rise 0.35s ease-out both;
 }
