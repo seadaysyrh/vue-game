@@ -21,6 +21,22 @@ const allDone = computed(() => EDITIONS.reduce((n, e) => n + doneCount(e), 0))
 // まだ見ていない最初の授業（「つぎはここ」の印を付ける）
 const nextLesson = computed(() => edition.value?.lessons.find((l) => !seen.value.has(l.id)))
 
+// まとめたコースは、もとの編の名前（section）ごとに見出しを付けて区切る。番号は通しで振る
+const groups = computed(() => {
+  const out = []
+  edition.value?.lessons.forEach((l, i) => {
+    const label = l.section ?? null
+    if (!out.length || out.at(-1).label !== label) out.push({ label, items: [] })
+    out.at(-1).items.push({ l, i })
+  })
+  return out
+})
+// 授業の数で、一覧の詰め方を変える（多いほど列を増やして、メッセージ欄にかからないようにする）
+const density = computed(() => {
+  const n = edition.value?.lessons.length ?? 0
+  return n > 16 ? 'huge' : n > 10 ? 'dense' : ''
+})
+
 // 授業のサムネイル：その授業で最初に出てくる図。図がない授業は、編の図を使う
 function lessonThumb(id) {
   for (const line of lessonScenes[id].lines) {
@@ -69,7 +85,7 @@ function lessonThumb(id) {
 
     <!-- ===== 編の目次：授業の一覧 ===== -->
     <template v-else>
-      <header class="edition-head" :class="[`track-${edition.track}`, { dense: edition.lessons.length > 10 }]">
+      <header class="edition-head" :class="[`track-${edition.track}`, density]">
         <DiagramThumb class="head-thumb" :type="edition.thumb" :glyph="edition.glyph" />
         <div class="head-text">
           <span class="track">{{ TRACKS[edition.track] }}</span>
@@ -78,20 +94,24 @@ function lessonThumb(id) {
         </div>
         <button class="back" @click="emit('choose', 'lesson_menu')">← もくじ</button>
       </header>
-      <!-- 授業が多い編（11以上）は、3列に詰めてメッセージ欄にかからないようにする -->
-      <ol class="rows" :class="[`track-${edition.track}`, { dense: edition.lessons.length > 10 }]">
-        <li v-for="(l, i) in edition.lessons" :key="l.id" :style="{ animationDelay: `${0.05 + i * 0.04}s` }">
-          <button class="row" :class="{ done: seen.has(l.id), next: l === nextLesson }" @click="emit('choose', l.id)">
-            <DiagramThumb class="row-thumb" :type="lessonThumb(l.id)" />
-            <span class="row-num">{{ seen.has(l.id) ? '✓' : String(i + 1).padStart(2, '0') }}</span>
-            <span class="row-text">
-              <b>{{ l.title }}</b>
-              <small>{{ l.desc }}</small>
-            </span>
-            <span v-if="l === nextLesson" class="next-tag">つぎはここ</span>
-          </button>
-        </li>
-      </ol>
+      <div class="groups" :class="density">
+        <section v-for="g in groups" :key="g.label ?? 'all'" class="group">
+          <h3 v-if="g.label" class="group-label" :class="`track-${edition.track}`">{{ g.label }}</h3>
+          <ol class="rows" :class="[`track-${edition.track}`, density]">
+            <li v-for="{ l, i } in g.items" :key="l.id" :style="{ animationDelay: `${0.05 + i * 0.03}s` }">
+              <button class="row" :class="{ done: seen.has(l.id), next: l === nextLesson }" @click="emit('choose', l.id)">
+                <DiagramThumb class="row-thumb" :type="lessonThumb(l.id)" />
+                <span class="row-num">{{ seen.has(l.id) ? '✓' : String(i + 1).padStart(2, '0') }}</span>
+                <span class="row-text">
+                  <b>{{ l.title }}</b>
+                  <small>{{ l.desc }}</small>
+                </span>
+                <span v-if="l === nextLesson" class="next-tag">つぎはここ</span>
+              </button>
+            </li>
+          </ol>
+        </section>
+      </div>
     </template>
   </div>
 </template>
@@ -129,7 +149,7 @@ function lessonThumb(id) {
   display: flex;
   align-items: flex-end;
   gap: 14px;
-  width: min(1200px, 100%);
+  width: min(1120px, 100%);
   text-align: left;
 }
 .eyebrow {
@@ -154,9 +174,9 @@ h2 {
 /* ===== 編のカード ===== */
 .cards {
   display: grid;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
-  gap: 10px;
-  width: min(1200px, 100%);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  width: min(1120px, 100%);
 }
 .card {
   position: relative;
@@ -277,7 +297,35 @@ h2 {
   padding: 0;
   list-style: none;
 }
-.edition-head.dense { width: min(1200px, 100%); }
+.edition-head.dense,
+.edition-head.huge { width: min(1200px, 100%); }
+.groups {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(960px, 100%);
+}
+.groups.dense,
+.groups.huge { width: min(1200px, 100%); }
+.group-label {
+  margin: 2px 0 4px;
+  padding-left: 8px;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  border-left: 3px solid var(--accent);
+}
+.rows { width: 100%; }
+/* とても多いコース：4列にして、サムネイルと説明を省いて詰める */
+.rows.huge {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+.rows.huge .row { padding: 6px 10px; gap: 8px; }
+.rows.huge .row-thumb,
+.rows.huge .row-text small { display: none; }
+.rows.huge .row-num { width: 22px; font-size: 0.85rem; }
+.rows.huge .row-text b { font-size: 0.9rem; }
 .rows.dense {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   width: min(1200px, 100%);

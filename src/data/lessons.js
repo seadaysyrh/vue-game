@@ -14,6 +14,7 @@ export const LESSON_START = 'lesson_intro'
 // ===== 目次 =====
 // 目次は2段：最初の目次で「編」を選び、編の目次で「授業」を選ぶ（components/LessonMenu.vue が表示する）
 // 授業が終わると、その編の目次に戻ってくる。並び順は、おすすめの順番
+//   section : 授業の見出し（まとめたコースの中で、もとの編の名前を出す）
 //   track : 'basic'（きほん） | 'build'（つくる） | 'ship'（公開する） | 'server'（サーバー） | 'secure'（セキュリティ） | 'direct'（演出）  … カードの色分け
 //   thumb : サムネイルに使う図（data/diagrams.js）  glyph : サムネイルに大きく出す文字
 export const TRACKS = {
@@ -27,74 +28,56 @@ export const TRACKS = {
 }
 export const EDITIONS = [
   {
-    id: 'web', menu: 'lesson_menu_web', track: 'basic', thumb: 'http', glyph: 'WEB',
-    title: 'Web のしくみ', desc: 'URL・JavaScript・保存',
+    id: 'webhttp', menu: 'lesson_menu_webhttp', track: 'basic', thumb: 'journey', glyph: 'WEB',
+    title: 'Web と HTTP', desc: 'ブラウザ・通信のしくみ',
     lessons: [
-      { id: 'lesson_http', title: 'URL とサーバー', desc: 'Web ページが届くまで' },
-      { id: 'lesson_devtools', title: '開発者ツール', desc: '画面の裏側をのぞく' },
-      { id: 'lesson_js', title: 'JavaScript のきほん', desc: '変数・配列・関数・if' },
-      { id: 'lesson_dom', title: 'DOM とイベント', desc: '画面を動かすしくみ' },
-      { id: 'lesson_render', title: '描画のしくみ', desc: 'なぜ重くなるのか' },
-      { id: 'lesson_storage', title: 'localStorage', desc: 'ブラウザにしまう' },
-      { id: 'lesson_web_apis', title: "ブラウザの便利な API", desc: "見えたら・コピー・通知 など" },
-      { id: 'lesson_web_pwa', title: "Service Worker と PWA", desc: "オフラインで動く Web" },
+      { id: 'lesson_http', title: 'URL とサーバー', desc: 'Web ページが届くまで', section: 'Web のしくみ' },
+      { id: 'lesson_devtools', title: '開発者ツール', desc: '画面の裏側をのぞく', section: 'Web のしくみ' },
+      { id: 'lesson_js', title: 'JavaScript のきほん', desc: '変数・配列・関数・if', section: 'Web のしくみ' },
+      { id: 'lesson_dom', title: 'DOM とイベント', desc: '画面を動かすしくみ', section: 'Web のしくみ' },
+      { id: 'lesson_render', title: '描画のしくみ', desc: 'なぜ重くなるのか', section: 'Web のしくみ' },
+      { id: 'lesson_storage', title: 'localStorage', desc: 'ブラウザにしまう', section: 'Web のしくみ' },
+      { id: 'lesson_web_apis', title: "ブラウザの便利な API", desc: "見えたら・コピー・通知 など", section: 'Web のしくみ' },
+      { id: 'lesson_web_pwa', title: "Service Worker と PWA", desc: "オフラインで動く Web", section: 'Web のしくみ' },
+      { id: 'lesson_http_journey', title: '表示されるまで', desc: 'DNS・接続・TLS・リクエスト', section: 'HTTP' },
+      { id: 'lesson_http_message', title: 'メッセージの中身', desc: '開始行・ヘッダー・本文', section: 'HTTP' },
+      { id: 'lesson_http_status', title: 'ステータスコード', desc: 'だれの問題かを読む', section: 'HTTP' },
+      { id: 'lesson_http_cache', title: 'キャッシュ', desc: 'Cache-Control・ETag・304', section: 'HTTP' },
+      { id: 'lesson_http_cookie', title: 'Cookie とセッション', desc: 'ログインを覚えるしくみ', section: 'HTTP' },
+      { id: 'lesson_http_cors', title: '同一オリジンと CORS', desc: 'プリフライトの下見', section: 'HTTP' },
+      { id: 'lesson_http_https', title: 'HTTPS と HTTP/2・3', desc: 'TLS・証明書・新しい版', section: 'HTTP' },
+      { id: 'lesson_http_realtime', title: "リアルタイム通信", desc: "WebSocket・SSE", section: 'HTTP' },
+      { id: 'lesson_http_api_styles', title: "REST・GraphQL・gRPC", desc: "API の形いろいろ", section: 'HTTP' },
     ],
   },
   {
-    id: 'http', menu: 'lesson_menu_http', track: 'basic', thumb: 'journey', glyph: 'HTTP',
-    title: 'HTTP', desc: 'リクエスト・キャッシュ・CORS',
+    id: 'htmlcss', menu: 'lesson_menu_htmlcss', track: 'basic', thumb: 'box', glyph: 'CSS',
+    title: 'HTML と CSS', desc: 'はじめて〜スマホ対応',
     lessons: [
-      { id: 'lesson_http_journey', title: '表示されるまで', desc: 'DNS・接続・TLS・リクエスト' },
-      { id: 'lesson_http_message', title: 'メッセージの中身', desc: '開始行・ヘッダー・本文' },
-      { id: 'lesson_http_status', title: 'ステータスコード', desc: 'だれの問題かを読む' },
-      { id: 'lesson_http_cache', title: 'キャッシュ', desc: 'Cache-Control・ETag・304' },
-      { id: 'lesson_http_cookie', title: 'Cookie とセッション', desc: 'ログインを覚えるしくみ' },
-      { id: 'lesson_http_cors', title: '同一オリジンと CORS', desc: 'プリフライトの下見' },
-      { id: 'lesson_http_https', title: 'HTTPS と HTTP/2・3', desc: 'TLS・証明書・新しい版' },
-      { id: 'lesson_http_realtime', title: "リアルタイム通信", desc: "WebSocket・SSE" },
-      { id: 'lesson_http_api_styles', title: "REST・GraphQL・gRPC", desc: "API の形いろいろ" },
-    ],
-  },
-  {
-    id: 'css0', menu: 'lesson_menu_css0', track: 'basic', thumb: 'box', glyph: 'CSS',
-    title: 'CSS はじめて', desc: '色・文字・すきまから',
-    lessons: [
-      { id: 'lesson_c0_first', title: 'CSS ってなに？', desc: '文字に色をつける' },
-      { id: 'lesson_c0_text', title: '文字の見た目', desc: '大きさ・太さ・そろえ方' },
-      { id: 'lesson_c0_color', title: '色の書き方', desc: '名前・#・rgb' },
-      { id: 'lesson_c0_box', title: '背景と枠', desc: 'background・border' },
-      { id: 'lesson_c0_space', title: 'すきまを作る', desc: 'padding・margin' },
-      { id: 'lesson_c0_size', title: '大きさを決める', desc: 'width・height・%' },
-      { id: 'lesson_c0_class', title: 'class で選ぶ', desc: '色をつける場所を決める' },
-    ],
-  },
-  {
-    id: 'css', menu: 'lesson_menu_css', track: 'basic', thumb: 'box', glyph: '</>',
-    title: 'HTML・CSS', desc: '画面の見た目のきほん',
-    lessons: [
-      { id: 'lesson_html', title: 'HTML', desc: 'タグで中身を書く' },
-      { id: 'lesson_selector', title: 'セレクタ', desc: 'どこに・何を' },
-      { id: 'lesson_box', title: 'ボックスモデル', desc: '箱の4つの層' },
-      { id: 'lesson_flex', title: 'flex', desc: '横や縦に並べる' },
-      { id: 'lesson_layer', title: 'position・z-index', desc: '重ねる' },
-      { id: 'lesson_anim', title: 'アニメーション', desc: '動かす' },
-      { id: 'lesson_form', title: 'フォーム', desc: 'label・入力の種類・チェック' },
-      { id: 'lesson_a11y', title: 'アクセシビリティ', desc: 'だれでも使える画面' },
-      { id: 'lesson_css_arch', title: "CSS の設計", desc: "名前の付け方・scoped・Modules" },
-    ],
-  },
-  {
-    id: 'css2', menu: 'lesson_menu_css2', track: 'basic', thumb: 'grid', glyph: 'CSS+',
-    title: 'CSS もっと', desc: 'hover・grid・スマホ対応',
-    lessons: [
-      { id: 'lesson_units', title: '大きさと色', desc: 'px・%・vw・rgba' },
-      { id: 'lesson_cssvars', title: 'CSS 変数', desc: '色や値をまとめて変える' },
-      { id: 'lesson_pseudo', title: ':hover・::before', desc: 'マウスを乗せたら' },
-      { id: 'lesson_transition', title: 'transition', desc: 'なめらかに変える' },
-      { id: 'lesson_effects', title: '色づくり', desc: 'グラデーション・影・フィルター' },
-      { id: 'lesson_grid', title: 'grid', desc: 'マス目に並べる' },
-      { id: 'lesson_responsive', title: 'レスポンシブ', desc: 'スマホ対応' },
-      { id: 'lesson_dark', title: "ダークモード", desc: "prefers-color-scheme" },
+      { id: 'lesson_c0_first', title: 'CSS ってなに？', desc: '文字に色をつける', section: 'CSS はじめて' },
+      { id: 'lesson_c0_text', title: '文字の見た目', desc: '大きさ・太さ・そろえ方', section: 'CSS はじめて' },
+      { id: 'lesson_c0_color', title: '色の書き方', desc: '名前・#・rgb', section: 'CSS はじめて' },
+      { id: 'lesson_c0_box', title: '背景と枠', desc: 'background・border', section: 'CSS はじめて' },
+      { id: 'lesson_c0_space', title: 'すきまを作る', desc: 'padding・margin', section: 'CSS はじめて' },
+      { id: 'lesson_c0_size', title: '大きさを決める', desc: 'width・height・%', section: 'CSS はじめて' },
+      { id: 'lesson_c0_class', title: 'class で選ぶ', desc: '色をつける場所を決める', section: 'CSS はじめて' },
+      { id: 'lesson_html', title: 'HTML', desc: 'タグで中身を書く', section: 'HTML・CSS' },
+      { id: 'lesson_selector', title: 'セレクタ', desc: 'どこに・何を', section: 'HTML・CSS' },
+      { id: 'lesson_box', title: 'ボックスモデル', desc: '箱の4つの層', section: 'HTML・CSS' },
+      { id: 'lesson_flex', title: 'flex', desc: '横や縦に並べる', section: 'HTML・CSS' },
+      { id: 'lesson_layer', title: 'position・z-index', desc: '重ねる', section: 'HTML・CSS' },
+      { id: 'lesson_anim', title: 'アニメーション', desc: '動かす', section: 'HTML・CSS' },
+      { id: 'lesson_form', title: 'フォーム', desc: 'label・入力の種類・チェック', section: 'HTML・CSS' },
+      { id: 'lesson_a11y', title: 'アクセシビリティ', desc: 'だれでも使える画面', section: 'HTML・CSS' },
+      { id: 'lesson_css_arch', title: "CSS の設計", desc: "名前の付け方・scoped・Modules", section: 'HTML・CSS' },
+      { id: 'lesson_units', title: '大きさと色', desc: 'px・%・vw・rgba', section: 'CSS もっと' },
+      { id: 'lesson_cssvars', title: 'CSS 変数', desc: '色や値をまとめて変える', section: 'CSS もっと' },
+      { id: 'lesson_pseudo', title: ':hover・::before', desc: 'マウスを乗せたら', section: 'CSS もっと' },
+      { id: 'lesson_transition', title: 'transition', desc: 'なめらかに変える', section: 'CSS もっと' },
+      { id: 'lesson_effects', title: '色づくり', desc: 'グラデーション・影・フィルター', section: 'CSS もっと' },
+      { id: 'lesson_grid', title: 'grid', desc: 'マス目に並べる', section: 'CSS もっと' },
+      { id: 'lesson_responsive', title: 'レスポンシブ', desc: 'スマホ対応', section: 'CSS もっと' },
+      { id: 'lesson_dark', title: "ダークモード", desc: "prefers-color-scheme", section: 'CSS もっと' },
     ],
   },
   {
@@ -160,49 +143,53 @@ export const EDITIONS = [
     ],
   },
   {
-    id: 'tools', menu: 'lesson_menu_tools', track: 'ship', thumb: 'build', glyph: 'npm',
-    title: 'Web の道具', desc: 'npm・Vite・ビルド・公開',
+    id: 'toolslib', menu: 'lesson_menu_toolslib', track: 'ship', thumb: 'ecomap', glyph: 'npm',
+    title: '道具とライブラリ', desc: 'npm・Git・Electron…',
     lessons: [
-      { id: 'lesson_web', title: 'HTML・CSS・JS', desc: 'Web ページの3つの材料' },
-      { id: 'lesson_npm', title: 'npm', desc: '道具の倉庫' },
-      { id: 'lesson_modules', title: 'import・export', desc: 'ファイルどうしをつなぐ' },
-      { id: 'lesson_dev', title: 'Vite', desc: '保存したらすぐ映る' },
-      { id: 'lesson_lint', title: 'ESLint と Prettier', desc: 'まちがいと見た目をそろえる' },
-      { id: 'lesson_git', title: 'Git と GitHub', desc: 'ブランチ・PR・レビュー' },
-      { id: 'lesson_build', title: 'ビルド', desc: '配れる形にまとめる' },
-      { id: 'lesson_deploy', title: '公開', desc: 'みんなに遊んでもらう' },
-      { id: 'lesson_cicd', title: "CI/CD", desc: "自動でテストして公開" },
-      { id: 'lesson_monorepo', title: "パッケージ管理とモノレポ", desc: "npm・pnpm・ワークスペース" },
+      { id: 'lesson_web', title: 'HTML・CSS・JS', desc: 'Web ページの3つの材料', section: 'Web の道具' },
+      { id: 'lesson_npm', title: 'npm', desc: '道具の倉庫', section: 'Web の道具' },
+      { id: 'lesson_modules', title: 'import・export', desc: 'ファイルどうしをつなぐ', section: 'Web の道具' },
+      { id: 'lesson_dev', title: 'Vite', desc: '保存したらすぐ映る', section: 'Web の道具' },
+      { id: 'lesson_lint', title: 'ESLint と Prettier', desc: 'まちがいと見た目をそろえる', section: 'Web の道具' },
+      { id: 'lesson_git', title: 'Git と GitHub', desc: 'ブランチ・PR・レビュー', section: 'Web の道具' },
+      { id: 'lesson_build', title: 'ビルド', desc: '配れる形にまとめる', section: 'Web の道具' },
+      { id: 'lesson_deploy', title: '公開', desc: 'みんなに遊んでもらう', section: 'Web の道具' },
+      { id: 'lesson_cicd', title: "CI/CD", desc: "自動でテストして公開", section: 'Web の道具' },
+      { id: 'lesson_monorepo', title: "パッケージ管理とモノレポ", desc: "npm・pnpm・ワークスペース", section: 'Web の道具' },
+      { id: 'lesson_eco_map', title: '全体の地図', desc: 'どの道具が何をするか', section: '有名なライブラリ' },
+      { id: 'lesson_eco_front', title: 'フロントのフレームワーク', desc: 'React・Vue・Svelte・Angular', section: '有名なライブラリ' },
+      { id: 'lesson_eco_meta', title: 'メタフレームワーク', desc: 'Next.js・Nuxt・SSR・SSG', section: '有名なライブラリ' },
+      { id: 'lesson_eco_desktop', title: 'デスクトップアプリ', desc: 'Electron と Tauri', section: '有名なライブラリ' },
+      { id: 'lesson_eco_mobile', title: 'スマホアプリ', desc: 'React Native・Flutter・Capacitor', section: '有名なライブラリ' },
+      { id: 'lesson_eco_ui', title: 'UI・状態・データ取得', desc: 'Tailwind・TanStack Query', section: '有名なライブラリ' },
+      { id: 'lesson_eco_server', title: 'サーバーとデータベース', desc: 'NestJS・Hono・Prisma・zod', section: '有名なライブラリ' },
+      { id: 'lesson_eco_choose', title: 'テストの道具と選び方', desc: 'Vitest・Playwright・選ぶ基準', section: '有名なライブラリ' },
+      { id: 'lesson_eco_graphics', title: "グラフィックスの道具", desc: "Canvas・Three.js・PixiJS", section: '有名なライブラリ' },
+      { id: 'lesson_eco_ai', title: "AI を組みこむ道具", desc: "LLM の SDK・気をつけること", section: '有名なライブラリ' },
     ],
   },
   {
-    id: 'node', menu: 'lesson_menu_node', track: 'server', thumb: 'nodeloop', glyph: 'Node',
-    title: 'Node.js', desc: 'サーバーで動く JS',
+    id: 'server', menu: 'lesson_menu_server', track: 'server', thumb: 'backend', glyph: 'API',
+    title: 'サーバー', desc: 'Node.js・API・DB・Docker',
     lessons: [
-      { id: 'lesson_node_what', title: 'Node.js とは', desc: 'ブラウザの外の JavaScript' },
-      { id: 'lesson_node_modules', title: 'モジュール', desc: 'ESM と CommonJS' },
-      { id: 'lesson_node_io', title: 'ノンブロッキング I/O', desc: '1本の手でたくさんさばく' },
-      { id: 'lesson_node_stream', title: 'ストリーム', desc: '大きなデータを少しずつ' },
-      { id: 'lesson_node_http', title: 'HTTP サーバーとミドルウェア', desc: 'Node だけ・Express' },
-      { id: 'lesson_node_errors', title: 'エラーと止まり方', desc: '落ちたとき・止めるとき' },
-      { id: 'lesson_node_tools', title: 'バージョンと道具', desc: 'LTS・nvm・--watch' },
-    ],
-  },
-  {
-    id: 'backend', menu: 'lesson_menu_backend', track: 'server', thumb: 'backend', glyph: 'API',
-    title: 'バックエンド', desc: 'API・DB・Docker',
-    lessons: [
-      { id: 'lesson_be_intro', title: 'バックエンドとは', desc: 'フロントとのちがい・処理の流れ' },
-      { id: 'lesson_be_api', title: 'REST API', desc: 'メソッド・URL・ステータスコード' },
-      { id: 'lesson_be_db', title: 'データベースと SQL', desc: 'テーブル・キー・トランザクション' },
-      { id: 'lesson_be_security', title: '安全な API', desc: '入力チェック・SQL インジェクション' },
-      { id: 'lesson_be_docker', title: 'Docker のきほん', desc: 'コンテナ・イメージ' },
-      { id: 'lesson_be_dockerfile', title: 'Dockerfile', desc: 'このゲームをコンテナに入れる' },
-      { id: 'lesson_be_compose', title: 'docker compose', desc: '手元でまとめて動かす' },
-      { id: 'lesson_be_prod', title: '本番で動かす', desc: '環境変数・ログ・デプロイ' },
-      { id: 'lesson_be_scale', title: 'スケールとキャッシュ', desc: 'たくさんの人が来たとき' },
-      { id: 'lesson_be_paging', title: "一覧と検索", desc: "ページング・インデックス" },
-      { id: 'lesson_be_observability', title: "可観測性", desc: "ログ・メトリクス・トレース" },
+      { id: 'lesson_node_what', title: 'Node.js とは', desc: 'ブラウザの外の JavaScript', section: 'Node.js' },
+      { id: 'lesson_node_modules', title: 'モジュール', desc: 'ESM と CommonJS', section: 'Node.js' },
+      { id: 'lesson_node_io', title: 'ノンブロッキング I/O', desc: '1本の手でたくさんさばく', section: 'Node.js' },
+      { id: 'lesson_node_stream', title: 'ストリーム', desc: '大きなデータを少しずつ', section: 'Node.js' },
+      { id: 'lesson_node_http', title: 'HTTP サーバーとミドルウェア', desc: 'Node だけ・Express', section: 'Node.js' },
+      { id: 'lesson_node_errors', title: 'エラーと止まり方', desc: '落ちたとき・止めるとき', section: 'Node.js' },
+      { id: 'lesson_node_tools', title: 'バージョンと道具', desc: 'LTS・nvm・--watch', section: 'Node.js' },
+      { id: 'lesson_be_intro', title: 'バックエンドとは', desc: 'フロントとのちがい・処理の流れ', section: 'バックエンド' },
+      { id: 'lesson_be_api', title: 'REST API', desc: 'メソッド・URL・ステータスコード', section: 'バックエンド' },
+      { id: 'lesson_be_db', title: 'データベースと SQL', desc: 'テーブル・キー・トランザクション', section: 'バックエンド' },
+      { id: 'lesson_be_security', title: '安全な API', desc: '入力チェック・SQL インジェクション', section: 'バックエンド' },
+      { id: 'lesson_be_docker', title: 'Docker のきほん', desc: 'コンテナ・イメージ', section: 'バックエンド' },
+      { id: 'lesson_be_dockerfile', title: 'Dockerfile', desc: 'このゲームをコンテナに入れる', section: 'バックエンド' },
+      { id: 'lesson_be_compose', title: 'docker compose', desc: '手元でまとめて動かす', section: 'バックエンド' },
+      { id: 'lesson_be_prod', title: '本番で動かす', desc: '環境変数・ログ・デプロイ', section: 'バックエンド' },
+      { id: 'lesson_be_scale', title: 'スケールとキャッシュ', desc: 'たくさんの人が来たとき', section: 'バックエンド' },
+      { id: 'lesson_be_paging', title: "一覧と検索", desc: "ページング・インデックス", section: 'バックエンド' },
+      { id: 'lesson_be_observability', title: "可観測性", desc: "ログ・メトリクス・トレース", section: 'バックエンド' },
     ],
   },
   {
@@ -236,22 +223,6 @@ export const EDITIONS = [
     ],
   },
   {
-    id: 'eco', menu: 'lesson_menu_eco', track: 'eco', thumb: 'ecomap', glyph: 'LIB',
-    title: 'ライブラリ', desc: 'Electron・Tauri など',
-    lessons: [
-      { id: 'lesson_eco_map', title: '全体の地図', desc: 'どの道具が何をするか' },
-      { id: 'lesson_eco_front', title: 'フロントのフレームワーク', desc: 'React・Vue・Svelte・Angular' },
-      { id: 'lesson_eco_meta', title: 'メタフレームワーク', desc: 'Next.js・Nuxt・SSR・SSG' },
-      { id: 'lesson_eco_desktop', title: 'デスクトップアプリ', desc: 'Electron と Tauri' },
-      { id: 'lesson_eco_mobile', title: 'スマホアプリ', desc: 'React Native・Flutter・Capacitor' },
-      { id: 'lesson_eco_ui', title: 'UI・状態・データ取得', desc: 'Tailwind・TanStack Query' },
-      { id: 'lesson_eco_server', title: 'サーバーとデータベース', desc: 'NestJS・Hono・Prisma・zod' },
-      { id: 'lesson_eco_choose', title: 'テストの道具と選び方', desc: 'Vitest・Playwright・選ぶ基準' },
-      { id: 'lesson_eco_graphics', title: "グラフィックスの道具", desc: "Canvas・Three.js・PixiJS" },
-      { id: 'lesson_eco_ai', title: "AI を組みこむ道具", desc: "LLM の SDK・気をつけること" },
-    ],
-  },
-  {
     id: 'fx', menu: 'lesson_menu_fx', track: 'direct', thumb: 'stage3d', glyph: 'FX',
     title: '演出のひみつ', desc: 'カメラ・光・音の作り方',
     lessons: [
@@ -274,22 +245,17 @@ export const LESSON_IDS = new Set(EDITIONS.flatMap((e) => e.lessons.map((l) => l
 const BACK = { text: '目次にもどる', next: 'lesson_menu' }
 const MENU = [...EDITIONS.map((e) => ({ text: e.title, next: e.menu })), { text: 'おしまいにする', next: 'lesson_end' }]
 const menuOf = (id) => [...EDITIONS.find((e) => e.id === id).lessons.map((l) => ({ text: l.title, next: l.id })), BACK]
+const WEBHTTP_MENU = menuOf('webhttp')
+const HTMLCSS_MENU = menuOf('htmlcss')
+const SERVER_MENU = menuOf('server')
+const TOOLSLIB_MENU = menuOf('toolslib')
 const VUE_MENU = menuOf('vue')
-const TOOLS_MENU = menuOf('tools')
-const WEB_MENU = menuOf('web')
-const CSS_MENU = menuOf('css')
-const CSS2_MENU = menuOf('css2')
 const TS_MENU = menuOf('ts')
 const AWS_MENU = menuOf('aws')
 const FX_MENU = menuOf('fx')
-const CSS0_MENU = menuOf('css0')
-const ECO_MENU = menuOf('eco')
 const DESIGN_MENU = menuOf('design')
-const NODE_MENU = menuOf('node')
 const ASYNC_MENU = menuOf('async')
 const SECURITY_MENU = menuOf('security')
-const HTTP_MENU = menuOf('http')
-const BACKEND_MENU = menuOf('backend')
 
 
 // ===== コードエディタの「やってみよう」（components/CodePlayground.vue） =====
@@ -1589,14 +1555,14 @@ const CV_GRID = {
   title: "目次のカード",
   file: "src/components/LessonMenu.vue",
   task: "この授業の目次のカードも、grid で並べているのだ",
-  marks: { 3: "マス目にする", 4: "同じ幅の列を8つ", 5: "すきま", 12: "こちらは2列" },
+  marks: { 3: "マス目にする", 4: "同じ幅の列を6つ", 5: "すきま", 12: "こちらは2列" },
   code: `
-/* 編のカード：同じ幅の列を8つ */
+/* 編のカード：同じ幅の列を6つ */
 .cards {
   display: grid;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
-  gap: 10px;
-  width: min(1200px, 100%);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  width: min(1120px, 100%);
 }
 
 /* 授業の一覧：同じ幅の列を2つ */
@@ -4673,12 +4639,60 @@ export const lessonScenes = {
       { speaker: 'ずんだもん', chara: 'zun_smile', diagram: { type: 'flow', focus: 'click' }, text: 'キミがクリックすると番号が1つ進んで、また画面が変わる。この*ぐるぐる*が、ノベルゲームの正体なのだ！' },
       { speaker: '僕', chara: 'zun_smile', diagram: 'flow', text: '「光の点が回ってるのが、その流れってことか」' },
       { speaker: '四国めたん', chara: 'metan_normal', playground: CV_SCENE, text: 'ちなみに、いま流れているこの会話も、ただの*データ*として書かれていますのよ。' },
-      { speaker: 'ずんだもん', chara: 'zun_proud', text: '授業は16の編に分かれているのだ。はじめてなら、1番から順番に聞くのがおすすめなのだ！' },
+      { speaker: 'ずんだもん', chara: 'zun_proud', text: '授業は11のコースに分かれているのだ。はじめてなら、1番から順番に聞くのがおすすめなのだ！' },
     ],
     choices: MENU,
   },
 
   // 目次（説明のあとに戻ってくる場所）
+  lesson_menu_webhttp: {
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000000',
+    lessonMenu: 'webhttp', // components/LessonMenu.vue で目次を出す
+    lines: [
+      { speaker: 'ずんだもん', chara: 'zun_normal', text: '*Web と HTTP*のコースなのだ。見出しごとに、やさしい順に並んでいるのだ。' },
+    ],
+    choices: WEBHTTP_MENU,
+  },
+
+  lesson_menu_htmlcss: {
+    bg: 'classroom_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000000',
+    lessonMenu: 'htmlcss', // components/LessonMenu.vue で目次を出す
+    lines: [
+      { speaker: 'ずんだもん', chara: 'zun_proud', text: "*HTML と CSS*のコースなのだ。見出しごとに、やさしい順に並んでいるのだ。" },
+    ],
+    choices: HTMLCSS_MENU,
+  },
+
+  lesson_menu_server: {
+    bg: 'lab_night',
+    bgm: 'night',
+    ambient: 'stars',
+    meter: '0.000000',
+    lessonMenu: 'server', // components/LessonMenu.vue で目次を出す
+    lines: [
+      { speaker: 'ずんだもん', chara: 'zun_proud', text: "*サーバー*のコースなのだ。見出しごとに、やさしい順に並んでいるのだ。" },
+    ],
+    choices: SERVER_MENU,
+  },
+
+  lesson_menu_toolslib: {
+    bg: 'lab_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000000',
+    lessonMenu: 'toolslib', // components/LessonMenu.vue で目次を出す
+    lines: [
+      { speaker: '四国めたん', chara: 'metan_smug', text: '*道具とライブラリ*のコースなのだ。見出しごとに、やさしい順に並んでいるのだ。' },
+    ],
+    choices: TOOLSLIB_MENU,
+  },
+
   lesson_menu: {
     bg: 'lab_evening',
     bgm: 'day',
@@ -4703,17 +4717,6 @@ export const lessonScenes = {
     choices: VUE_MENU,
   },
 
-  lesson_menu_tools: {
-    bg: 'lab_evening',
-    bgm: 'day',
-    ambient: 'dust',
-    meter: '0.000000',
-    lessonMenu: 'tools', // components/LessonMenu.vue で目次を出す
-    lines: [
-      { speaker: '四国めたん', chara: 'metan_smug', text: '*Web の道具編*ですわ。作ったものを動かして、みんなに届けるまでのお話ですの。' },
-    ],
-    choices: TOOLS_MENU,
-  },
 
   // ----- コンポーネント -----
   lesson_component: {
@@ -4873,17 +4876,6 @@ export const lessonScenes = {
   // HTML・CSS 編
   // ===================================================================
 
-  lesson_menu_css: {
-    bg: 'lab_evening',
-    bgm: 'day',
-    ambient: 'dust',
-    meter: '0.000000',
-    lessonMenu: 'css', // components/LessonMenu.vue で目次を出す
-    lines: [
-      { speaker: 'ずんだもん', chara: 'zun_smile', text: '*HTML・CSS 編*なのだ！ 画面の見た目は、ぜんぶこの2つで決まっているのだ。' },
-    ],
-    choices: CSS_MENU,
-  },
 
   lesson_html: {
     place: { name: 'CSS 01 HTML', time: '17:30' },
@@ -4903,7 +4895,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ 見出しは h1→h2→h3 の順", "✔ <div> だらけにしない", "  （<nav> <main> <section>）", "✔ 入力欄には <label>", "✔ クリックするものは", "  <button> か <a>"], text: "HTML を書くときのコツなのだ。" },
       { speaker: '四国めたん', chara: 'metan_normal', text: 'class="〇〇" は、タグに付ける*名札*。次の授業で、CSS から名札を使って色を付けますわ。' },
     ],
-    next: 'lesson_menu_css',
+    next: 'lesson_menu_htmlcss',
   },
 
   lesson_selector: {
@@ -4922,7 +4914,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 強さ：#id > .class > タグ", "  強いセレクタが勝つ", "✔ !important は最後の手段", "✔ Vue では scoped で", "  ほかの部品に効かせない", "✔ class の名前の付け方を", "  チームでそろえる"], text: "CSS が増えてきたときに困らないためのコツですわ。" },
       { speaker: 'ずんだもん', chara: 'zun_proud', fx: 'flash', text: 'そうなのだ！ 同じことを何回も書かないのがコツなのだ。' },
     ],
-    next: 'lesson_menu_css',
+    next: 'lesson_menu_htmlcss',
   },
 
   lesson_box: {
@@ -4942,7 +4934,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ 最初に全体へ", "  box-sizing: border-box", "✔ 余白は margin か padding か", "  ルールを決める", "✔ 高さを固定しない", "  （文字が増えるとはみ出す）"], text: "箱を扱うときのコツなのだ。" },
       { speaker: 'ずんだもん', chara: 'zun_proud', text: 'box-sizing: border-box を書いておくと、幅の中に padding と枠がふくまれるのだ。計算がらくになるのだ。' },
     ],
-    next: 'lesson_menu_css',
+    next: 'lesson_menu_htmlcss',
   },
 
   lesson_flex: {
@@ -4961,7 +4953,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 中身がはみ出すときは", "  min-width: 0 を疑う", "  （このゲームのエディタでも使用）", "✔ すきまは margin より gap", "✔ 1列は flex、", "  縦横のマス目は grid"], text: "flex でよくある困りごとですわ。" },
       { speaker: '僕', chara: 'metan_smug', text: '「ロゴと START が画面のまんなかにあるのは、これだったのか」' },
     ],
-    next: 'lesson_menu_css',
+    next: 'lesson_menu_htmlcss',
   },
 
   lesson_layer: {
@@ -4980,7 +4972,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ z-index は 1, 2, 10 など", "  ルールを決めて使う", "  （9999 合戦にしない）", "✔ transform や opacity で", "  新しい「重なりのグループ」が", "  できて、外と比べられなくなる"], text: "重なりで困らないためのコツなのだ。" },
       { speaker: '僕', chara: 'metan_smug', text: '「選択肢がメッセージ欄の上に出るのは、4 が 2 より大きいからか」' },
     ],
-    next: 'lesson_menu_css',
+    next: 'lesson_menu_htmlcss',
   },
 
   lesson_anim: {
@@ -4999,24 +4991,13 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 動かすのは transform と", "  opacity が軽い", "  （width や top は重い）", "✔ 動きが苦手な人のために", "  prefers-reduced-motion", "  （このゲームも対応）"], text: "動きを付けるときの、仕事でのコツですわ。" },
       { speaker: 'ずんだもん', chara: 'zun_gentle', fx: 'leak', speed: 'slow', text: 'それがわかれば、どんな画面だって作れるのだ。' },
     ],
-    next: 'lesson_menu_css',
+    next: 'lesson_menu_htmlcss',
   },
 
   // ===================================================================
   // Web のしくみ編
   // ===================================================================
 
-  lesson_menu_web: {
-    bg: 'lab_evening',
-    bgm: 'day',
-    ambient: 'dust',
-    meter: '0.000000',
-    lessonMenu: 'web', // components/LessonMenu.vue で目次を出す
-    lines: [
-      { speaker: 'ずんだもん', chara: 'zun_normal', text: '*Web のしくみ編*なのだ。ページが届くしくみや、JavaScript の話なのだ。' },
-    ],
-    choices: WEB_MENU,
-  },
 
   lesson_http: {
     place: { name: 'WEB 01 URL とサーバー', time: '17:50' },
@@ -5036,7 +5017,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ GET は取得、POST は作成", "✔ 2xx 成功・4xx 送った側・", "  5xx サーバー側", "✔ https で鍵をかけて通信", "✔ くわしくは HTTP 編へ"], text: "HTTP は、HTTP 編でもっとくわしくやるのだ。ここでは基本だけ覚えるのだ。" },
       { speaker: 'ずんだもん', chara: 'zun_proud', text: 'HTTP は、*HTTP 編*でもっとくわしく話すのだ。キャッシュや Cookie や CORS も、そっちで見るのだ！' },
     ],
-    next: 'lesson_menu_web',
+    next: 'lesson_menu_webhttp',
   },
 
   lesson_devtools: {
@@ -5056,7 +5037,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ Network で API の", "  リクエストと返事を確認", "✔ Disable cache で", "  キャッシュなしを再現", "✔ 回線を遅くして確かめる", "✔ Lighthouse で", "  速さ・使いやすさを点検"], text: "開発者ツールの、仕事での使いどころですわ。" },
       { speaker: '僕', chara: 'metan_normal', text: '「エンディングの記録が消えないのは、ブラウザにしまってあったからか」' },
     ],
-    next: 'lesson_menu_web',
+    next: 'lesson_menu_webhttp',
   },
 
   lesson_js: {
@@ -5075,7 +5056,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ 比べるときは === を使う", "  （== は型を変えて比べる）", "✔ 基本は const、", "  変えるときだけ let", "✔ 待つ処理は async / await", "  → 非同期 JS 編へ", "✔ 失敗しうる処理は try / catch"], text: "JavaScript の、仕事での書き方のコツなのだ。" },
       { speaker: '僕', chara: 'metan_normal', text: '「選んだ番号の並びを、対応表で引いているだけなのか」' },
     ],
-    next: 'lesson_menu_web',
+    next: 'lesson_menu_webhttp',
   },
 
   lesson_dom: {
@@ -5094,7 +5075,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_serious', terminal: ["✔ innerHTML や v-html に", "  外から来た文字を入れない", "  → XSS（セキュリティ編へ）", "✔ Vue の {{ }} は", "  自動で無害化される", "✔ 足したイベントは、外す"], text: "DOM をさわるときの、大事な注意ですわ。" },
       { speaker: '僕', chara: 'zun_smile', text: '「@click のほかにも、@mouseenter とか @input とかがあるのか」' },
     ],
-    next: 'lesson_menu_web',
+    next: 'lesson_menu_webhttp',
   },
 
   lesson_storage: {
@@ -5113,24 +5094,13 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_serious', terminal: ["✔ パスワードやトークン、", "  個人情報を入れない", "  （XSS で読まれる）", "✔ 入るのは 5MB くらいまで", "✔ 中身は利用者が書きかえられる", "  → 信用しすぎない", "✔ sessionStorage は", "  タブを閉じると消える"], text: "localStorage で、やってはいけないことですわ。" },
       { speaker: '僕', chara: 'metan_normal', text: '「だからスマホで遊んだ記録は、パソコンには引きつがれないのか」' },
     ],
-    next: 'lesson_menu_web',
+    next: 'lesson_menu_webhttp',
   },
 
   // ===================================================================
   // CSS もっと編
   // ===================================================================
 
-  lesson_menu_css2: {
-    bg: 'lab_evening',
-    bgm: 'day',
-    ambient: 'dust',
-    meter: '0.000000',
-    lessonMenu: 'css2', // components/LessonMenu.vue で目次を出す
-    lines: [
-      { speaker: '四国めたん', chara: 'metan_smug', text: '*CSS もっと編*ですわ。このゲームの見た目の、ひみつをお教えしますの。' },
-    ],
-    choices: CSS2_MENU,
-  },
 
   lesson_units: {
     place: { name: 'CSS+ 01 大きさと色', time: '18:00' },
@@ -5147,7 +5117,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 文字の大きさは rem が", "  おすすめ（ブラウザの", "  文字サイズ設定に合わせる）", "✔ スマホの 100vh は", "  アドレスバーでずれる", "  → 100dvh を使う"], text: "単位のつまずきどころですわ。" },
       { speaker: '僕', chara: 'metan_smug', text: '「スマホでもパソコンでもちょうどいいのは、決まった px だけじゃないからか」' },
     ],
-    next: 'lesson_menu_css2',
+    next: 'lesson_menu_htmlcss',
   },
 
   lesson_pseudo: {
@@ -5165,7 +5135,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ スマホには hover がない", "  → hover だけで大事な情報を", "  出さない", "✔ キーボード操作の枠は", "  :focus-visible で", "  消さずに見やすく"], text: "hover を使うときの注意なのだ。" },
       { speaker: '僕', chara: 'metan_smug', text: '「HTML は1つなのに、文字が3枚重なってたのか」' },
     ],
-    next: 'lesson_menu_css2',
+    next: 'lesson_menu_htmlcss',
   },
 
   lesson_transition: {
@@ -5183,7 +5153,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ transition: all は避ける", "  （思わぬものまで動く）", "✔ 0.15〜0.3 秒くらいが", "  ちょうどいいことが多い", "✔ will-change は", "  必要なところだけ"], text: "transition のコツですわ。" },
       { speaker: '僕', chara: 'metan_smug', text: '「クラスを1つ付けるだけで、ゆっくり変わるのか」' },
     ],
-    next: 'lesson_menu_css2',
+    next: 'lesson_menu_htmlcss',
   },
 
   lesson_effects: {
@@ -5201,7 +5171,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ backdrop-filter と大きな blur は", "  スマホで重い", "✔ 背景と文字の色の差", "  （コントラスト）を十分に", "✔ 画像は webp などで軽く", "  （このゲームも webp）"], text: "色づくりの注意なのだ。" },
       { speaker: '僕', chara: 'metan_smug', text: '「同じ背景の絵でも、filter で夕方っぽくも冷たくもできるのか」' },
     ],
-    next: 'lesson_menu_css2',
+    next: 'lesson_menu_htmlcss',
   },
 
   lesson_grid: {
@@ -5219,7 +5189,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 1fr はつぶれないことがある", "  → minmax(0, 1fr)", "  （このゲームの目次も）", "✔ auto-fill と minmax で", "  幅に合わせて列の数を自動に"], text: "grid のコツですわ。" },
       { speaker: '僕', chara: 'metan_smug', text: '「記録室のギャラリーみたいに並べるなら、grid が楽そうだ」' },
     ],
-    next: 'lesson_menu_css2',
+    next: 'lesson_menu_htmlcss',
   },
 
   lesson_responsive: {
@@ -5239,7 +5209,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ スマホを先に作る", "  （モバイルファースト）", "✔ 本物のスマホで確かめる", "✔ タップする所は", "  44px 角くらいの大きさ", "✔ 横向きも確かめる"], text: "スマホ対応のコツなのだ。" },
       { speaker: 'ずんだもん', chara: 'zun_gentle', fx: 'leak', speed: 'slow', text: 'どんな画面で開いても、ちゃんと遊べる。それも、作る人のやさしさなのだ。' },
     ],
-    next: 'lesson_menu_css2',
+    next: 'lesson_menu_htmlcss',
   },
 
   // ===================================================================
@@ -5888,17 +5858,6 @@ export const lessonScenes = {
   // バックエンド・Docker 編（このゲームにセーブ用の API を足すなら、を例に）
   // ===================================================================
 
-  lesson_menu_backend: {
-    bg: 'lab_night',
-    bgm: 'night',
-    ambient: 'stars',
-    meter: '0.000000',
-    lessonMenu: 'backend', // components/LessonMenu.vue で目次を出す
-    lines: [
-      { speaker: 'ずんだもん', chara: 'zun_proud', text: '*バックエンド編*なのだ。API とデータベースと Docker の、画面の裏で動くサーバーの話なのだ。' },
-    ],
-    choices: BACKEND_MENU,
-  },
 
   lesson_be_intro: {
     place: { name: 'BE 01 バックエンドとは', time: '21:00' },
@@ -5920,7 +5879,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', text: "バックエンドを書く言葉は、Node.js（JavaScript）・Python・Go・Java・PHP・Ruby など、いろいろあるのだ。このあとは Node.js で説明するのだ。" },
       { speaker: "僕", chara: 'zun_normal', text: "「画面に見えているのは、半分だけだったのか」" },
     ],
-    next: 'lesson_menu_backend',
+    next: 'lesson_menu_server',
   },
 
   lesson_be_api: {
@@ -5940,7 +5899,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_smug', terminal: ["✔ URL は名詞（/api/endings）", "  動詞は HTTP メソッドで", "✔ エラーは適切なコードと", "  わかる説明を返す", "✔ 一覧は件数を区切る（ページング）", "✔ 変えるときは古い版も残す", "  （/api/v2 など）"], text: "仕事で気をつけたいところですわ。" },
       { speaker: "僕", chara: 'metan_smug', text: "「API は、フロントとサーバーの約束の書類みたいなものか」" },
     ],
-    next: 'lesson_menu_backend',
+    next: 'lesson_menu_server',
   },
 
   lesson_be_db: {
@@ -5962,7 +5921,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ N+1 問題", "  一覧の1件ごとに SQL を打つ", "  → まとめて1回で取る", "✔ バックアップと復元の練習", "✔ 本番 DB を手で直接いじらない", "✔ 個人情報はしまい方に注意"], text: "よくある落とし穴ですわ。" },
       { speaker: "僕", chara: 'metan_normal', text: "「表をきれいに分けておけば、データがおかしくなりにくいのか」" },
     ],
-    next: 'lesson_menu_backend',
+    next: 'lesson_menu_server',
   },
 
   lesson_be_security: {
@@ -5983,7 +5942,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_proud', terminal: ["✔ 入力は形と範囲を確かめる", "✔ SQL はプレースホルダーで", "✔ パスワードは bcrypt などで", "  ハッシュにして保存", "✔ だれのデータかは毎回確認", "✔ ログイン試行の回数を制限", "✔ エラーに内部の情報を出さない"], text: "安全な API のための心得なのだ。" },
       { speaker: "僕", chara: 'zun_proud', text: "「画面でボタンを隠しても、守ったことにはならないのか」" },
     ],
-    next: 'lesson_menu_backend',
+    next: 'lesson_menu_server',
   },
 
   lesson_be_docker: {
@@ -6004,7 +5963,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', text: "コンテナは、止めると中で変えたものは消えるのだ。残したいデータは、*ボリューム*や外のデータベースに置くのだ。" },
       { speaker: "僕", chara: 'zun_normal', text: "「動く環境ごと箱に入れて運ぶから、どこでも同じように動くのか」" },
     ],
-    next: 'lesson_menu_backend',
+    next: 'lesson_menu_server',
   },
 
   lesson_be_dockerfile: {
@@ -6024,7 +5983,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_smug', terminal: ["✔ 小さいイメージを元にする", "  （alpine・slim など）", "✔ バージョンを固定する", "  （latest に頼らない）", "✔ 秘密はイメージに入れない", "✔ できれば root で動かさない"], text: "Dockerfile のコツですわ。" },
       { speaker: "僕", chara: 'metan_smug', text: "「作る道具と、配る中身を分けるのか」" },
     ],
-    next: 'lesson_menu_backend',
+    next: 'lesson_menu_server',
   },
 
   lesson_be_compose: {
@@ -6044,7 +6003,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_smug', terminal: ["> docker compose up -d   … 起動", "> docker compose logs -f … ログ", "> docker compose down    … 停止", "> docker compose down -v", "  … データも消す（注意）"], text: "ただし、compose.yaml のパスワードは手元用の仮のもの。本番の秘密は、Secrets Manager などにしまいますわ。" },
       { speaker: "僕", chara: 'metan_smug', text: "「手元に、小さな本番環境を作れるのか」" },
     ],
-    next: 'lesson_menu_backend',
+    next: 'lesson_menu_server',
   },
 
   lesson_be_prod: {
@@ -6066,7 +6025,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 設定は環境変数・秘密は Secrets", "✔ ログは標準出力に JSON で", "✔ /health を用意する", "✔ SIGTERM できれいに止まる", "✔ イメージに版の名前を付ける", "✔ すぐ戻せるようにしておく"], text: "本番の心得ですわ。" },
       { speaker: "僕", chara: 'metan_normal', text: "「消えても、入れかわっても困らないように作るのか」" },
     ],
-    next: 'lesson_menu_backend',
+    next: 'lesson_menu_server',
   },
 
   lesson_be_scale: {
@@ -6088,24 +6047,13 @@ export const lessonScenes = {
       { speaker: "僕", chara: 'zun_normal', text: "「何万人来ても、同じ箱を増やせばいい形にしておくのか」" },
       { speaker: "ずんだもん", chara: 'zun_smile', text: "そうなのだ！ キミの作ったゲームが、そのくらい遊ばれる日が来るといいのだ。" },
     ],
-    next: 'lesson_menu_backend',
+    next: 'lesson_menu_server',
   },
 
   // ===================================================================
   // HTTP 編
   // ===================================================================
 
-  lesson_menu_http: {
-    bg: 'classroom_evening',
-    bgm: 'day',
-    ambient: 'dust',
-    meter: '0.000000',
-    lessonMenu: 'http', // components/LessonMenu.vue で目次を出す
-    lines: [
-      { speaker: '四国めたん', chara: 'metan_smug', text: '*HTTP 編*ですわ。Web のお仕事の、いちばんの土台ですの。' },
-    ],
-    choices: HTTP_MENU,
-  },
 
   lesson_http_journey: {
     place: { name: 'HTTP 01 表示されるまで', time: '16:20' },
@@ -6123,7 +6071,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_proud', text: "TTFB が長いなら、サーバーの処理が遅いのだ。Content Download が長いなら、ファイルが大きすぎるのだ。直す場所がちがうのだ。" },
       { speaker: "僕", chara: 'zun_proud', text: "「遅い、だけじゃなくて、どこが遅いかを見るのか」" },
     ],
-    next: 'lesson_menu_http',
+    next: 'lesson_menu_webhttp',
   },
 
   lesson_http_message: {
@@ -6144,7 +6092,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["> curl -i https://example.com/", "  … ヘッダーも表示", "> curl -I https://example.com/", "  … ヘッダーだけ（HEAD）", "> curl -v https://example.com/", "  … 接続や TLS のようすも"], text: "コマンドで送るなら curl が便利なのだ。" },
       { speaker: "僕", chara: 'zun_normal', text: "「ヘッダーを見れば、サーバーが何を伝えたいのかわかるのか」" },
     ],
-    next: 'lesson_menu_http',
+    next: 'lesson_menu_webhttp',
   },
 
   lesson_http_status: {
@@ -6164,7 +6112,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_smug', text: "503 は混んでいるかメンテナンス中、504 は奥の処理が時間切れ。ロードバランサーの前で起きたのか、アプリの中で起きたのかを、ログで確かめますの。" },
       { speaker: "僕", chara: 'metan_smug', text: "「数字だけで、どこを調べればいいか、だいたいわかるのか」" },
     ],
-    next: 'lesson_menu_http',
+    next: 'lesson_menu_webhttp',
   },
 
   lesson_http_cache: {
@@ -6186,7 +6134,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 更新したのに古いまま", "  → index.html を長くキャッシュしていた", "✔ ほかの人の画面が見えた", "  → 人ごとの中身を CDN に置いた", "  → private か no-store に", "✔ 直すときは、名前を変えるのが確実"], text: "キャッシュでよくある事故ですわ。" },
       { speaker: "僕", chara: 'metan_normal', text: "「速くするための仕組みだけど、まちがえると事故になるのか」" },
     ],
-    next: 'lesson_menu_http',
+    next: 'lesson_menu_webhttp',
   },
 
   lesson_http_cookie: {
@@ -6207,7 +6155,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["セッション＋Cookie", "  ✔ サーバーですぐ無効にできる", "  ✔ ブラウザのアプリ向き", "トークン（JWT）", "  ✔ サーバーが覚えなくていい", "  ✔ スマホアプリや API 向き", "  ✔ 期限まで取り消しにくい"], text: "セッション（Cookie）と、AWS 編で出てきたトークン（JWT）は、どっちもよく使うのだ。" },
       { speaker: "僕", chara: 'zun_normal', text: "「覚えていないサーバーに、毎回名札を見せているのか」" },
     ],
-    next: 'lesson_menu_http',
+    next: 'lesson_menu_webhttp',
   },
 
   lesson_http_cors: {
@@ -6229,7 +6177,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ CORS エラーはブラウザの中で起きる", "  （curl なら通ってしまう）", "✔ 直すのはサーバー側の設定", "✔ * にすると Cookie は送れない", "✔ 「とりあえず全部許可」はしない", "✔ CORS は攻撃を防ぐ鍵ではない", "  （サーバーの認証は別に必要）"], text: "つまずきやすいところですわ。" },
       { speaker: "僕", chara: 'metan_normal', text: "「エラーを出しているのはブラウザで、守られているのは使っている人なのか」" },
     ],
-    next: 'lesson_menu_http',
+    next: 'lesson_menu_webhttp',
   },
 
   lesson_http_https: {
@@ -6252,7 +6200,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ 全部のページを HTTPS に", "✔ HTTP で来たら HTTPS へ転送", "✔ HTTPS のページで http の", "  画像や JS を読まない（混在）", "✔ 証明書の期限切れに注意", "  （ACM などで自動更新）"], text: "HTTPS の心得なのだ。" },
       { speaker: "僕", chara: 'zun_normal', text: "「鍵のマークは、通り道が守られているという意味なのか」" },
     ],
-    next: 'lesson_menu_http',
+    next: 'lesson_menu_webhttp',
   },
 
   // ===================================================================
@@ -6630,7 +6578,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_proud', terminal: ["✔ 色・すきま・角の丸みは変数に", "✔ 名前は役目で付ける", "  （--red より --danger）", "✔ var(--x, 0) で", "  なかったときの値を決める"], text: "CSS 変数のコツなのだ。" },
       { speaker: "僕", chara: 'zun_proud', text: "「1か所変えれば、全部の色が変わるのか」" },
     ],
-    next: 'lesson_menu_css2',
+    next: 'lesson_menu_htmlcss',
   },
 
   lesson_render: {
@@ -6650,24 +6598,13 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_smug', terminal: ["Core Web Vitals", "  LCP … 大事な絵が出るまで", "  INP … 押してから反応まで", "  CLS … 画面のガタつき", "✔ 開発者ツールの Performance", "  で、何に時間を使ったか見る", "✔ 測ってから直す"], text: "仕事で、速さを測るときの目安ですわ。" },
       { speaker: "僕", chara: 'metan_smug', text: "「同じ動きでも、何を動かすかで重さがぜんぜんちがうのか」" },
     ],
-    next: 'lesson_menu_web',
+    next: 'lesson_menu_webhttp',
   },
 
   // ===================================================================
   // Node.js 編
   // ===================================================================
 
-  lesson_menu_node: {
-    bg: 'lab_night',
-    bgm: 'night',
-    ambient: 'stars',
-    meter: '0.000000',
-    lessonMenu: 'node', // components/LessonMenu.vue で目次を出す
-    lines: [
-      { speaker: "ずんだもん", chara: 'zun_proud', text: "*Node.js 編*なのだ。JavaScript を、ブラウザの外で動かす話なのだ。" },
-    ],
-    choices: NODE_MENU,
-  },
 
   lesson_node_what: {
     place: { name: 'NODE 01 Node.js とは', time: '20:40' },
@@ -6685,7 +6622,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_proud', terminal: ["得意", "  たくさんの通信を同時にさばく", "  （API・チャット・プロキシ）", "  フロントと同じ言葉で書ける", "苦手", "  重い計算（画像処理・機械学習）", "  → 別の言葉やサービスに任せる"], text: "Node が得意なことと、苦手なことなのだ。" },
       { speaker: "僕", chara: 'zun_proud', text: "「フロントで覚えた JavaScript が、サーバーでも使えるのか」" },
     ],
-    next: 'lesson_menu_node',
+    next: 'lesson_menu_server',
   },
 
   lesson_node_modules: {
@@ -6703,7 +6640,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 新しく書くなら ESM", "✔ \"type\": \"module\" をそろえる", "✔ 組みこみは node: を付ける", "✔ ESM では __dirname がない", "  → import.meta.dirname を使う"], text: "モジュールのコツですわ。" },
       { speaker: "僕", chara: 'metan_normal', text: "「同じ import でも、決まりごとが2種類あるのか」" },
     ],
-    next: 'lesson_menu_node',
+    next: 'lesson_menu_server',
   },
 
   lesson_node_io: {
@@ -6722,7 +6659,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', text: "重い計算も同じなのだ。どうしても必要なら、worker_threads で別の手を借りるか、別のサービスに任せるのだ。" },
       { speaker: "僕", chara: 'zun_normal', text: "「1本の手でも、待たなければ、たくさんの人をさばけるのか」" },
     ],
-    next: 'lesson_menu_node',
+    next: 'lesson_menu_server',
   },
 
   lesson_node_stream: {
@@ -6740,7 +6677,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', text: "HTTP のリクエストもレスポンスも、じつはストリームですの。動画の配信や、大きな CSV の書き出しでよく使いますわ。" },
       { speaker: "僕", chara: 'metan_normal', text: "「一気に運ばずに、流れ作業にするのか」" },
     ],
-    next: 'lesson_menu_node',
+    next: 'lesson_menu_server',
   },
 
   lesson_node_http: {
@@ -6760,7 +6697,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_smug', text: "Express 5 からは、async の関数で起きたエラーも、自動でエラーの受け皿に届くようになりましたわ。古い 4 では、自分で next(err) を呼ぶ必要がありましたの。" },
       { speaker: "僕", chara: 'metan_smug', text: "「関所を並べる順番が、そのまま守りの順番になるのか」" },
     ],
-    next: 'lesson_menu_node',
+    next: 'lesson_menu_server',
   },
 
   lesson_node_errors: {
@@ -6779,7 +6716,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ 受け止めたら、記録して", "  適切に返す（握りつぶさない）", "✔ 想定外なら、落ちて作り直す", "✔ 予想できる失敗は", "  4xx でていねいに返す", "✔ 失敗したら 0 以外で終わる"], text: "エラー処理のコツなのだ。" },
       { speaker: "僕", chara: 'zun_normal', text: "「落ちないように作るより、落ちても大丈夫なように作るのか」" },
     ],
-    next: 'lesson_menu_node',
+    next: 'lesson_menu_server',
   },
 
   lesson_node_tools: {
@@ -6798,7 +6735,7 @@ export const lessonScenes = {
       { speaker: "僕", chara: 'metan_normal', text: "「道具のバージョンも、チームの約束ごとなのか」" },
       { speaker: "ずんだもん", chara: 'zun_smile', text: "これで、フロントからサーバーまで、同じ JavaScript で書けるのだ！ バックエンド編に進むと、もっと実践的になるのだ。" },
     ],
-    next: 'lesson_menu_node',
+    next: 'lesson_menu_server',
   },
   lesson_ts_narrow: {
     place: { name: 'TS 04 型の絞りこみ', time: '17:30' },
@@ -6850,7 +6787,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ <label for> でつなぐ", "✔ エラーは欄のそばに、", "  何が悪いか具体的に", "✔ 送信中はボタンを押せなく", "  （二重送信を防ぐ）", "✔ 入力した内容を消さない", "✔ チェックはサーバーでも"], text: "フォームのコツですわ。" },
       { speaker: "僕", chara: 'metan_normal', text: "「入力しやすさも、作る人の仕事なのか」" },
     ],
-    next: 'lesson_menu_css',
+    next: 'lesson_menu_htmlcss',
   },
 
   lesson_a11y: {
@@ -6868,7 +6805,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', text: "aria- の属性は、最後の手段。まずはふさわしいタグを使うこと。Lighthouse や axe という道具で、自動でも調べられますわ。" },
       { speaker: "僕", chara: 'metan_normal', text: "「<div> を <button> にするだけで、使える人が増えるのか」" },
     ],
-    next: 'lesson_menu_css',
+    next: 'lesson_menu_htmlcss',
   },
 
   lesson_lint: {
@@ -6885,7 +6822,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ ルールはチームで決めて固定", "✔ 保存時に自動で整える", "✔ CI でも必ず動かす", "✔ 警告を放置しない", "  （増えると全部無視される）", "✔ 無効にするときは理由を書く"], text: "道具のコツなのだ。" },
       { speaker: "僕", chara: 'zun_normal', text: "「書き方の好みは、機械に決めてもらうのか」" },
     ],
-    next: 'lesson_menu_tools',
+    next: 'lesson_menu_toolslib',
   },
 
   lesson_git: {
@@ -6904,7 +6841,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_proud', terminal: ["✔ 1つのコミットに1つの変更", "✔ メッセージに「なぜ」を書く", "✔ PR は小さく（読める量に）", "✔ 秘密を絶対にコミットしない", "✔ main への強制 push はしない", "✔ レビューは人ではなくコードに"], text: "コミットとプルリクエストのコツなのだ。" },
       { speaker: "僕", chara: 'zun_proud', text: "「歴史が残るから、こわがらずに変えられるのか」" },
     ],
-    next: 'lesson_menu_tools',
+    next: 'lesson_menu_toolslib',
   },
 
   // ===================================================================
@@ -7059,17 +6996,6 @@ export const lessonScenes = {
   // 有名なライブラリ編
   // ===================================================================
 
-  lesson_menu_eco: {
-    bg: 'classroom_evening',
-    bgm: 'evening',
-    ambient: 'dust',
-    meter: '0.000000',
-    lessonMenu: 'eco', // components/LessonMenu.vue で目次を出す
-    lines: [
-      { speaker: "ずんだもん", chara: 'zun_proud', text: "*有名なライブラリ編*なのだ。仕事の会話でよく出てくる名前を、地図にして覚えるのだ。" },
-    ],
-    choices: ECO_MENU,
-  },
 
   lesson_eco_map: {
     place: { name: 'LIB 01 全体の地図', time: '18:30' },
@@ -7087,7 +7013,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_proud', terminal: ["ライブラリ", "  自分のコードから呼んで使う道具", "  （例：zod・dayjs）", "フレームワーク", "  決まった形に自分のコードを", "  はめこむ土台（例：Nuxt）", "「呼ぶ」か「呼ばれる」かのちがい"], text: "言葉の整理なのだ。" },
       { speaker: "僕", chara: 'zun_proud', text: "「名前を聞いたら、地図のどこにあるか考えればいいのか」" },
     ],
-    next: 'lesson_menu_eco',
+    next: 'lesson_menu_toolslib',
   },
 
   lesson_eco_front: {
@@ -7106,7 +7032,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_proud', terminal: ["React   … 利用者・情報が最多", "Vue     … わかりやすい・日本で人気", "Svelte  … 小さく速い", "Angular … 全部入り・大規模向け", "どれも「部品＋状態＋画面」"], text: "くらべるとこうなのだ。" },
       { speaker: "僕", chara: 'zun_proud', text: "「書き方はちがっても、考え方は同じなのか」" },
     ],
-    next: 'lesson_menu_eco',
+    next: 'lesson_menu_toolslib',
   },
 
   lesson_eco_meta: {
@@ -7125,7 +7051,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_proud', terminal: ["✔ 検索に出したい・速く見せたい", "  → SSR / SSG", "✔ ログイン後の管理画面・ゲーム", "  → CSR でも十分", "✔ ページごとに混ぜられる", "  フレームワークも多い"], text: "選び方なのだ。" },
       { speaker: "僕", chara: 'zun_proud', text: "「どこで HTML を作るかで、向いているものが変わるのか」" },
     ],
-    next: 'lesson_menu_eco',
+    next: 'lesson_menu_toolslib',
   },
 
   lesson_eco_desktop: {
@@ -7146,7 +7072,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["Electron", "  ✔ どこでも同じ表示・情報が多い", "  ✔ 大きい・メモリを使う", "Tauri", "  ✔ 小さい・軽い・許可制", "  ✔ OS で表示が少しちがう", "  ✔ 裏の処理は Rust"], text: "どちらも、このゲームの dist をそのまま中に入れれば、デスクトップアプリにできるのだ。" },
       { speaker: "僕", chara: 'zun_normal', text: "「Web の画面に、アプリの殻をかぶせているのか」" },
     ],
-    next: 'lesson_menu_eco',
+    next: 'lesson_menu_toolslib',
   },
 
   lesson_eco_mobile: {
@@ -7164,7 +7090,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ すでに Web がある・小さく始める", "  → PWA・Capacitor", "✔ React に慣れたチーム", "  → React Native（Expo）", "✔ 見た目を細かく作りこむ", "  → Flutter", "✔ カメラ・通知など本物の機能が", "  たくさん必要 → ネイティブも検討"], text: "選ぶときの目安ですわ。" },
       { speaker: "僕", chara: 'metan_normal', text: "「Web の知識が、スマホでもかなり使えるのか」" },
     ],
-    next: 'lesson_menu_eco',
+    next: 'lesson_menu_toolslib',
   },
 
   lesson_eco_ui: {
@@ -7183,7 +7109,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_proud', terminal: ["zod        … データの形を確かめる", "dayjs      … 日付の計算", "VueUse     … 便利なコンポーザブル集", "i18n       … 多言語対応", "Chart.js   … グラフ"], text: "ほかにもよく見る道具なのだ。" },
       { speaker: "僕", chara: 'zun_proud', text: "「よくある困りごとには、だいたい定番の道具があるのか」" },
     ],
-    next: 'lesson_menu_eco',
+    next: 'lesson_menu_toolslib',
   },
 
   lesson_eco_server: {
@@ -7201,7 +7127,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', text: "サーバーを持たずに済ませるなら、*Firebase* や *Supabase* という選択肢もありますわ。データベース・ログイン・ファイル置き場が、まとめて手に入りますの。" },
       { speaker: "僕", chara: 'metan_normal', text: "「サーバー側も、組み合わせ方の定番があるのか」" },
     ],
-    next: 'lesson_menu_eco',
+    next: 'lesson_menu_toolslib',
   },
 
   lesson_eco_choose: {
@@ -7221,7 +7147,7 @@ export const lessonScenes = {
       { speaker: "僕", chara: 'zun_proud', text: "「道具の名前より、何のための道具かを見るのか」" },
       { speaker: "ずんだもん", chara: 'zun_gentle', fx: "leak", speed: "slow", text: "キミが気になった道具から、さわってみるのだ。このゲームも、Electron や Tauri でアプリにできるのだ。" },
     ],
-    next: 'lesson_menu_eco',
+    next: 'lesson_menu_toolslib',
   },
 
   // ----- 各編に足した授業 -----
@@ -7240,7 +7166,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ ライブラリの前に、標準の API", "✔ 許可は、必要になった瞬間に", "  理由がわかる形でお願いする", "✔ 使えないブラウザでも", "  動くようにしておく", "✔ Observer は使い終わったら止める"], text: "コツですわ。" },
       { speaker: "僕", chara: 'metan_normal', text: "「ブラウザだけで、思ったよりいろいろできるのか」" },
     ],
-    next: 'lesson_menu_web',
+    next: 'lesson_menu_webhttp',
   },
 
   lesson_web_pwa: {
@@ -7258,7 +7184,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ HTTPS が必要", "✔ 新しい版が出たら知らせて", "  読みこみ直してもらう", "✔ 何をキャッシュするか決める", "  （API の個人データは慎重に）", "✔ iPhone は機能に制限がある"], text: "気をつけたいことですわ。" },
       { speaker: "僕", chara: 'metan_normal', text: "「ページとネットの間に、門番を置くのか」" },
     ],
-    next: 'lesson_menu_web',
+    next: 'lesson_menu_webhttp',
   },
 
   lesson_http_realtime: {
@@ -7276,7 +7202,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 双方向なら WebSocket", "✔ 一方向なら SSE が簡単", "✔ 切れたときの再接続を考える", "✔ 台数を増やすときは、つなぎ先が", "  ばらばらになる → Redis などで共有", "✔ ログインの確認も忘れずに"], text: "つなぎっぱなしの通信は、サーバーの台数を増やすときに工夫が要りますわ。" },
       { speaker: "僕", chara: 'metan_normal', text: "「聞きに行くんじゃなくて、知らせてもらうのか」" },
     ],
-    next: 'lesson_menu_http',
+    next: 'lesson_menu_webhttp',
   },
 
   lesson_http_api_styles: {
@@ -7294,7 +7220,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', text: "流行より、チームとアプリに合うかで選びますの。迷ったら REST から始めて困りませんわ。" },
       { speaker: "僕", chara: 'metan_normal', text: "「API にも、いろいろな形があるのか」" },
     ],
-    next: 'lesson_menu_http',
+    next: 'lesson_menu_webhttp',
   },
 
   lesson_css_arch: {
@@ -7311,7 +7237,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ やり方を1つに決める", "✔ 全体に効く CSS は最小限", "  （リセット・変数・文字だけ）", "✔ id や深い入れ子で強くしない", "✔ 色やすきまは CSS 変数で"], text: "チームでのコツなのだ。" },
       { speaker: "僕", chara: 'zun_normal', text: "「CSS にも、ぶつからないための設計がいるのか」" },
     ],
-    next: 'lesson_menu_css',
+    next: 'lesson_menu_htmlcss',
   },
 
   lesson_dark: {
@@ -7328,7 +7254,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ 真っ黒・真っ白は目がつかれる", "✔ 画像やロゴも暗い背景で確かめる", "✔ 色の差（コントラスト）を確認", "✔ color-scheme: dark で", "  スクロールバーなども暗く"], text: "気をつけたいところなのだ。" },
       { speaker: "僕", chara: 'zun_normal', text: "「CSS 変数にしておくと、こういうときに楽なのか」" },
     ],
-    next: 'lesson_menu_css2',
+    next: 'lesson_menu_htmlcss',
   },
 
   lesson_async_retry: {
@@ -7448,7 +7374,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ 速く終わるようにする", "  （キャッシュ・並列）", "✔ 失敗をそのままにしない", "✔ 秘密は Secrets に", "  （コードに書かない）", "✔ 本番の前に確認用の環境", "✔ すぐ前の版に戻せるように"], text: "CI のコツなのだ。" },
       { speaker: "僕", chara: 'zun_normal', text: "「人が手でやると忘れることを、機械が毎回やってくれるのか」" },
     ],
-    next: 'lesson_menu_tools',
+    next: 'lesson_menu_toolslib',
   },
 
   lesson_monorepo: {
@@ -7465,7 +7391,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ 道具はチームで1つに", "✔ lock ファイルは1種類だけ", "✔ モノレポは CI が重くなりがち", "  → 変わったところだけ動かす"], text: "気をつけたいところなのだ。" },
       { speaker: "僕", chara: 'zun_normal', text: "「道具の選び方も、チームの約束なのか」" },
     ],
-    next: 'lesson_menu_tools',
+    next: 'lesson_menu_toolslib',
   },
 
   lesson_be_paging: {
@@ -7483,7 +7409,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 1回の上限を決める", "  （limit は 100 まで など）", "✔ 並び順を必ず決める", "✔ 条件に使う列にインデックス", "✔ 合計の件数は重いことがある"], text: "一覧の API のコツですわ。" },
       { speaker: "僕", chara: 'metan_normal', text: "「たくさんのデータは、少しずつ渡すのか」" },
     ],
-    next: 'lesson_menu_backend',
+    next: 'lesson_menu_server',
   },
 
   lesson_be_observability: {
@@ -7501,7 +7427,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ エラーの割合", "✔ かかった時間（平均より p95・p99）", "✔ リクエストの数", "✔ CPU・メモリ", "✔ 目標（SLO）を決めて見張る"], text: "よく見る数字ですわ。" },
       { speaker: "僕", chara: 'metan_normal', text: "「動いているあいだも、ようすが見えるようにするのか」" },
     ],
-    next: 'lesson_menu_backend',
+    next: 'lesson_menu_server',
   },
 
   lesson_sec_threat: {
@@ -7552,7 +7478,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ ちょっとした動き → CSS", "✔ たくさんの粒・線 → Canvas", "✔ 3D・大量の絵 → WebGL の道具", "✔ スマホの電池と重さに注意"], text: "選び方なのだ。" },
       { speaker: "僕", chara: 'zun_normal', text: "「表現したいものの大きさで、道具を選ぶのか」" },
     ],
-    next: 'lesson_menu_eco',
+    next: 'lesson_menu_toolslib',
   },
 
   lesson_eco_ai: {
@@ -7570,24 +7496,13 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', text: "このゲームの授業も、AI といっしょに作ったものですのよ。最後に人が確かめる、というのが大事ですわ。" },
       { speaker: "僕", chara: 'metan_normal', text: "「便利な道具ほど、使い方の約束が大事なのか」" },
     ],
-    next: 'lesson_menu_eco',
+    next: 'lesson_menu_toolslib',
   },
 
   // ===================================================================
   // CSS はじめて編（いちばんやさしいところから）
   // ===================================================================
 
-  lesson_menu_css0: {
-    bg: 'classroom_evening',
-    bgm: 'day',
-    ambient: 'dust',
-    meter: '0.000000',
-    lessonMenu: 'css0', // components/LessonMenu.vue で目次を出す
-    lines: [
-      { speaker: "ずんだもん", chara: 'zun_smile', text: "*CSS はじめて編*なのだ！ むずかしい言葉は使わないのだ。いっしょに、少しずつやるのだ。" },
-    ],
-    choices: CSS0_MENU,
-  },
 
   lesson_c0_first: {
     place: { name: 'CSS0 01 CSS ってなに？', time: '16:10' },
@@ -7604,7 +7519,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_proud', text: "色が変わったのだ？ キミはもう、CSS を書いたのだ！" },
       { speaker: "僕", chara: 'zun_proud', text: "「1行変えるだけで、見た目が変わるのか」" },
     ],
-    next: 'lesson_menu_css0',
+    next: 'lesson_menu_htmlcss',
   },
 
   lesson_c0_text: {
@@ -7620,7 +7535,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_smug', text: "line-height を 1.8 くらいにすると、長い文章が読みやすくなりますのよ。このゲームのセリフも、そうしていますの。" },
       { speaker: "僕", chara: 'metan_smug', text: "「文字の大きさと並び方だけで、だいぶ雰囲気が変わる」" },
     ],
-    next: 'lesson_menu_css0',
+    next: 'lesson_menu_htmlcss',
   },
 
   lesson_c0_color: {
@@ -7638,7 +7553,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', text: "色は、自分で数字を考えなくてもいいのだ。エディタやブラウザの開発者ツールに、色を選ぶ道具があるのだ。" },
       { speaker: "僕", chara: 'zun_normal', text: "「色は、赤と緑と青のまぜ方なのか」" },
     ],
-    next: 'lesson_menu_css0',
+    next: 'lesson_menu_htmlcss',
   },
 
   lesson_c0_box: {
@@ -7654,7 +7569,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_smug', text: "border-radius を大きくすると、角が丸くなりますの。このゲームの目次の番号の丸も、border-radius: 50% ですのよ。" },
       { speaker: "僕", chara: 'metan_smug', text: "「背景と枠をつけると、ボタンやカードっぽくなるのか」" },
     ],
-    next: 'lesson_menu_css0',
+    next: 'lesson_menu_htmlcss',
   },
 
   lesson_c0_space: {
@@ -7671,7 +7586,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_smug', text: "もっとくわしく知りたくなったら、HTML・CSS 編の「ボックスモデル」へどうぞ。" },
       { speaker: "僕", chara: 'metan_smug', text: "「内側は padding、外側は margin」" },
     ],
-    next: 'lesson_menu_css0',
+    next: 'lesson_menu_htmlcss',
   },
 
   lesson_c0_size: {
@@ -7688,7 +7603,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', text: "高さは、できるだけ決めないのがコツなのだ。中の文字が増えたとき、はみ出してしまうのだ。" },
       { speaker: "僕", chara: 'zun_normal', text: "「決まった大きさは px、合わせたい大きさは %」" },
     ],
-    next: 'lesson_menu_css0',
+    next: 'lesson_menu_htmlcss',
   },
 
   lesson_c0_class: {
@@ -7706,7 +7621,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', text: "次は「HTML・CSS」編で、並べ方や重ね方を学んでみてくださいな。" },
       { speaker: "僕", chara: 'metan_normal', text: "「名札を付ければ、好きな場所だけ変えられるのか」" },
     ],
-    next: 'lesson_menu_css0',
+    next: 'lesson_menu_htmlcss',
   },
 
   // ===================================================================
@@ -7733,7 +7648,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 意味に合ったタグを使う", "  （ボタンは <button>）", "✔ 画像には alt を書く", "✔ キーボードだけでも", "  操作できるようにする", "  → アクセシビリティ"], text: "仕事で意識したいことですわ。" },
       { speaker: 'ずんだもん', chara: 'zun_proud', fx: 'flash', text: 'そういうことなのだ！' },
     ],
-    next: 'lesson_menu_tools',
+    next: 'lesson_menu_toolslib',
   },
 
   // ----- npm -----
@@ -7754,7 +7669,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ package-lock.json はコミット", "✔ CI では npm ci を使う", "  （lock どおりに入れる）", "✔ ^3.5.43 は 3.5.43 以上 4 未満", "✔ npm audit で弱点を確認", "✔ 知らないパッケージを", "  気軽に入れない"], text: "npm の仕事での作法なのだ。" },
       { speaker: '四国めたん', chara: 'metan_normal', terminal: ['"scripts": {', '  "dev": "vite",', '  "build": "vite build",', '  "preview": "vite preview"', '}'], text: 'package.json には、よく使う命令のあだ名も書けますわ。npm run dev は「vite を動かして」という意味ですの。' },
     ],
-    next: 'lesson_menu_tools',
+    next: 'lesson_menu_toolslib',
   },
 
   // ----- import -----
@@ -7775,7 +7690,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 名前付き export が無難", "  （名前がそろう・探しやすい）", "✔ ファイルどうしが", "  たがいに import しあう", "  「循環参照」に注意", "✔ 1ファイルに1つの役目"], text: "分け方のコツですわ。" },
       { speaker: 'ずんだもん', chara: 'zun_smile', fx: 'burst', text: 'それでファイルを分けても、ちゃんと1つのゲームとして動くのだ！' },
     ],
-    next: 'lesson_menu_tools',
+    next: 'lesson_menu_toolslib',
   },
 
   // ----- Vite の開発サーバー -----
@@ -7797,7 +7712,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_serious', terminal: ["✔ 設定は .env に書く", "✔ VITE_ で始まる変数は", "  ブラウザに公開される", "  → 秘密のキーを入れない", "✔ .env は Git に入れない", "  .env.example をコミット"], text: "仕事でとても大事な、環境変数の話ですわ。" },
       { speaker: '僕', chara: 'zun_normal', text: '「書いて、保存して、すぐ見る。だから試しながら作れるのか」' },
     ],
-    next: 'lesson_menu_tools',
+    next: 'lesson_menu_toolslib',
   },
 
   // ----- ビルド -----
@@ -7819,7 +7734,7 @@ export const lessonScenes = {
       { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["✔ ファイルの大きさを見張る", "  （重いとスマホで遅い）", "✔ 使うときだけ読みこむ", "  （このゲームの授業も、", "  TECH DOCS で読みこむ）", "✔ ソースマップの公開に注意"], text: "ビルドで見ておきたいところなのだ。" },
       { speaker: 'ずんだもん', chara: 'zun_smile', fx: 'flash', text: 'そうなのだ！ npm run preview で、できあがった dist をお試しで開くこともできるのだ。' },
     ],
-    next: 'lesson_menu_tools',
+    next: 'lesson_menu_toolslib',
   },
 
   // ----- 公開 -----
@@ -7840,7 +7755,7 @@ export const lessonScenes = {
       { speaker: "四国めたん", chara: 'metan_normal', terminal: ["✔ 手作業でアップしない", "  → CI/CD で自動化", "✔ 本番の前に確認用の環境", "✔ 何かあったら、すぐ前の版に", "  戻せるようにしておく", "✔ AWS 編・バックエンド編も見てね"], text: "公開の作法ですわ。" },
       { speaker: 'ずんだもん', chara: 'zun_gentle', fx: 'leak', speed: 'slow', text: 'キミの作ったものが、知らない誰かの放課後に届くのだ。……すごいことなのだ。' },
     ],
-    next: 'lesson_menu_tools',
+    next: 'lesson_menu_toolslib',
   },
 
   // ----- おしまい -----
