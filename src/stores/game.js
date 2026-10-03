@@ -3,6 +3,7 @@
 // ゲームの進行状況をここにまとめておけば、ゲーム画面・エンディング・分岐図のどれからでも読める。
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { scenes, getEndingType, endings, endingByPath } from '../data/scenario'
+import { lessonScenes, LESSON_START } from '../data/lessons'
 
 // ----- 通った世界線をブラウザに保存する（ページを閉じても残る） -----
 const SAVE_KEY = 'after-school-rewrite:visited'
@@ -40,11 +41,12 @@ export const useGameStore = defineStore('game', {
     path: '',         // 今回の選び方（選んだ選択肢の番号を並べた文字列。例：'101'）
     visited: loadVisited(), // これまでに通った分岐（path の一覧）
     movie: null,      // 再生中のムービーの名前（data/movies.js）。null なら再生していない
+    mode: 'story',    // 'story'（本編） | 'lesson'（技術説明モード。data/lessons.js のシーンを使う）
   }),
 
   // ----- getters：state から計算する値（コンポーネントの computed にあたる） -----
   getters: {
-    scene: (state) => scenes[state.sceneId],
+    scene: (state) => (state.mode === 'lesson' ? lessonScenes : scenes)[state.sceneId],
     // このシーンのセリフのうち、今の選び方で出るものだけ
     lines() {
       // getter から別の getter を使うときは this を使う
@@ -82,6 +84,7 @@ export const useGameStore = defineStore('game', {
   // ----- actions：state を変える関数（コンポーネントの普通の関数にあたる） -----
   actions: {
     reset() {
+      this.mode = 'story'
       this.sceneId = 'lunch'
       this.lineIndex = 0
       this.path = ''
@@ -89,11 +92,19 @@ export const useGameStore = defineStore('game', {
       this.markVisited('')
     },
 
+    // 技術説明モードを最初から始める
+    startLesson() {
+      this.mode = 'lesson'
+      this.path = ''
+      this.movie = null
+      this.goToScene(LESSON_START)
+    },
+
     goToScene(id) {
       this.sceneId = id
       this.lineIndex = 0
       // movie が付いたシーンに入ったら、ムービーを再生する
-      if (scenes[id].movie) this.playMovie(scenes[id].movie)
+      if (this.scene.movie) this.playMovie(this.scene.movie)
     },
 
     playMovie(name) {
@@ -116,6 +127,11 @@ export const useGameStore = defineStore('game', {
 
     // 選択肢が選ばれたとき
     choose(choice) {
+      // 技術説明モードの選択肢（目次）は、本編の選び方として記録しない
+      if (this.mode === 'lesson') {
+        this.goToScene(choice.next)
+        return
+      }
       const index = this.scene.choices.indexOf(choice)
       this.path += index
       this.markVisited(this.path)
@@ -124,6 +140,7 @@ export const useGameStore = defineStore('game', {
 
     // 分岐図の「ここから再開」：そのノードの状態にして、シーンの最初から始める
     jumpTo(node) {
+      this.mode = 'story'
       this.movie = null
       this.goToScene(node.sceneId)
       this.path = node.key

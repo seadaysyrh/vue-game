@@ -59,6 +59,13 @@ function start() {
   game.playMovie('opening')  // オープニングムービーから始める
   router.push('/game')       // コードでページ移動する
 }
+
+// TECH DOCS（技術説明モード）：同じゲーム画面で、Vue の説明シナリオ（data/lessons.js）を再生する
+function startLesson() {
+  play('impact')
+  game.startLesson()
+  router.push('/game')
+}
 </script>
 
 <template>
@@ -96,6 +103,7 @@ function start() {
         <RouterLink to="/route" class="credit-link">WORLDLINE</RouterLink>
         <RouterLink to="/archive" class="credit-link">ARCHIVE</RouterLink>
         <RouterLink to="/credits" class="credit-link">CREDITS</RouterLink>
+        <button class="credit-link link-button" @click="startLesson">TECH DOCS</button>
       </nav>
       <!-- 8つのエンディングをすべて見たのに、隠しエンディングだけ見ていないときのささやき -->
       <p v-if="secretTeaser" class="teaser">— 観測されていない結末が、ひとつだけ残っている —</p>
@@ -214,6 +222,20 @@ h1 {
   font-family: 'Share Tech Mono', monospace;
   color: #aaa;
   letter-spacing: 0.2em;
+}
+/* ボタンだけど、となりのリンクと同じ見た目にする */
+.link-button {
+  padding: 0;
+  font-size: inherit;
+  border: none;
+  background: none;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.link-button:hover {
+  background: none;
+  box-shadow: none;
+  color: #fff;
 }
 
 /* ===== ロゴの文字が集まってくる ===== */

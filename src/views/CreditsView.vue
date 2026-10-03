@@ -30,6 +30,9 @@
     <h2>Fonts</h2>
     <p>Zen Kaku Gothic New / Share Tech Mono（Google Fonts）</p>
 
+    <h2>AI</h2>
+    <p>このゲームはAI（Claude Opus 5.5）で生成されています</p>
+
     <RouterLink to="/">TITLE</RouterLink>
   </div>
 </template>

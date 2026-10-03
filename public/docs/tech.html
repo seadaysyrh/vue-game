@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>放課後リライト 技術解説</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Zen+Kaku+Gothic+New:wght@400;700;900&display=swap">
+<style>
+/* 左に細い見出しラベル、右に本文の2カラム。狭い画面では1カラム。夜の部室×ニキシー管の配色 */
+:root {
+  --bg: #0d1018;
+  --panel: #151a26;
+  --line: #262d3d;
+  --fg: #e6e8ee;
+  --muted: #9aa2b4;
+  --accent: #ff8a2a;
+  --accent-soft: rgba(255, 138, 42, 0.14);
+  --echo: #7ff5d9;
+  --code-bg: #0a0d14;
+  --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --font-mono: "Share Tech Mono", "Consolas", "Menlo", monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f5f2ec; --panel: #ffffff; --line: #e1dbd0; --fg: #1d2030; --muted: #5d6474;
+    --accent: #c25400; --accent-soft: rgba(194, 84, 0, 0.1); --echo: #00806a; --code-bg: #f0ebe2;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #f5f2ec; --panel: #ffffff; --line: #e1dbd0; --fg: #1d2030; --muted: #5d6474;
+  --accent: #c25400; --accent-soft: rgba(194, 84, 0, 0.1); --echo: #00806a; --code-bg: #f0ebe2;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.85;
+  padding: 0 20px 80px;
+}
+.wrap { max-width: 1040px; margin: 0 auto; }
+
+header.hero { padding: 64px 0 40px; border-bottom: 1px solid var(--line); display: grid; gap: 18px; }
+.eyebrow { font-family: var(--font-mono); letter-spacing: 0.3em; font-size: 0.8rem; color: var(--accent); }
+h1 { margin: 0; font-weight: 900; font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1.25; letter-spacing: 0.06em; text-wrap: balance; }
+.lead { margin: 0; max-width: 40em; color: var(--muted); }
+.stack { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-family: var(--font-mono); font-size: 0.8rem; padding: 2px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); }
+
+nav.toc { padding: 24px 0; border-bottom: 1px solid var(--line); display: grid; gap: 14px; }
+nav.toc h2 { font-size: 0.8rem; font-family: var(--font-mono); letter-spacing: 0.25em; color: var(--muted); font-weight: 400; margin: 0; }
+nav.toc ol { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 6px 24px; }
+nav.toc a { color: var(--fg); text-decoration: none; display: flex; gap: 10px; }
+nav.toc a span { font-family: var(--font-mono); color: var(--accent); }
+nav.toc a:hover, nav.toc a:focus-visible { color: var(--accent); }
+
+.part { padding: 40px 0 0; font-family: var(--font-mono); letter-spacing: 0.3em; font-size: 0.85rem; color: var(--accent); }
+.part b { display: block; font-family: var(--font-body); letter-spacing: 0.04em; font-size: 1.3rem; color: var(--fg); font-weight: 900; }
+
+section { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 32px; padding: 44px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 16px; }
+.sec-label { font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.15em; color: var(--muted); padding-top: 8px; }
+.sec-label b { display: block; font-size: 1.6rem; color: var(--accent); font-weight: 400; letter-spacing: 0; }
+.sec-body { min-width: 0; display: grid; gap: 18px; align-content: start; }
+h2 { margin: 0; font-size: 1.6rem; font-weight: 900; text-wrap: balance; letter-spacing: 0.04em; }
+h3 { margin: 10px 0 0; font-size: 1.1rem; font-weight: 700; }
+p { margin: 0; max-width: 44em; }
+ul, ol { margin: 0; padding-left: 1.4em; max-width: 44em; }
+li + li { margin-top: 4px; }
+.note { color: var(--muted); font-size: 0.92rem; }
+code { font-family: var(--font-mono); font-size: 0.92em; padding: 1px 6px; border-radius: 4px; background: var(--accent-soft); color: var(--fg); }
+pre { margin: 0; padding: 16px 18px; background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px; overflow-x: auto; font-family: var(--font-mono); font-size: 0.88rem; line-height: 1.7; }
+pre code { background: none; padding: 0; font-size: inherit; }
+.file { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); margin-bottom: -12px; }
+.c { color: var(--muted); }
+.k { color: var(--accent); }
+.s { color: var(--echo); }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.93rem; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--font-mono); font-weight: 400; font-size: 0.8rem; letter-spacing: 0.1em; color: var(--muted); background: var(--panel); }
+tr:last-child td { border-bottom: none; }
+
+/* 構成図：3列（データ → 状態 → 画面）＋ 下に共有の道具 */
+.arch { display: grid; grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr) 28px minmax(0, 1.3fr); gap: 10px; align-items: stretch; }
+.arch .col { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px; display: grid; gap: 8px; align-content: start; }
+.arch .tag { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.2em; color: var(--accent); }
+.arch .box { border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; font-size: 0.86rem; background: var(--bg); }
+.arch .box small { display: block; color: var(--muted); font-size: 0.78rem; }
+.arch .arrow { display: grid; place-items: center; color: var(--accent); font-family: var(--font-mono); }
+.arch .base { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; border: 1px dashed var(--line); border-radius: 8px; padding: 12px; }
+
+/* 画面の層 */
+.layers { display: grid; gap: 4px; }
+.layer { display: grid; grid-template-columns: 52px minmax(0, 1fr) minmax(0, 1.2fr); gap: 12px; align-items: center; padding: 8px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); font-size: 0.9rem; }
+.layer .z { font-family: var(--font-mono); color: var(--accent); font-size: 0.8rem; }
+.layer .what { color: var(--muted); font-size: 0.84rem; }
+.layer.world { border-color: var(--accent); }
+
+/* 段階の流れ */
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.step { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px; display: grid; gap: 6px; align-content: start; }
+.step .n { font-family: var(--font-mono); color: var(--accent); font-size: 0.78rem; letter-spacing: 0.2em; }
+.step p { font-size: 0.88rem; color: var(--muted); }
+
+.compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.compare > div { min-width: 0; display: grid; gap: 8px; align-content: start; }
+.badge { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.15em; }
+.badge.bad { color: #ff6b7d; }
+.badge.good { color: var(--echo); }
+
+footer { padding: 32px 0; color: var(--muted); font-size: 0.85rem; }
+
+@media (max-width: 760px) {
+  body { padding: 0 16px 60px; }
+  section { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 32px 0; }
+  .arch { grid-template-columns: minmax(0, 1fr); }
+  .arch .arrow { transform: rotate(90deg); height: 20px; }
+  .steps, .compare { grid-template-columns: minmax(0, 1fr); }
+  .layer { grid-template-columns: 40px minmax(0, 1fr); }
+  .layer .what { grid-column: 2; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">TECH NOTES / VUE 3 + VUE ROUTER + PINIA + WEB PLATFORM</div>
+    <h1>放課後リライト 技術解説</h1>
+    <p class="lead">前半は Vue の使い方（ページ・共有データ・リアクティブ・部品の分け方）、後半は演出をどの Web 技術で作ったか（CSS アニメーション・CSS 3D・Canvas・フィルターと合成・Web Audio）です。コードは <code>vuenovel/src</code> の中身から抜き出しています。</p>
+    <div class="stack">
+      <span class="chip">Vue 3.5</span><span class="chip">Vue Router 5</span><span class="chip">Pinia 4</span><span class="chip">Vite 8</span><span class="chip">&lt;script setup&gt;</span><span class="chip">CSS 3D</span><span class="chip">Canvas 2D</span><span class="chip">Web Audio</span>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="目次">
+    <h2>PART 1　VUE</h2>
+    <ol>
+      <li><a href="#overview"><span>01</span>全体の構成</a></li>
+      <li><a href="#router"><span>02</span>Vue Router</a></li>
+      <li><a href="#pinia"><span>03</span>Pinia と分岐</a></li>
+      <li><a href="#data"><span>04</span>データで動く画面</a></li>
+      <li><a href="#reactive"><span>05</span>ref・computed・watch</a></li>
+      <li><a href="#transition"><span>06</span>Transition と :key</a></li>
+      <li><a href="#composable"><span>07</span>コンポーザブル</a></li>
+      <li><a href="#scoped"><span>08</span>scoped CSS の注意点</a></li>
+    </ol>
+    <h2>PART 2　演出の手法</h2>
+    <ol>
+      <li><a href="#stack"><span>09</span>画面の層</a></li>
+      <li><a href="#css-anim"><span>10</span>CSS アニメーション</a></li>
+      <li><a href="#css3d"><span>11</span>CSS 3D の舞台</a></li>
+      <li><a href="#cutin"><span>12</span>カットインの計算</a></li>
+      <li><a href="#canvas"><span>13</span>Canvas とタイムリープ</a></li>
+      <li><a href="#filters"><span>14</span>フィルターと合成</a></li>
+      <li><a href="#blend"><span>15</span>キャラをなじませる</a></li>
+      <li><a href="#audio"><span>16</span>Web Audio</a></li>
+      <li><a href="#robust"><span>17</span>壊れにくくする工夫</a></li>
+      <li><a href="#bugs"><span>18</span>ハマりどころ集</a></li>
+      <li><a href="#read"><span>19</span>読む順番</a></li>
+    </ol>
+  </nav>
+
+  <div class="part">PART 1<b>Vue の使い方</b></div>
+
+  <!-- 01 -->
+  <section id="overview">
+    <div class="sec-label"><b>01</b>OVERVIEW</div>
+    <div class="sec-body">
+      <h2>全体の構成</h2>
+      <p>「お話（データ）」「進み具合（状態）」「見た目（画面）」の3つに分け、データは左から右へ一方向に流れます。お話を足すときはデータだけ、見た目を変えるときは画面だけを触れば済みます。</p>
+      <div class="arch" role="img" aria-label="データ、状態、画面の3層と、共有の道具の構成図">
+        <div class="col">
+          <span class="tag">DATA</span>
+          <div class="box">scenario.js<small>シーン・セリフ・選択肢・エンディング</small></div>
+          <div class="box">movies.js<small>ムービーのカット割り</small></div>
+          <div class="box">faces.js<small>立ち絵の顔の位置</small></div>
+          <div class="box">routeTree.js / tips.js<small>分岐図・用語集</small></div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="col">
+          <span class="tag">STATE（Pinia）</span>
+          <div class="box">stores/game.js<small>sceneId・lineIndex・path・visited・movie</small></div>
+          <div class="box">getters<small>今のセリフ・出す選択肢・エンディング</small></div>
+          <div class="box">actions<small>next()・choose()・goToScene()</small></div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="col">
+          <span class="tag">VIEW（views / components）</span>
+          <div class="box">GameView.vue<small>本編。部品を重ねて演出を指揮する</small></div>
+          <div class="box">StageLayer・MessageBox・ChoiceList<small>舞台・文章・選択肢</small></div>
+          <div class="box">effects/*<small>カットイン・スキャン・タイムリープなど</small></div>
+          <div class="box">EndingView・RouteView・ArchiveView<small>エンディング・分岐図・記録室</small></div>
+        </div>
+        <div class="base">
+          <div class="box">composables/useSound・useMusic<small>効果音と BGM（Web Audio）</small></div>
+          <div class="box">composables/useArchive<small>見たスチル・TIPS の記録</small></div>
+          <div class="box">utils/richText.js<small>本文の装飾を1文字ずつに分解</small></div>
+          <div class="box">router/index.js<small>URL とページの対応表</small></div>
+        </div>
+      </div>
+      <p class="note">ストアはページ移動（<code>router.push</code>）をしません。「どこまで進んだか」だけを持ち、画面の移動はページ側が決めます。ストアが画面のことを知らずに済みます。</p>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section id="router">
+    <div class="sec-label"><b>02</b>ROUTER</div>
+    <div class="sec-body">
+      <h2>Vue Router：6つのページ</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>URL</th><th>ページ</th><th>役割</th></tr></thead>
+          <tbody>
+            <tr><td><code>/</code></td><td>TitleView</td><td>タイトル。START でストアを戻して <code>/game</code> へ</td></tr>
+            <tr><td><code>/game</code></td><td>GameView</td><td>本編。演出のほとんどがここ</td></tr>
+            <tr><td><code>/ending/:type</code></td><td>EndingView</td><td>URL の <code>:type</code>（例：<code>true</code>）でエンディングを選ぶ</td></tr>
+            <tr><td><code>/route</code></td><td>RouteView</td><td>世界線の分岐図。通った道だけ光る</td></tr>
+            <tr><td><code>/archive</code></td><td>ArchiveView</td><td>記録室（エンディング・スチル・TIPS）</td></tr>
+            <tr><td><code>/credits</code></td><td>CreditsView</td><td>素材のクレジット</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="file">views/GameView.vue（コードで移動）</div>
+<pre><code><span class="c">// エピローグの最後のセリフなら、エンディング（動画）のページへ</span>
+<span class="k">if</span> (game.isLastLine &amp;&amp; game.scene.epilogue) {
+  router.push(<span class="s">`/ending/${game.endingType}`</span>)
+}</code></pre>
+      <p class="note">エンディングを URL に入れておくと、<code>/ending/true</code> を直接開くだけで見た目を確認できます。ストアの状態に頼らないページは、作りやすく直しやすくなります。</p>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section id="pinia">
+    <div class="sec-label"><b>03</b>PINIA</div>
+    <div class="sec-body">
+      <h2>Pinia：進み具合と分岐</h2>
+      <p>ゲーム画面・分岐図・エンディングは別のページなので、<code>ref</code> だけでは値を受け渡せません。ストアに置けば、どのページからでも <code>useGameStore()</code> で同じデータに触れます。</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Pinia</th><th>コンポーネントでいうと</th><th>このゲームでは</th></tr></thead>
+          <tbody>
+            <tr><td><code>state</code></td><td><code>ref</code></td><td><code>sceneId</code>・<code>lineIndex</code>・<code>path</code>・<code>visited</code>・<code>movie</code></td></tr>
+            <tr><td><code>getters</code></td><td><code>computed</code></td><td><code>line</code>・<code>lines</code>・<code>visibleChoices</code>・<code>endingType</code>・<code>endingsSeenCount</code></td></tr>
+            <tr><td><code>actions</code></td><td>普通の関数</td><td><code>next()</code>・<code>choose()</code>・<code>goToScene()</code>・<code>jumpTo()</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>分岐は「選んだ番号の文字列」</h3>
+      <p>選択肢を選ぶたびに、その番号を <code>path</code> に1文字ずつ足します。3回選ぶと <code>'101'</code> のような3桁になり、それでエンディングが決まります。</p>
+      <div class="file">stores/game.js</div>
+<pre><code>choose(choice) {
+  <span class="k">const</span> index = <span class="k">this</span>.scene.choices.indexOf(choice)
+  <span class="k">this</span>.path += index          <span class="c">// '' → '1' → '10' → '101'</span>
+  <span class="k">this</span>.markVisited(<span class="k">this</span>.path) <span class="c">// 通った分岐を localStorage に記録（分岐図が光る）</span>
+  <span class="k">this</span>.goToScene(choice.next)
+},</code></pre>
+      <p>セリフの <code>when: '?1'</code> は「2回目に1番を選んだときだけ出す」という条件です。<code>?</code> はどちらでもよい印で、1文字ずつ比べるだけで判定できます。</p>
+<pre><code><span class="k">export function</span> matchesWhen(when, path) {
+  <span class="k">if</span> (!when) <span class="k">return true</span>
+  <span class="k">return</span> [...when].every((ch, i) =&gt; ch === <span class="s">'?'</span> || path[i] === ch)
+}
+
+<span class="c">// getter：今のシーンのセリフのうち、条件に合うものだけ</span>
+lines() {
+  <span class="k">return this</span>.scene.lines.filter(
+    (l) =&gt; matchesWhen(l.when, <span class="k">this</span>.path) &amp;&amp; (!l.replay || <span class="k">this</span>.endingsSeenCount &gt; 0),
+  )
+},</code></pre>
+      <p class="note"><code>replay: true</code> は2周目以降だけ出るセリフ、<code>secret: true</code> の選択肢は8つのエンディングを全部見たあとだけ出ます。どちらも getter の <code>filter</code> 1つで実現しています。開発中は <code>acceptHMRUpdate</code> を書いておくと、ストアを直したときに古い中身が残りません。</p>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section id="data">
+    <div class="sec-label"><b>04</b>DATA DRIVEN</div>
+    <div class="sec-body">
+      <h2>データで動く画面</h2>
+      <p>演出の指定もシナリオのデータに書きます。画面側は「その項目があれば部品を出す」だけです。新しい演出を足すときは、部品を1つ作り、GameView に1行足し、シナリオに項目を書きます。</p>
+      <div class="file">data/scenario.js（セリフ1行）</div>
+<pre><code>{ speaker: <span class="s">'ずんだもん'</span>, chara: <span class="s">'zun_sad'</span>, echo: <span class="k">true</span>,
+  camera: <span class="s">'vertigo'</span>,                       <span class="c">// カメラワーク</span>
+  scan: { name: <span class="s">'ZUNDAMON'</span>, alert: <span class="k">true</span>, rows: [...] }, <span class="c">// ターゲットロック</span>
+  text: <span class="s">'手を伸ばしても、すり抜けちゃうのだ。'</span> }</code></pre>
+      <div class="file">views/GameView.vue（項目があれば出す）</div>
+<pre><code>&lt;ScanLock v-if=<span class="s">"game.line.scan &amp;&amp; !blocking"</span> :key=<span class="s">"`s-${lineId}`"</span>
+          :scan=<span class="s">"game.line.scan"</span> :chara=<span class="s">"game.line.chara"</span> /&gt;</code></pre>
+      <h3>短い書き方を computed でそろえる</h3>
+      <p>カットインは <code>cutin: 'eyes'</code> とも <code>cutin: { type: 'diagonal', angle: -16 }</code> とも書けます。部品に渡す前に computed で同じ形にそろえるので、部品の側は1種類の形だけを考えれば済みます。</p>
+<pre><code><span class="k">const</span> cutin = computed(() =&gt; {
+  <span class="k">const</span> c = game.line.cutin
+  <span class="k">if</span> (!c) <span class="k">return null</span>
+  <span class="k">const</span> base = <span class="k">typeof</span> c === <span class="s">'string'</span> ? { type: c } : c
+  <span class="k">return</span> { chara: game.line.chara, echo: game.line.echo, ...base } <span class="c">// キャラは省略したらセリフのもの</span>
+})</code></pre>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section id="reactive">
+    <div class="sec-label"><b>05</b>REACTIVITY</div>
+    <div class="sec-body">
+      <h2>ref・computed・watch の使い分け</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>道具</th><th>使いどころ</th><th>このゲームの例</th></tr></thead>
+          <tbody>
+            <tr><td><code>ref</code></td><td>変わる値を持つ</td><td>何文字目まで出したか（<code>typedLength</code>）・マウスの位置</td></tr>
+            <tr><td><code>computed</code></td><td>ほかの値から計算できるもの</td><td>表示する文字（<code>typedChars</code>）・文字を出している途中か</td></tr>
+            <tr><td><code>watch</code></td><td>値が変わった「とき」に何かする</td><td>セリフが変わったらタイプ開始・効果音を鳴らす</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>タイプライター</h3>
+      <p>持つのは「何文字目まで出したか」だけです。表示する文字は computed で切り出し、句読点では <code>setTimeout</code> の待ち時間を長くして、間を作っています。</p>
+      <div class="file">views/GameView.vue</div>
+<pre><code><span class="k">const</span> chars = computed(() =&gt; parseRichText(lineText.value)) <span class="c">// *強調* などを1文字ずつに</span>
+<span class="k">const</span> typedLength = ref(0)
+<span class="k">const</span> typedChars = computed(() =&gt; chars.value.slice(0, typedLength.value))
+
+<span class="k">function</span> typeNext() {
+  typedLength.value++
+  <span class="k">if</span> (!isTyping.value) <span class="k">return</span>
+  <span class="k">const</span> factor = SPEED[game.line.speed] ?? 1
+  typeTimer = setTimeout(typeNext, pauseAfter(chars.value[typedLength.value - 1].ch) * factor)
+}
+
+<span class="c">// セリフが変わったら最初から。immediate で、画面を開いた最初の1回も実行する</span>
+watch(() =&gt; [game.line, blocking.value], startTyping, { immediate: <span class="k">true</span> })</code></pre>
+      <h3>タイマーは必ず片付ける</h3>
+      <p class="note"><code>setTimeout</code>・<code>setInterval</code>・<code>requestAnimationFrame</code>・<code>addEventListener</code> を使う部品はすべて、<code>onUnmounted</code> で止めています。ページを離れても動き続けるタイマーは、よくあるバグの原因です。</p>
+    </div>
+  </section>
+
+  <!-- 06 -->
+  <section id="transition">
+    <div class="sec-label"><b>06</b>TRANSITION</div>
+    <div class="sec-body">
+      <h2>&lt;Transition&gt; と :key</h2>
+      <p><code>:key</code> は「Vue が同じものとみなす単位」を決めます。key が変わると別の要素として作り直され、<code>&lt;Transition&gt;</code> の出入りアニメーションがかかります。演出ではこれを2つの向きで使っています。</p>
+      <div class="compare">
+        <div>
+          <span class="badge bad">BEFORE：立ち絵が2人に見える</span>
+<pre><code>&lt;Transition name=<span class="s">"fade"</span>&gt;
+  &lt;img :key=<span class="s">"charaSrc"</span> /&gt;
+&lt;/Transition&gt;</code></pre>
+          <p class="note">key が画像のパスなので、表情が変わるたびに「別の画像」になり、古い絵と新しい絵が重なってフェードしていました。</p>
+        </div>
+        <div>
+          <span class="badge good">AFTER：キャラ単位で切り替え</span>
+<pre><code>&lt;Transition name=<span class="s">"chara-fade"</span> mode=<span class="s">"out-in"</span>&gt;
+  &lt;CharaSprite :key=<span class="s">"charaKey"</span> :name=<span class="s">"chara"</span> /&gt;
+&lt;/Transition&gt;
+<span class="c">// 'zun_smile' → 'zun'</span>
+<span class="k">const</span> charaKey = computed(() =&gt; props.chara?.split(<span class="s">'_'</span>)[0])</code></pre>
+          <p class="note">表情の変化では同じ要素のまま。別のキャラに替わるときだけ、<code>out-in</code> で消えきってから次が出ます。</p>
+        </div>
+      </div>
+      <h3>逆に、毎回作り直したいとき</h3>
+      <p>カットインやスキャンは、セリフが変わるたびにアニメーションを最初から再生したいので、セリフの ID を key にしています。key が変わると部品が作り直され、CSS アニメーションも頭から始まります。</p>
+<pre><code>&lt;CutIn v-if=<span class="s">"cutin &amp;&amp; !blocking"</span> :key=<span class="s">"`c-${lineId}`"</span> :cutin=<span class="s">"cutin"</span> /&gt;</code></pre>
+      <p class="note">背景は <code>&lt;Transition name="fade"&gt;</code> で重ねてクロスフェード、立ち絵は <code>out-in</code> で順番に。何を重ね、何を順番にするかは <code>mode</code> で決まります。</p>
+    </div>
+  </section>
+
+  <!-- 07 -->
+  <section id="composable">
+    <div class="sec-label"><b>07</b>COMPOSABLES</div>
+    <div class="sec-body">
+      <h2>コンポーザブル：使い回す機能</h2>
+      <p><code>useSound()</code> のように <code>use〇〇</code> という関数に機能をまとめると、どの部品からでも同じ道具を呼び出せます。ポイントは、<strong>関数の外</strong>に置いた値は全部の部品で共有され、<strong>関数の中</strong>で作った値は呼ぶたびに別になることです。</p>
+      <div class="file">composables/audioCore.js</div>
+<pre><code><span class="c">// 関数の外に置くと、どのコンポーネントから使っても同じ値を共有できる</span>
+<span class="k">export const</span> muted = ref(loadMuted())
+
+<span class="k">let</span> ctx = <span class="k">null</span>  <span class="c">// AudioContext はページに1つで十分なので、1つだけ作って使い回す</span></code></pre>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>コンポーザブル</th><th>中身</th><th>共有しているもの</th></tr></thead>
+          <tbody>
+            <tr><td><code>useSound</code></td><td>効果音・雨の音</td><td>音量つまみ・雨の音のループ</td></tr>
+            <tr><td><code>useMusic</code></td><td>BGM の自動演奏・曲の「演技」</td><td>今流れている曲</td></tr>
+            <tr><td><code>useArchive</code></td><td>見たスチル・解放した TIPS</td><td>記録（localStorage と同期）</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Pinia のストアとの違い：ストアは「ゲームの進み具合」という1つの大きな状態、コンポーザブルは「道具」です。音のミュートのように小さな共有値なら、コンポーザブルの外側に <code>ref</code> を置くだけで足ります。</p>
+    </div>
+  </section>
+
+  <!-- 08 -->
+  <section id="scoped">
+    <div class="sec-label"><b>08</b>SCOPED CSS</div>
+    <div class="sec-body">
+      <h2>scoped CSS の注意点</h2>
+      <p><code>&lt;style scoped&gt;</code> の CSS は、その部品の要素だけに効きます。Vue が要素に <code>data-v-6283c8e1</code> のような印を付け、セレクタにも同じ印を足して絞りこむしくみです（ブラウザの開発者ツールで見える謎の文字列はこれです）。</p>
+      <h3>親から子の部品に CSS を当てたいとき</h3>
+      <p>立ち絵の部品（CharaSprite）は、自分で残響のゆらめきアニメーションを持っています。親の StageLayer から「不在の残像」用のアニメーションを当てても、子の指定に負けて効きませんでした。親の側で<strong>セレクタを長くして強くする</strong>ことで解決しています。</p>
+      <div class="file">components/StageLayer.vue</div>
+<pre><code><span class="c">/* 立ち絵の影の指定より優先させるため、セレクタを長くしている */</span>
+.layer-chara .absence {
+  filter: grayscale(1) brightness(1.8) blur(1.5px);
+  animation: absence 5s ease-out forwards;
+}</code></pre>
+      <p class="note">CSS は「より具体的なセレクタ」が勝ちます（詳細度）。<code>!important</code> で無理に勝たせるより、何と何がぶつかっているかを開発者ツールで確かめてから、セレクタで勝たせるほうが後で困りません。</p>
+    </div>
+  </section>
+
+  <div class="part">PART 2<b>演出の手法</b></div>
+
+  <!-- 09 -->
+  <section id="stack">
+    <div class="sec-label"><b>09</b>LAYERS</div>
+    <div class="sec-body">
+      <h2>画面は層の重ね合わせ</h2>
+      <p>GameView は、透明な板を何枚も重ねた構造です。それぞれの板は <code>position: absolute; inset: 0</code> で画面いっぱいに広がり、<code>v-if</code> で出たり消えたりします。上ほど手前です。</p>
+      <div class="layers" role="list">
+        <div class="layer" role="listitem"><span class="z">最前</span><span>MoviePlayer</span><span class="what">ムービー（タイムリープ・走馬灯）。全部を覆う</span></div>
+        <div class="layer" role="listitem"><span class="z"></span><span>TileDissolve・ClickRipple</span><span class="what">場面転換のタイル・クリックの波紋</span></div>
+        <div class="layer" role="listitem"><span class="z"></span><span>ChapterCard・InvestigateLayer</span><span class="what">章のカード・調査パート</span></div>
+        <div class="layer" role="listitem"><span class="z"></span><span>MessageBox / CinemaText・ChoiceList</span><span class="what">文章（大事なセリフは画面中央の字幕に）と選択肢</span></div>
+        <div class="layer" role="listitem"><span class="z"></span><span>.post</span><span class="what">ビネット・走査線・フィルムのざらつき</span></div>
+        <div class="layer" role="listitem"><span class="z"></span><span>Fx 部品</span><span class="what">衝撃波・光漏れ・世界の書き換え</span></div>
+        <div class="layer" role="listitem"><span class="z"></span><span>CutIn・PhoneScreen・ScanLock・HoloTerminal</span><span class="what">セリフごとの演出（:key で毎回作り直す）</span></div>
+        <div class="layer" role="listitem"><span class="z"></span><span>HudFrame・.scope</span><span class="what">四隅の照準・映画の黒帯</span></div>
+        <div class="layer world" role="listitem"><span class="z">最奥</span><span>.world → .grade → StageLayer・AmbientLayer</span><span class="what">背景と立ち絵（3Dの舞台）と雨や星。色調補正はここにまとめてかける</span></div>
+      </div>
+      <p class="note">「演出を足す」はほとんどの場合「板を1枚足す」ことです。板の中身は独立しているので、ほかの演出を壊さずに足し引きできます。</p>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section id="css-anim">
+    <div class="sec-label"><b>10</b>CSS ANIMATION</div>
+    <div class="sec-body">
+      <h2>CSS アニメーション：判定は Vue、動きは CSS</h2>
+      <p>Vue がやるのは「クラスを付ける・外す」「部品を出す・消す」だけで、動きは <code>@keyframes</code> と <code>transition</code> に任せています。JavaScript で毎フレーム動かすより短く書け、止め忘れも起きません。</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>演出</th><th>CSS の手法</th></tr></thead>
+          <tbody>
+            <tr><td>カメラが寄る・傾く（close / dutch）</td><td><code>transition: transform 1.4s</code> で <code>scale</code>・<code>rotate</code> を変える</td></tr>
+            <tr><td>足元から見上げる（tilt-up）</td><td><code>@keyframes</code> で <code>translateY</code> と <code>scale</code> を戻す</td></tr>
+            <tr><td>手持ちカメラの揺れ</td><td>9秒の不規則なキーフレームを <code>infinite</code> で</td></tr>
+            <tr><td>カットインが飛びこむ</td><td><code>translateX</code> ＋ <code>skewX</code> ＋ <code>blur</code> から元へ（モーションブラーの見立て）</td></tr>
+            <tr><td>文字が回転しながら飛び出す</td><td>1文字ずつ <code>span</code> にして、CSS 変数 <code>--rx</code> で角度を変える</td></tr>
+            <tr><td>世界の書き換え</td><td><code>clip-path: inset()</code> を動かして、見える範囲を線と一緒に下げる</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>同じアニメーションをもう一度再生する</h3>
+      <p>クラスを付けっぱなしだと、アニメーションは1回しか動きません。一度外して、次の描画（約16ms後）で付け直すと、最初から再生されます。</p>
+      <div class="file">components/StageLayer.vue（カメラが切り替わるたびの「カット」）</div>
+<pre><code>watch(() =&gt; [props.chara, props.camera], () =&gt; {
+  cutting.value = <span class="k">false</span>
+  cutTimer = setTimeout(() =&gt; {
+    cutting.value = <span class="k">true</span>                                   <span class="c">// 付け直す</span>
+    cutTimer = setTimeout(() =&gt; (cutting.value = <span class="k">false</span>), 520) <span class="c">// 終わったら外す</span>
+  }, 16)
+})</code></pre>
+      <h3>動きを分けて重ねる</h3>
+      <p>1つの要素の <code>transform</code> には、1つの動きしか書けません。「マウスで回る」「カメラワーク」「手持ちの揺れ」「カット」を同時に効かせるため、箱を入れ子にして、それぞれの箱に1つずつ動きを持たせています。</p>
+<pre><code>.handheld-box  <span class="c">← 手持ちカメラの揺れ</span>
+  .cut-box     <span class="c">← カットの瞬間の寄り</span>
+    .orbit-box <span class="c">← マウスで舞台ごと回る</span>
+      .camera  <span class="c">← カメラワーク（push・orbit など）</span></code></pre>
+    </div>
+  </section>
+
+  <!-- 11 -->
+  <section id="css3d">
+    <div class="sec-label"><b>11</b>CSS 3D</div>
+    <div class="sec-body">
+      <h2>CSS 3D の舞台</h2>
+      <p>背景・立ち絵・光の玉を、本当に奥行きの違う位置に置いています。マウスで舞台ごと回すと、遠いものほど大きくずれ、1枚の絵なのに奥行きが生まれます。</p>
+      <div class="file">components/StageLayer.vue</div>
+<pre><code>.stage { perspective: 1000px; }  <span class="c">/* 1000px 離れた所からのぞいている */</span>
+
+<span class="c">/* 途中の箱すべてに付けないと、そこで平らにつぶれてしまう */</span>
+.handheld-box, .cut-box, .orbit-box, .camera { transform-style: preserve-3d; }
+
+.layer-bg   { transform: translateZ(-320px) scale(1.42); } <span class="c">/* 奥。小さく見えるぶん拡大 */</span>
+.layer-near { transform: translateZ(220px); }              <span class="c">/* 手前の光の玉 */</span>
+
+.orbit-box {
+  transform: rotateY(calc(var(--mx, 0) * 5deg)) rotateX(calc(var(--my, 0) * -3deg));
+}</code></pre>
+      <p>マウスの位置は GameView が <code>-1〜1</code> にして CSS 変数 <code>--mx</code>・<code>--my</code> で渡しています。Vue から CSS へ値を渡すには、<code>:style="{ '--mx': mouse.x }"</code> のように CSS 変数にするのが手軽です。</p>
+      <h3>3D のカメラワーク</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>カメラ</th><th>しくみ</th><th>見え方</th></tr></thead>
+          <tbody>
+            <tr><td><code>orbit</code></td><td>カメラの箱を <code>rotateY</code> で -12° → 9°</td><td>キャラはほぼそのまま、背景だけが大きく流れる＝回りこみ</td></tr>
+            <tr><td><code>crane</code></td><td><code>rotateX(18deg)</code> から正面へ</td><td>上から降りてくる</td></tr>
+            <tr><td><code>vertigo</code></td><td><code>perspective</code> 自体を 2600px → 420px にアニメーション</td><td>キャラの大きさは変わらず、背景だけが遠のく（めまいショット）</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">vertigo は「奥行き 0 の位置にあるものは、perspective を変えても大きさが変わらない」という性質を使っています。立ち絵は奥行き 0、背景だけが奥にあるので、背景だけが伸び縮みします。</p>
+      <h3>3D を平らにつぶしてしまうもの</h3>
+      <p class="note">途中の箱に <code>filter</code>・<code>overflow: hidden</code>・<code>opacity</code>（1未満）を付けると、そこで 3D が平らになります。カットの瞬間のぼかしを箱ではなく中の層に付けているのは、このためです。</p>
+    </div>
+  </section>
+
+  <!-- 12 -->
+  <section id="cutin">
+    <div class="sec-label"><b>12</b>CUT-IN</div>
+    <div class="sec-body">
+      <h2>カットイン：立ち絵を巨大にして窓からのぞく</h2>
+      <p>目のアップ用の画像は用意していません。ふつうの立ち絵を何倍にも拡大して、見せたい場所（目・口・片目）が窓の真ん中に来るようにずらしているだけです。なので、アップの中でもまばたきや口パクがそのまま動きます。</p>
+      <div class="file">components/effects/CutIn.vue</div>
+<pre><code><span class="c">// face.x / face.y … 立ち絵の中の、両目の中心の位置（0〜1）。faces.js にキャラごとに書いてある</span>
+<span class="c">// eyeSpan … 両目の幅（立ち絵の幅に対する割合）</span>
+<span class="k">const</span> spriteW = Math.min(viewW * f.fill, panelH * f.maxH) / (face.eyeSpan * f.part)
+<span class="k">const</span> spriteH = spriteW / face.aspect
+<span class="k">return</span> {
+  height: <span class="s">`${spriteH}px`</span>,
+  left: <span class="s">`${panelW / 2 - cx * spriteW}px`</span>, <span class="c">// 見せたい点が窓の中心に来るように</span>
+  top:  <span class="s">`${panelH / 2 - cy * spriteH}px`</span>,
+}</code></pre>
+      <p>「両目の幅が、窓の幅の何割になるか」から拡大率を逆算しています。ただし横長すぎる画面では顔が帯からはみ出すので、窓の高さでも上限をかけています（<code>Math.min</code>）。</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>種類</th><th>窓の形</th><th>Web の手法</th></tr></thead>
+          <tbody>
+            <tr><td>eyes / face</td><td>横長の帯</td><td>窓に <code>overflow: hidden</code></td></tr>
+            <tr><td>diagonal / slash</td><td>斜めの帯（1本・2本）</td><td>画面より長い帯を <code>rotate</code>（端が見えないように）</td></tr>
+            <tr><td>vertical / triptych</td><td>縦長の帯で片目・3分割</td><td>同じ立ち絵を、見せる場所を変えて3枚並べる</td></tr>
+            <tr><td>split</td><td>左右に2人</td><td><code>clip-path: polygon()</code> で境目を斜めに切る</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">斜めの帯は「傾き」を外側の箱、「滑りこむ動き」を内側の箱に分けています。同じ要素の <code>transform</code> に両方書くと、アニメーションが傾きを上書きしてしまうからです（10章の「動きを分けて重ねる」と同じ考え方）。</p>
+    </div>
+  </section>
+
+  <!-- 13 -->
+  <section id="canvas">
+    <div class="sec-label"><b>13</b>CANVAS</div>
+    <div class="sec-body">
+      <h2>Canvas とタイムリープ</h2>
+      <p>要素が数百個になる演出（数字の雨・光の筋）は、DOM ではなく <code>&lt;canvas&gt;</code> に描いています。DOM の要素を数百個動かすより、1枚の絵に毎フレーム描き直すほうが速いからです。</p>
+      <div class="steps">
+        <div class="step"><span class="n">01 SUCK</span><strong>吸いこまれる</strong><p>CSS アニメーション。景色が 3回転しながら <code>scale(0.01)</code> まで縮み、後ろで <code>repeating-conic-gradient</code> の渦が回る</p></div>
+        <div class="step"><span class="n">02 LEAP</span><strong>時間のトンネル</strong><p>Canvas。光の筋・時計の輪・通りすぎる景色・数字の雨。速さがどんどん上がり、最後は白く飛ぶ</p></div>
+        <div class="step"><span class="n">03 ARRIVE</span><strong>着地</strong><p>CSS アニメーション。ぶれた景色が止まり、赤と青にずれた絵が重なり（色収差）、衝撃の輪が広がる</p></div>
+      </div>
+      <h3>奥行きの計算は「割り算」だけ</h3>
+      <p>奥にあるもの（<code>z</code> が大きい）ほど、中心に寄せて小さく描きます。これが遠近法の正体です。毎フレーム <code>z</code> を減らすと、点が手前へ飛んできます。</p>
+      <div class="file">components/TimeLeap.vue</div>
+<pre><code><span class="k">function</span> project(a, r, z) {
+  <span class="k">const</span> s = F / z  <span class="c">// 遠いほど s が小さい</span>
+  <span class="k">return</span> [cx + Math.cos(a + spin) * r * s, cy + Math.sin(a + spin) * r * s, s]
+}
+
+<span class="c">// 今の位置と、少し奥の位置を線でつなぐ → 速いほど長い線（光の筋）になる</span>
+<span class="k">const</span> [x1, y1] = project(st.a, st.r, st.z)
+<span class="k">const</span> [x0, y0] = project(st.a, st.r, st.z + v * 0.09)</code></pre>
+      <h3>残像はわざと消し残す</h3>
+      <p>毎フレーム画面を真っ黒に消さず、半透明の黒を重ねるだけにしています。前のコマが少しずつ薄れて残り、それがスピード感と数字の雨の尾になります。</p>
+<pre><code>ctx.fillStyle = <span class="s">'rgba(3, 4, 12, 0.3)'</span> <span class="c">// 完全には消さない</span>
+ctx.fillRect(0, 0, c.width, c.height)</code></pre>
+      <p class="note">描画ループは <code>requestAnimationFrame</code> でつなぎ、<code>onUnmounted</code> で <code>cancelAnimationFrame</code> します。進み具合は経過時間（<code>performance.now()</code>）から計算するので、処理が重くてコマが落ちても、全体の長さはずれません。ムービーのカットの切り替えは <code>setTimeout</code> で進めています。アニメーションの終わりを待たないので、別のタブを見ていても止まりません。</p>
+    </div>
+  </section>
+
+  <!-- 14 -->
+  <section id="filters">
+    <div class="sec-label"><b>14</b>FILTER &amp; BLEND</div>
+    <div class="sec-body">
+      <h2>フィルターと合成</h2>
+      <p>背景や立ち絵の色・質感は、画像ファイルを作り直さずに、表示するときにブラウザで加工しています。同じ素材のまま、場面ごとに雰囲気を変えられます。</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>手法</th><th>何ができるか</th><th>使っている所</th></tr></thead>
+          <tbody>
+            <tr><td><code>filter</code></td><td>色・明るさ・ぼかし・影</td><td>シーンの色調補正（grade）・背景のぼけ・残響の光</td></tr>
+            <tr><td><code>filter: url(#rgb-split)</code></td><td>SVG フィルターで赤と青をずらす</td><td>残響が現れるときのノイズ</td></tr>
+            <tr><td>SVG <code>feTurbulence</code></td><td>ノイズ模様を作る</td><td>フィルムのざらつき（データ URI の背景画像）</td></tr>
+            <tr><td><code>mix-blend-mode: screen</code></td><td>明るさを足す（光）</td><td>夕日・月明かりの光の筋・光の玉</td></tr>
+            <tr><td><code>mix-blend-mode: saturation</code></td><td>下の絵の色を抜く</td><td>世界の書き換えの「古い世界」（白黒）</td></tr>
+            <tr><td><code>clip-path</code></td><td>見える範囲を切り抜く</td><td>書き換えの線・カットインの斜めの境目・ログの打ち出し</td></tr>
+            <tr><td><code>repeating-*-gradient</code></td><td>縞・方眼・渦</td><td>走査線・ワイヤーフレーム・吸いこみの渦</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>合成は z-index の箱に閉じこめられる</h3>
+      <p>世界の書き換えは、最初 <code>backdrop-filter</code> で白黒にしようとしましたが、3D の舞台の上では効きませんでした。そこで「鮮やかさ 0 の黒い板を <code>saturation</code> で重ねる」方法に変えています。</p>
+<pre><code><span class="c">/* この箱には z-index を付けない（付けると、中の層が後ろの画面と混ざり合えなくなる） */</span>
+.rewrite { position: absolute; inset: 0; }
+.old { background: #000; mix-blend-mode: saturation; } <span class="c">/* 明るさはそのまま、色だけ 0 に */</span></code></pre>
+      <p class="note"><code>mix-blend-mode</code> は、同じ「重なりのグループ（スタッキングコンテキスト）」の中のものとしか混ざりません。親に <code>z-index</code> や <code>filter</code> があると、そこでグループが閉じてしまいます。</p>
+    </div>
+  </section>
+
+  <!-- 15 -->
+  <section id="blend">
+    <div class="sec-label"><b>15</b>COMPOSITING</div>
+    <div class="sec-body">
+      <h2>キャラを背景になじませる</h2>
+      <p>背景は 3DCG、立ち絵は手描きと、絵の作り方がまったく違います。絵は加工せず、「同じ光・同じ色・同じ空気の中にいる」条件を CSS でそろえています。</p>
+      <ol>
+        <li><strong>同じ色をかける</strong>：背景と立ち絵を1つの箱（<code>.grade</code>）に入れ、箱ごと <code>filter</code> で色調補正。キャラだけ色が浮かない</li>
+        <li><strong>同じ光を当てる</strong>：光の筋を立ち絵より手前に置き、<code>screen</code> で重ねる</li>
+        <li><strong>同じ質感をかける</strong>：いちばん上の <code>.post</code> でビネット・走査線・動くざらつき</li>
+        <li><strong>輪郭をぼかす</strong>：立ち絵に <code>drop-shadow(0 0 12px rgba(0,0,0,.6))</code>。切り抜いたような縁が消える</li>
+        <li><strong>空間の中に置く</strong>：背景は奥、光の玉と雨は手前。顔に寄るときは背景だけぼかす（被写界深度）</li>
+        <li><strong>止めない</strong>：呼吸（4.2秒で縦に 1.2% 伸びる）・まばたき（2〜6秒ごと）・口パク</li>
+      </ol>
+      <p class="note">試すなら：ブラウザで F12 → Console に <code>document.querySelector('.post').style.display = 'none'</code>。キャラが急に「貼り付けた絵」に見えます。</p>
+      <h3>まばたきと口パクは「重ねて出し消し」</h3>
+      <p>表情ごとに「ふつう」「目を閉じた絵」「口を開けた絵」の3枚を重ねておき、上の2枚の <code>opacity</code> を切り替えています。<code>src</code> を差し替える方法だと、画像の読み込みで一瞬チラつくからです。</p>
+    </div>
+  </section>
+
+  <!-- 16 -->
+  <section id="audio">
+    <div class="sec-label"><b>16</b>WEB AUDIO</div>
+    <div class="sec-body">
+      <h2>Web Audio：音声ファイルなしで音を作る</h2>
+      <p>効果音も BGM も、音声ファイルは1つも使っていません。ブラウザの Web Audio API で、その場で波形を作って鳴らしています。</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>部品</th><th>Web Audio の道具</th><th>作れる音</th></tr></thead>
+          <tbody>
+            <tr><td><code>tone</code></td><td><code>OscillatorNode</code>（サイン波・のこぎり波など）</td><td>ピッ・ドン・耳鳴り</td></tr>
+            <tr><td><code>noise</code></td><td>乱数で埋めた <code>AudioBuffer</code> ＋ <code>BiquadFilter</code></td><td>ザーッ・雨・雷</td></tr>
+            <tr><td><code>drone</code> / <code>sweep</code></td><td><code>GainNode</code> の音量の変化（エンベロープ）</td><td>吸いこまれる音・タイムリープのうなり</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="file">composables/useSound.js</div>
+<pre><code><span class="k">function</span> tone(c, { freq, to = freq, dur, type = <span class="s">'sine'</span>, vol = 0.1, delay = 0 }) {
+  <span class="k">const</span> t = c.currentTime + delay
+  <span class="k">const</span> osc = c.createOscillator()
+  <span class="k">const</span> gain = c.createGain()
+  osc.type = type
+  osc.frequency.setValueAtTime(freq, t)
+  osc.frequency.exponentialRampToValueAtTime(to, t + dur) <span class="c">// 音の高さを動かす</span>
+  gain.gain.setValueAtTime(vol, t)
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + dur) <span class="c">// だんだん消える</span>
+  osc.connect(gain).connect(sfxBus)
+  osc.start(t)
+  osc.stop(t + dur)
+}</code></pre>
+      <h3>BGM は「先読みスケジューラ」</h3>
+      <p><code>setInterval</code> の時間は正確ではないので、それで直接音を鳴らすとリズムがよれます。50ms ごとに「0.25秒先までの音符」を AudioContext の正確な時計（<code>currentTime</code>）で予約しておく方式にしています。曲はコード進行とメロディのデータから組み立てます。</p>
+      <h3>曲に「演技」をさせる</h3>
+      <p>セリフの <code>music</code> で、曲全体にかけたローパスフィルターと音量を動かします。</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>music</th><th>音量</th><th>フィルター</th><th>使いどころ</th></tr></thead>
+          <tbody>
+            <tr><td><code>duck</code></td><td>0.35</td><td>そのまま</td><td>大事なセリフの下で小さく</td></tr>
+            <tr><td><code>muffle</code></td><td>0.8</td><td>450Hz（こもる）</td><td>水の中のような遠さ</td></tr>
+            <tr><td><code>cut</code></td><td>0（0.06秒で）</td><td>そのまま</td><td>ぞっとする瞬間の無音</td></tr>
+            <tr><td><code>swell</code></td><td>1.5（3秒かけて）</td><td>そのまま</td><td>感情の山場</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">ブラウザは「ユーザーが何か操作するまで音を出さない」決まりがあります。AudioContext は初めて音が必要になったときに作り、止まっていたら <code>resume()</code> で再開しています（<code>audioCore.js</code> の <code>getAudio()</code>）。</p>
+    </div>
+  </section>
+
+  <!-- 17 -->
+  <section id="robust">
+    <div class="sec-label"><b>17</b>ROBUSTNESS</div>
+    <div class="sec-body">
+      <h2>壊れにくくする工夫</h2>
+      <ul>
+        <li><strong>動きを減らす設定に従う</strong>：OS で「視差効果を減らす」を選んでいる人には、<code>@media (prefers-reduced-motion: reduce)</code> でアニメーションを止め、ムービーも短くしています。JavaScript では <code>matchMedia</code> で同じ判定ができます</li>
+        <li><strong>保存は失敗してもいい形に</strong>：<code>localStorage</code> はプライベートモードなどで使えないことがあるので、読み書きを <code>try / catch</code> で囲み、使えなくても遊べるようにしています</li>
+        <li><strong>画像の先読み</strong>：ムービーのカットは、始まる前に <code>new Image().src = …</code> で読みこんでおき、切り替わった瞬間に絵が遅れて出ないようにしています</li>
+        <li><strong>別のタブを見ている間</strong>：ブラウザは裏のタブのタイマーやアニメーションを止めたり遅らせたりします。制限時間つきの選択肢は <code>document.hidden</code> のあいだカウントを止めています</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 18 -->
+  <section id="bugs">
+    <div class="sec-label"><b>18</b>PITFALLS</div>
+    <div class="sec-body">
+      <h2>ハマりどころ集</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>症状</th><th>原因</th><th>直し方</th></tr></thead>
+          <tbody>
+            <tr><td>表情が変わると立ち絵が2人に見える</td><td><code>:key</code> が画像のパス</td><td>key をキャラ名に、<code>mode="out-in"</code></td></tr>
+            <tr><td>ファイルを直したらエンディングがおかしい</td><td>ホットリロードでストアの古い中身が残った</td><td><code>acceptHMRUpdate</code> を書く</td></tr>
+            <tr><td>テンプレートの <code>timer</code> が別物になる</td><td>script の <code>let timer</code> と props の <code>timer</code> が同じ名前</td><td>変数名を <code>waitTimer</code> に変える</td></tr>
+            <tr><td>親から当てたアニメーションが効かない</td><td>子の scoped CSS のほうが強い</td><td>親のセレクタを長くする（08章）</td></tr>
+            <tr><td>カットの瞬間だけ奥行きが崩れる</td><td>3D の途中の箱に <code>filter</code></td><td>ぼかしを中の層に移す（11章）</td></tr>
+            <tr><td>白黒にならない</td><td>3D の上で <code>backdrop-filter</code> が効かない</td><td><code>mix-blend-mode: saturation</code>（14章）</td></tr>
+            <tr><td>横長の画面で目のアップが崩れる</td><td>拡大率を帯の長さだけで決めていた</td><td>見えている幅と帯の高さで上限（12章）</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 19 -->
+  <section id="read">
+    <div class="sec-label"><b>19</b>READING ORDER</div>
+    <div class="sec-body">
+      <h2>コードを読む順番</h2>
+      <ol>
+        <li><code>router/index.js</code>：どんなページがあるか（20行ほど）</li>
+        <li><code>stores/game.js</code>：ゲームの進み方のすべて。state・getters・actions の形を覚える</li>
+        <li><code>data/scenario.js</code> の先頭のコメントと <code>lunch</code> のシーン：データの書き方</li>
+        <li><code>components/MessageBox.vue</code>・<code>ChoiceList.vue</code>：props と emit の基本</li>
+        <li><code>components/CharaSprite.vue</code>：<code>watch</code> とタイマーと <code>onUnmounted</code></li>
+        <li><code>components/StageLayer.vue</code>：<code>&lt;Transition&gt;</code>・<code>:key</code>・CSS 3D</li>
+        <li><code>views/GameView.vue</code>：全部をつなぐ指揮者。ここは最後に</li>
+        <li>演出は好きなものから：<code>effects/CutIn.vue</code>（計算）・<code>TimeLeap.vue</code>（Canvas）・<code>composables/useSound.js</code>（Web Audio）</li>
+      </ol>
+      <p class="note">改造して試すなら、まず <code>scenario.js</code> のセリフに <code>camera: 'orbit'</code> や <code>fx: 'rewrite'</code> を足してみるのがおすすめです。Vue のコードを触らずに、演出のしくみを確かめられます。</p>
+    </div>
+  </section>
+
+  <footer>放課後リライト / vuenovel の技術解説</footer>
+</div>
+</body>
+</html>

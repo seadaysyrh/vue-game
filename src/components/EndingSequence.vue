@@ -31,6 +31,7 @@ const CREDITS = [
   ['STILLS & MOVIES', '素材を合成・加工して制作'],
   ['MUSIC & SOUND', 'Web Audio API で生成'],
   ['BUILT WITH', 'Vue 3 / Vue Router / Pinia / Vite'],
+  ['AI', 'このゲームはAIで生成されています', 'Claude Opus 5.5'],
 ]
 
 function clearTimers() {

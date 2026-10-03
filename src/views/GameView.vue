@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGameStore } from '../stores/game'
 import { useSound } from '../composables/useSound'
@@ -27,6 +27,11 @@ import ScanLock from '../components/effects/ScanLock.vue'
 import RewriteScan from '../components/effects/RewriteScan.vue'
 import HoloTerminal from '../components/effects/HoloTerminal.vue'
 import TileDissolve from '../components/effects/TileDissolve.vue'
+import LessonDiagram from '../components/effects/LessonDiagram.vue'
+import CodePlayground from '../components/CodePlayground.vue'
+import LessonMenu from '../components/LessonMenu.vue'
+import { LESSON_IDS } from '../data/lessons'
+import { useLessonProgress } from '../composables/useLessonProgress'
 import { routeTree } from '../data/routeTree'
 import InvestigateLayer from '../components/InvestigateLayer.vue'
 import TipToast from '../components/TipToast.vue'
@@ -178,6 +183,7 @@ watch(
 watch(
   () => game.line,
   (line) => {
+    if (skipping.value) return // スキップ中は、効果も効果音も出さない（一瞬で次へ進むので）
     if (line.fx && !blocking.value) playFx(line.fx)
     if (line.sfx && !blocking.value) play(line.sfx) // 心臓の音・耳鳴りなどの効果音
   },
@@ -201,6 +207,11 @@ const ripple = ref(null) // template の ref="ripple"（ClickRipple 部品）が
 function onScreenClick(e) {
   const rect = e.currentTarget.getBoundingClientRect()
   ripple.value?.spawn(e.clientX - rect.left, e.clientY - rect.top)
+  // SKIP ボタンで早送りしている途中なら、タップで止めるだけ
+  if (skipMode.value === 'button') {
+    setSkipping(null)
+    return
+  }
   onNext()
 }
 
@@ -239,12 +250,17 @@ function onNext() {
     finishTyping()
     return
   }
-  // 選択肢が出ているときや、調査中は、クリックで進ませない
-  if (game.showChoices || investigating.value) return
+  // 選択肢が出ているとき・調査中・コードエディタを開いているときは、クリックで進ませない
+  if (game.showChoices || investigating.value || playing.value) return
 
   // 最後のシーンの最後のセリフなら、巻き戻しムービー → エピローグ
   if (game.isLastLine && game.scene.end) {
     game.playMovie('rewind')
+    return
+  }
+  // 技術説明モードのおしまいのシーンなら、タイトルへ戻る
+  if (game.isLastLine && game.scene.finish) {
+    router.push('/')
     return
   }
   // エピローグの最後のセリフなら、エンディング（動画）のページへ
@@ -267,11 +283,38 @@ function onInvestigated() {
   game.next()
 }
 
+// ===== コードエディタ（技術説明モード）：playground の付いたセリフは、文字を出し終わったらエディタが開く =====
+// 調査パートと同じしくみ。「つづける」を押したら、次のセリフへ
+const played = ref(new Set()) // エディタを閉じたセリフ
+const playing = computed(
+  () => Boolean(game.line.playground) && !isTyping.value && !played.value.has(lineId.value),
+)
+function onPlayed() {
+  played.value = new Set([...played.value, lineId.value])
+  game.next()
+}
+
+// ===== 技術説明モードの目次と「見終わった授業」 =====
+// 授業の最後まで進んで、次のシーン（目次）に移ったら、その授業を見終わったことにする
+const { markSeen } = useLessonProgress()
+watch(
+  () => game.sceneId,
+  (now, before) => {
+    if (game.mode === 'lesson' && LESSON_IDS.has(before) && now !== before) markSeen(before)
+  },
+)
+// 目次で選ばれたシーンへ進む（目次は、ふつうの選択肢と同じく game.choose で進める）
+function onMenuChoose(next) {
+  play('select')
+  game.choose({ next })
+}
+
 // ===== 記録室：本文に出た用語を TIPS として解放し、見たスチルを覚えておく =====
 const newTips = ref([]) // 右上にお知らせ中の TIPS
 watch(
   lineId,
   () => {
+    if (game.mode === 'lesson') return // 技術説明モードでは、本編の TIPS を解放しない
     const found = unlockTipsIn(game.line.text)
     if (!found.length) return
     newTips.value = [...newTips.value, ...found]
@@ -289,6 +332,13 @@ const cutin = computed(() => {
   if (!c) return null
   const base = typeof c === 'string' ? { type: c } : c
   return { chara: game.line.chara, echo: game.line.echo, ...base }
+})
+
+// ===== 図解（技術説明モード）：diagram: 'tree' も { type: 'tree', focus } も、type で区別する =====
+// 同じ図が続くあいだは作り直さず、光らせる場所（focus）だけを動かしたいので、:key に type を使う
+const diagramType = computed(() => {
+  const d = game.line.diagram
+  return typeof d === 'string' ? d : d?.type
 })
 
 // ===== 携帯演出：本文の {choice0} などを、プレイヤーが実際に選んだ選択肢の文章に置き換える =====
@@ -317,6 +367,52 @@ function onPick() {
   play('select')
   if (game.scene.choiceStyle === 'message') playFx('shockwave')
 }
+// ===== スキップ：セリフを早送りする =====
+// 2つのやり方がある
+//   'key'    … Ctrl キーを押しているあいだだけ（パソコン）
+//   'button' … SKIP ボタンで入れたり切ったりする（スマホでも使える）。画面をタップしても止まる
+// 選択肢・調査パート・「やってみよう」のエディタでは止まる。ボタンのときは、そこで早送り自体も切れる
+// ムービー・チャプターカードは、終わるのを待ってから続きを早送りする
+// コードを見せるだけの画面（playground の view）は、操作がいらないので閉じて進む
+const skipMode = ref(null) // null（していない） | 'key' | 'button'
+const skipping = computed(() => skipMode.value !== null)
+let skipTimer = null
+function skipTick() {
+  if (playing.value && game.line.playground.view) {
+    onPlayed()
+    return
+  }
+  if (game.showChoices || investigating.value || playing.value) {
+    if (skipMode.value === 'button') setSkipping(null) // プレイヤーの番が来たので、ボタンの早送りは終わり
+    return
+  }
+  if (blocking.value) return
+  onNext() // 文字を出している途中なら全部出し、出し終わっていれば次のセリフへ
+}
+function setSkipping(mode) {
+  if (skipMode.value === mode) return
+  skipMode.value = mode
+  clearInterval(skipTimer)
+  if (mode) skipTimer = setInterval(skipTick, 80)
+}
+function toggleSkip() {
+  setSkipping(skipMode.value ? null : 'button')
+}
+const onKeyDown = (e) => e.key === 'Control' && !e.repeat && setSkipping('key')
+const onKeyUp = (e) => e.key === 'Control' && skipMode.value === 'key' && setSkipping(null)
+const stopSkip = () => setSkipping(null) // ほかのウィンドウに移ったら止める（Ctrl を離したことに気づけないので）
+onMounted(() => {
+  window.addEventListener('keydown', onKeyDown)
+  window.addEventListener('keyup', onKeyUp)
+  window.addEventListener('blur', stopSkip)
+})
+onUnmounted(() => {
+  window.removeEventListener('keydown', onKeyDown)
+  window.removeEventListener('keyup', onKeyUp)
+  window.removeEventListener('blur', stopSkip)
+  clearInterval(skipTimer)
+})
+
 // 残り送信回数：メッセージの選択肢は全部で2回（最初と最後）
 const remaining = computed(() => (game.sceneId === 'start' ? 2 : 1))
 </script>
@@ -361,6 +457,7 @@ const remaining = computed(() => (game.sceneId === 'start' ? 2 : 1))
     <!-- SF の演出：キャラの解析（scan）と、空中に浮かぶ端末（terminal） -->
     <ScanLock v-if="game.line.scan && game.line.chara && !blocking && !game.line.cinema" :key="`s-${lineId}`" :scan="game.line.scan" :chara="game.line.chara" />
     <HoloTerminal v-if="game.line.terminal && !blocking" :key="`t-${lineId}`" :lines="game.line.terminal" />
+    <LessonDiagram v-if="diagramType && !blocking" :key="`d-${diagramType}`" :diagram="game.line.diagram" />
 
     <!-- 画面効果の部品（fx の名前に合わせて出す） -->
     <FxFilters />
@@ -377,14 +474,18 @@ const remaining = computed(() => (game.sceneId === 'start' ? 2 : 1))
 
     <div class="hud">
       <!-- @click.stop：音の切り替えで、セリフが進まないようにする -->
+      <!-- 早送り：押すと入る・もう一度押すと切れる。Ctrl で早送りしているときも光る -->
+      <button class="skip" :class="{ on: skipping }" :aria-pressed="skipping" @click.stop="toggleSkip">{{ skipping ? 'SKIP ▶▶' : 'SKIP' }}</button>
       <button class="sound" @click.stop="toggleMute">{{ muted ? 'SOUND OFF' : 'SOUND ON' }}</button>
       <span class="hud-label">OBSERVED</span>
       <NixieMeter :value="game.scene.meter" />
     </div>
 
     <!-- 選択肢は、文字を出し終わってから表示する -->
+    <!-- 技術説明モードの目次（lessonMenu のあるシーン）は、サムネイルつきの目次で出す -->
+    <LessonMenu v-if="choosing && game.scene.lessonMenu" :key="`m-${game.sceneId}`" :menu="game.scene.lessonMenu" @choose="onMenuChoose" />
     <ChoiceList
-      v-if="choosing"
+      v-else-if="choosing"
       :choices="game.visibleChoices"
       :variant="game.scene.choiceStyle"
       :remaining="remaining"
@@ -399,6 +500,7 @@ const remaining = computed(() => (game.sceneId === 'start' ? 2 : 1))
 
     <ChapterCard v-if="chapterActive" :key="game.sceneId" :chapter="game.scene.chapter" @end="chapterActive = false" />
 
+    <CodePlayground v-if="playing" :key="`pg-${lineId}`" :playground="game.line.playground" @done="onPlayed" />
     <InvestigateLayer v-if="investigating" :key="`i-${lineId}`" :bg="game.scene.bg" :investigate="game.line.investigate" @done="onInvestigated" />
     <TipToast :tips="newTips" />
 
@@ -415,6 +517,7 @@ const remaining = computed(() => (game.sceneId === 'start' ? 2 : 1))
   position: relative;
   height: 100vh;
   overflow: hidden;
+  overflow: clip; /* hidden だとプログラムやフォーカスでスクロールされて画面がずれることがあるので、clip で完全に止める */
   cursor: pointer;
   user-select: none;
   background: #000;
@@ -494,6 +597,27 @@ const remaining = computed(() => (game.sceneId === 'start' ? 2 : 1))
   font-size: 0.8rem;
   letter-spacing: 0.2em;
   color: #ff9a3c;
+}
+.skip {
+  padding: 4px 10px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+/* 早送り中は、オレンジに光って点滅する */
+.skip.on {
+  color: #1a0d00;
+  background: #ffb066;
+  border-color: #ffb066;
+  box-shadow: 0 0 12px rgba(255, 150, 50, 0.7);
+  animation: skip-blink 0.6s steps(2) infinite;
+}
+@keyframes skip-blink { 50% { opacity: 0.55; } }
+/* スマホ：右上が画面に入りきらないので、OBSERVED の文字を隠して、すきまをつめる */
+@media (max-width: 640px) {
+  .hud { gap: 6px; }
+  .hud-label { display: none; }
 }
 .sound {
   padding: 4px 10px;

@@ -73,4 +73,8 @@ onUnmounted(() => clearTimeout(timer))
 .loc-leave-to {
   opacity: 0;
 }
+/* スマホ：右上のボタン（SKIP・SOUND）と重ならないように、少し下に出す */
+@media (max-width: 640px) {
+  .location { top: 70px; left: 12px; }
+}
 </style>
