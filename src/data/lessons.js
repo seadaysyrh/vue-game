@@ -56,6 +56,19 @@ export const EDITIONS = [
     ],
   },
   {
+    id: 'css0', menu: 'lesson_menu_css0', track: 'basic', thumb: 'box', glyph: 'CSS',
+    title: 'CSS はじめて', desc: '色・文字・すきまから',
+    lessons: [
+      { id: 'lesson_c0_first', title: 'CSS ってなに？', desc: '文字に色をつける' },
+      { id: 'lesson_c0_text', title: '文字の見た目', desc: '大きさ・太さ・そろえ方' },
+      { id: 'lesson_c0_color', title: '色の書き方', desc: '名前・#・rgb' },
+      { id: 'lesson_c0_box', title: '背景と枠', desc: 'background・border' },
+      { id: 'lesson_c0_space', title: 'すきまを作る', desc: 'padding・margin' },
+      { id: 'lesson_c0_size', title: '大きさを決める', desc: 'width・height・%' },
+      { id: 'lesson_c0_class', title: 'class で選ぶ', desc: '色をつける場所を決める' },
+    ],
+  },
+  {
     id: 'css', menu: 'lesson_menu_css', track: 'basic', thumb: 'box', glyph: '</>',
     title: 'HTML・CSS', desc: '画面の見た目のきほん',
     lessons: [
@@ -269,6 +282,7 @@ const CSS2_MENU = menuOf('css2')
 const TS_MENU = menuOf('ts')
 const AWS_MENU = menuOf('aws')
 const FX_MENU = menuOf('fx')
+const CSS0_MENU = menuOf('css0')
 const ECO_MENU = menuOf('eco')
 const DESIGN_MENU = menuOf('design')
 const NODE_MENU = menuOf('node')
@@ -4488,6 +4502,156 @@ test('朝はおはよう', () => {
 `,
 }
 
+// ===== CSS はじめて編の「やってみよう」 =====
+const PG_C0_FIRST = {
+  title: "はじめての CSS",
+  task: "red を blue に変えてみるのだ。ほかの色の名前（green・orange・hotpink など）でもいいのだ",
+  code: `
+<template>
+  <p>ずんだもんなのだ！</p>
+</template>
+
+<style>
+p {
+  color: red;
+}
+</style>
+`,
+  check: (el) => getComputedStyle(el.querySelector('p')).color !== 'rgb(255, 0, 0)',
+}
+
+const PG_C0_TEXT = {
+  title: "文字の見た目",
+  task: "font-size を 32px に、text-align を center に変えてみるのだ",
+  code: `
+<template>
+  <h1>放課後リライト</h1>
+  <p>その放課後、世界は一度だけ書き換わった。</p>
+</template>
+
+<style>
+h1 {
+  font-size: 16px;
+  font-weight: bold;
+  text-align: left;
+}
+p {
+  line-height: 1.2;
+}
+</style>
+`,
+  check: (el) => parseFloat(getComputedStyle(el.querySelector('h1')).fontSize) >= 30 && getComputedStyle(el.querySelector('h1')).textAlign === 'center',
+}
+
+const PG_C0_COLOR = {
+  title: "色の書き方",
+  task: "#ff7b00 の数字を変えたり、rgb(…) の3つの数を変えたりしてみるのだ（どれか1つ変えれば OK）",
+  code: `
+<template>
+  <p class="a">名前で書く：orange</p>
+  <p class="b">16進数で書く：#ff7b00</p>
+  <p class="c">rgb で書く：rgb(77, 160, 60)</p>
+</template>
+
+<style>
+p { font-size: 18px; font-weight: bold; }
+.a { color: orange; }
+.b { color: #ff7b00; }
+.c { color: rgb(77, 160, 60); }
+</style>
+`,
+  check: (el) => getComputedStyle(el.querySelector('.b')).color !== 'rgb(255, 123, 0)' || getComputedStyle(el.querySelector('.c')).color !== 'rgb(77, 160, 60)',
+}
+
+const PG_C0_BOX = {
+  title: "背景と枠",
+  task: "background を lightyellow に、border-radius を 16px にしてみるのだ",
+  code: `
+<template>
+  <div class="card">ずんだ餅、あげるのだ</div>
+</template>
+
+<style>
+.card {
+  background: white;
+  border: 3px solid green;
+  border-radius: 0px;
+  padding: 12px;
+  font-size: 18px;
+}
+</style>
+`,
+  check: (el) => { const st = getComputedStyle(el.querySelector('.card')); return st.backgroundColor !== 'rgb(255, 255, 255)' && parseFloat(st.borderTopLeftRadius) >= 8 },
+}
+
+const PG_C0_SPACE = {
+  title: "すきまを作る",
+  task: "padding を 20px にして、margin-bottom を 20px にしてみるのだ",
+  code: `
+<template>
+  <p class="bubble">ずんだもん：おはようなのだ</p>
+  <p class="bubble">めたん：ごきげんよう</p>
+</template>
+
+<style>
+.bubble {
+  background: #fff3e6;
+  border: 2px solid orange;
+  padding: 0px;
+  margin: 0px;
+  margin-bottom: 0px;
+  font-size: 17px;
+}
+</style>
+`,
+  check: (el) => { const st = getComputedStyle(el.querySelector('.bubble')); return parseFloat(st.paddingTop) >= 16 && parseFloat(st.marginBottom) >= 16 },
+}
+
+const PG_C0_SIZE = {
+  title: "大きさを決める",
+  task: "width を 50% にしてみるのだ。px と % のちがいを見るのだ",
+  code: `
+<template>
+  <div class="bar">体力ゲージ</div>
+</template>
+
+<style>
+.bar {
+  width: 120px;
+  height: 30px;
+  background: #4f9a40;
+  color: white;
+  font-size: 14px;
+}
+</style>
+`,
+  check: (el) => getComputedStyle(el.querySelector('.bar')).width !== '120px',
+}
+
+const PG_C0_CLASS = {
+  title: "class で選ぶ",
+  task: "2つめの <p> に class=\"metan\" を付けて、.metan の色を pink にしてみるのだ",
+  code: `
+<template>
+  <p class="zun">ずんだもん：ずんだ餅が好きなのだ</p>
+  <p>めたん：わたくしは紅茶ですわ</p>
+</template>
+
+<style>
+p {
+  font-size: 17px;
+}
+.zun {
+  color: green;
+}
+.metan {
+  color: black;
+}
+</style>
+`,
+  check: (el) => { const m = el.querySelector('.metan'); return Boolean(m) && getComputedStyle(m).color !== 'rgb(0, 0, 0)' },
+}
+
 export const lessonScenes = {
   lesson_intro: {
     chapter: { no: 'EX', title: '放課後テックゼミ', sub: 'AFTER SCHOOL TECH SEMINAR' },
@@ -4509,7 +4673,7 @@ export const lessonScenes = {
       { speaker: 'ずんだもん', chara: 'zun_smile', diagram: { type: 'flow', focus: 'click' }, text: 'キミがクリックすると番号が1つ進んで、また画面が変わる。この*ぐるぐる*が、ノベルゲームの正体なのだ！' },
       { speaker: '僕', chara: 'zun_smile', diagram: 'flow', text: '「光の点が回ってるのが、その流れってことか」' },
       { speaker: '四国めたん', chara: 'metan_normal', playground: CV_SCENE, text: 'ちなみに、いま流れているこの会話も、ただの*データ*として書かれていますのよ。' },
-      { speaker: 'ずんだもん', chara: 'zun_proud', text: '授業は15の編に分かれているのだ。はじめてなら、1番から順番に聞くのがおすすめなのだ！' },
+      { speaker: 'ずんだもん', chara: 'zun_proud', text: '授業は16の編に分かれているのだ。はじめてなら、1番から順番に聞くのがおすすめなのだ！' },
     ],
     choices: MENU,
   },
@@ -7407,6 +7571,142 @@ export const lessonScenes = {
       { speaker: "僕", chara: 'metan_normal', text: "「便利な道具ほど、使い方の約束が大事なのか」" },
     ],
     next: 'lesson_menu_eco',
+  },
+
+  // ===================================================================
+  // CSS はじめて編（いちばんやさしいところから）
+  // ===================================================================
+
+  lesson_menu_css0: {
+    bg: 'classroom_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000000',
+    lessonMenu: 'css0', // components/LessonMenu.vue で目次を出す
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_smile', text: "*CSS はじめて編*なのだ！ むずかしい言葉は使わないのだ。いっしょに、少しずつやるのだ。" },
+    ],
+    choices: CSS0_MENU,
+  },
+
+  lesson_c0_first: {
+    place: { name: 'CSS0 01 CSS ってなに？', time: '16:10' },
+    bg: 'classroom_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000181',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "Web のページは、HTML と CSS でできているのだ。HTML は「何を書くか」、CSS は「どう見せるか」なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "たとえば「この文字を赤くしたい」「大きくしたい」。そういうお願いを書くのが CSS ですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', terminal: ["p {", "  color: red;", "}", "", "p     … どこを（<p> の文字を）", "color … 何を（文字の色を）", "red   … どうする（赤に）"], text: "書き方は、いつもこの形なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "最後の ; （セミコロン）を忘れずに。{ } で囲むのも大事ですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_smile', playground: PG_C0_FIRST, text: "さっそく、やってみるのだ！" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "色が変わったのだ？ キミはもう、CSS を書いたのだ！" },
+      { speaker: "僕", chara: 'zun_proud', text: "「1行変えるだけで、見た目が変わるのか」" },
+    ],
+    next: 'lesson_menu_css0',
+  },
+
+  lesson_c0_text: {
+    place: { name: 'CSS0 02 文字の見た目', time: '16:10' },
+    bg: 'classroom_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000181',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["font-size   … 大きさ（16px など）", "font-weight … 太さ（bold で太字）", "text-align  … そろえ方", "  left（左）・center（まん中）", "  right（右）", "line-height … 行と行のあいだ"], text: "文字の見た目を変えるお願いは、いくつかあるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "px（ピクセル）は、画面の点の数。16px が、ふつうの文字の大きさくらいですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_smile', playground: PG_C0_TEXT, text: "見出しを大きくして、まん中にそろえてみるのだ！" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "line-height を 1.8 くらいにすると、長い文章が読みやすくなりますのよ。このゲームのセリフも、そうしていますの。" },
+      { speaker: "僕", chara: 'metan_smug', text: "「文字の大きさと並び方だけで、だいぶ雰囲気が変わる」" },
+    ],
+    next: 'lesson_menu_css0',
+  },
+
+  lesson_c0_color: {
+    place: { name: 'CSS0 03 色の書き方', time: '16:10' },
+    bg: 'classroom_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000181',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "色の書き方は、3つ覚えれば大丈夫なのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "いちばん簡単なのは、*名前*で書くこと。red・blue・green・orange……。英語の色の名前が、140くらい使えますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', terminal: ["#ff7b00", "  ff … 赤（いっぱい）", "  7b … 緑（半分くらい）", "  00 … 青（なし）", "→ オレンジ色"], text: "*#ff7b00* みたいな書き方は、赤・緑・青の強さを、2けたずつ並べたものなのだ。00 がいちばん弱くて、ff がいちばん強いのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "*rgb(77, 160, 60)* は同じことを、0〜255 の数で書きますの。こちらのほうが読みやすいかもしれませんわ。" },
+      { speaker: "ずんだもん", chara: 'zun_smile', playground: PG_C0_COLOR, text: "数字をいじって、色を変えてみるのだ！" },
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "色は、自分で数字を考えなくてもいいのだ。エディタやブラウザの開発者ツールに、色を選ぶ道具があるのだ。" },
+      { speaker: "僕", chara: 'zun_normal', text: "「色は、赤と緑と青のまぜ方なのか」" },
+    ],
+    next: 'lesson_menu_css0',
+  },
+
+  lesson_c0_box: {
+    place: { name: 'CSS0 04 背景と枠', time: '16:10' },
+    bg: 'classroom_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000181',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', terminal: ["background    … 背景の色", "border        … 枠線", "  3px solid green", "  （太さ・線の種類・色）", "border-radius … 角を丸く"], text: "文字だけじゃなくて、まわりにも色や枠をつけられるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "border は「太さ・線の種類・色」を、空白で区切って並べて書きますの。solid は実線、dashed は点線ですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_smile', playground: PG_C0_BOX, text: "カードみたいにしてみるのだ！" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "border-radius を大きくすると、角が丸くなりますの。このゲームの目次の番号の丸も、border-radius: 50% ですのよ。" },
+      { speaker: "僕", chara: 'metan_smug', text: "「背景と枠をつけると、ボタンやカードっぽくなるのか」" },
+    ],
+    next: 'lesson_menu_css0',
+  },
+
+  lesson_c0_space: {
+    place: { name: 'CSS0 05 すきまを作る', time: '16:10' },
+    bg: 'classroom_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000181',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "文字が枠にぴったりくっついていると、きゅうくつに見えるのだ。すきまを作るのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["padding … 内側（枠と文字のあいだ）", "margin  … 外側（となりとのあいだ）", "", "margin-bottom … 下だけ", "padding-left  … 左だけ"], text: "すきまは2種類。*padding* は、枠の*内側*のすきま。*margin* は、枠の*外側*のすきまですわ。" },
+      { speaker: "ずんだもん", chara: 'zun_smile', playground: PG_C0_SPACE, text: "ふきだしに、すきまを作ってみるのだ！" },
+      { speaker: "ずんだもん", chara: 'zun_proud', text: "padding で中がゆったりして、margin でふきだしどうしがはなれたのだ。" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "もっとくわしく知りたくなったら、HTML・CSS 編の「ボックスモデル」へどうぞ。" },
+      { speaker: "僕", chara: 'metan_smug', text: "「内側は padding、外側は margin」" },
+    ],
+    next: 'lesson_menu_css0',
+  },
+
+  lesson_c0_size: {
+    place: { name: 'CSS0 06 大きさを決める', time: '16:10' },
+    bg: 'classroom_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000181',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "箱の大きさは、*width*（横はば）と *height*（高さ）で決めるのだ。" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["width: 120px … いつも 120 点ぶん", "width: 50%   … 外の箱の半分", "height: 30px … 高さ"], text: "px で書くと、いつも同じ大きさ。% で書くと、外側の箱にくらべて何% か、になりますわ。" },
+      { speaker: "ずんだもん", chara: 'zun_smile', playground: PG_C0_SIZE, text: "体力ゲージの長さを変えてみるのだ！" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "% にしておくと、画面が広くてもせまくても、ちょうどよくのびちぢみしますの。" },
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "高さは、できるだけ決めないのがコツなのだ。中の文字が増えたとき、はみ出してしまうのだ。" },
+      { speaker: "僕", chara: 'zun_normal', text: "「決まった大きさは px、合わせたい大きさは %」" },
+    ],
+    next: 'lesson_menu_css0',
+  },
+
+  lesson_c0_class: {
+    place: { name: 'CSS0 07 class で選ぶ', time: '16:10' },
+    bg: 'classroom_evening',
+    bgm: 'day',
+    ambient: 'dust',
+    meter: '0.000181',
+    lines: [
+      { speaker: "ずんだもん", chara: 'zun_normal', text: "p { } と書くと、*全部の* <p> に効いてしまうのだ。「この行だけ」変えたいときは、どうするのだ？" },
+      { speaker: "四国めたん", chara: 'metan_normal', terminal: ["<p class=\"zun\">…</p>", "", ".zun {", "  color: green;", "}", "→ class=\"zun\" の行だけ緑"], text: "HTML のタグに *class=\"名前\"* という名札を付けて、CSS では . （ドット）を付けて選びますの。" },
+      { speaker: "ずんだもん", chara: 'zun_smile', playground: PG_C0_CLASS, text: "めたんのセリフにも名札を付けて、色を変えてみるのだ！" },
+      { speaker: "四国めたん", chara: 'metan_smug', text: "1つのタグに、名札をいくつも付けられますわ。class=\"bubble metan\" のように、空白で区切りますの。" },
+      { speaker: "ずんだもん", chara: 'zun_proud', terminal: ["✔ セレクタ { プロパティ: 値; }", "✔ 文字：font-size・font-weight", "✔ 色：名前・#・rgb", "✔ 背景と枠：background・border", "✔ すきま：padding・margin", "✔ 大きさ：width・height", "✔ 名札：class と .名前"], text: "これで、CSS の基本はおしまいなのだ！" },
+      { speaker: "四国めたん", chara: 'metan_normal', text: "次は「HTML・CSS」編で、並べ方や重ね方を学んでみてくださいな。" },
+      { speaker: "僕", chara: 'metan_normal', text: "「名札を付ければ、好きな場所だけ変えられるのか」" },
+    ],
+    next: 'lesson_menu_css0',
   },
 
   // ===================================================================
