@@ -1820,4 +1820,42 @@ export const DIAGRAMS = {
       { id: 'axis', d: 'M8 78 L392 78', plain: true, dashed: true },
     ],
   },
+  // ===== よく使うサービスの図 =====
+  svcmap: {
+    title: 'よく借りるサービス',
+    nodes: [
+      { id: 'baas', x: 8, y: 10, w: 186, h: 70, label: 'まとめて借りる', sub: 'Firebase・Supabase' },
+      { id: 'host', x: 206, y: 10, w: 186, h: 70, label: '公開の場所', sub: 'Vercel・Netlify・Cloudflare' },
+      { id: 'pay', x: 8, y: 92, w: 186, h: 70, label: 'お金・メール', sub: 'Stripe・Resend・SendGrid' },
+      { id: 'auth', x: 206, y: 92, w: 186, h: 70, label: 'ログイン', sub: 'Auth0・Clerk・Cognito' },
+      { id: 'mon', x: 8, y: 174, w: 384, h: 66, label: '見張り・分析', sub: 'Sentry・Datadog・Google Analytics' },
+    ],
+    edges: [],
+  },
+  baas: {
+    title: 'Firebase のしくみ',
+    nodes: [
+      { id: 'app', x: 8, y: 80, w: 110, h: 80, label: 'アプリ', sub: '画面から直接' },
+      { id: 'rules', x: 145, y: 80, w: 100, h: 80, label: 'ルール', sub: 'だれが何を' },
+      { id: 'svc', x: 272, y: 8, w: 120, h: 50, label: 'Authentication', sub: 'ログイン' },
+      { id: 'svc', x: 272, y: 66, w: 120, h: 50, label: 'Firestore', sub: 'データベース' },
+      { id: 'svc', x: 272, y: 124, w: 120, h: 50, label: 'Storage', sub: 'ファイル' },
+      { id: 'svc', x: 272, y: 182, w: 120, h: 50, label: 'Functions', sub: 'サーバーの処理' },
+    ],
+    edges: [
+      { id: 'rules', d: 'M118 120 L145 120' },
+      { id: 'svc', d: 'M245 110 L272 91' },
+      { id: 'svc', d: 'M245 125 L272 149' },
+    ],
+  },
+  webhook: seq('Webhook（サービスから知らせが来る）', [
+    { id: 'user', label: 'ユーザー', sub: '画面で支払う' },
+    { id: 'stripe', label: 'Stripe', sub: '支払いの係' },
+    { id: 'server', label: 'あなたのサーバー', sub: 'アイテムを渡す' },
+  ], [
+    { id: 'pay', from: 0, to: 1, y: 84, label: '① カード情報を入力' },
+    { id: 'pay', from: 1, to: 0, y: 118, label: '② 完了の画面' },
+    { id: 'notify', from: 1, to: 2, y: 162, label: '③ Webhook：支払いが終わった' },
+    { id: 'notify', from: 2, to: 1, y: 196, label: '④ 受け取りました（200）' },
+  ]),
 }

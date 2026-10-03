@@ -34,7 +34,7 @@ const groups = computed(() => {
 // 授業の数で、一覧の詰め方を変える（多いほど列を増やして、メッセージ欄にかからないようにする）
 const density = computed(() => {
   const n = edition.value?.lessons.length ?? 0
-  return n > 24 ? 'huge giant' : n > 16 ? 'huge' : n > 10 ? 'dense' : ''
+  return n > 24 ? 'huge giant' : n > 13 ? 'huge' : n > 10 ? 'dense' : ''
 })
 
 // 授業のサムネイル：その授業で最初に出てくる図。図がない授業は、編の図を使う

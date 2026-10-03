@@ -217,19 +217,24 @@ export const EDITIONS = [
     ],
   },
   {
-    id: 'aws', menu: 'lesson_menu_aws', track: 'ship', thumb: 'staticsite', glyph: 'AWS',
-    title: 'AWS', desc: '主なサービスと認証',
+    id: 'aws', menu: 'lesson_menu_aws', track: 'ship', thumb: 'staticsite', glyph: 'CLOUD',
+    title: 'クラウドとサービス', desc: 'AWS・Firebase など',
     lessons: [
-      { id: 'lesson_aws_overview', title: '全体像', desc: 'リージョン・責任・料金' },
-      { id: 'lesson_aws_authbasics', title: '認証のきほん', desc: '認証と認可・トークン・2種類の認証' },
-      { id: 'lesson_aws_iam', title: 'IAM', desc: 'だれが・何をしてよいか' },
-      { id: 'lesson_aws_creds', title: '認証情報', desc: 'SSO・OIDC・鍵の事故' },
-      { id: 'lesson_aws_static', title: 'このゲームを公開', desc: 'S3・CloudFront' },
-      { id: 'lesson_aws_compute', title: 'サーバーとサーバーレス', desc: 'EC2・ECS・Lambda' },
-      { id: 'lesson_aws_data', title: 'DB とネットワーク', desc: 'RDS・DynamoDB・VPC' },
-      { id: 'lesson_aws_auth', title: 'アプリのログイン', desc: 'Cognito・JWT' },
-      { id: 'lesson_aws_ops', title: '監視・監査・コスト', desc: 'CloudWatch・IaC' },
-      { id: 'lesson_aws_s3more', title: "S3 くわしく", desc: "署名付き URL・ライフサイクル" },
+      { id: 'lesson_aws_overview', title: '全体像', desc: 'リージョン・責任・料金', section: 'AWS' },
+      { id: 'lesson_aws_authbasics', title: '認証のきほん', desc: '認証と認可・トークン・2種類の認証', section: 'AWS' },
+      { id: 'lesson_aws_iam', title: 'IAM', desc: 'だれが・何をしてよいか', section: 'AWS' },
+      { id: 'lesson_aws_creds', title: '認証情報', desc: 'SSO・OIDC・鍵の事故', section: 'AWS' },
+      { id: 'lesson_aws_static', title: 'このゲームを公開', desc: 'S3・CloudFront', section: 'AWS' },
+      { id: 'lesson_aws_compute', title: 'サーバーとサーバーレス', desc: 'EC2・ECS・Lambda', section: 'AWS' },
+      { id: 'lesson_aws_data', title: 'DB とネットワーク', desc: 'RDS・DynamoDB・VPC', section: 'AWS' },
+      { id: 'lesson_aws_auth', title: 'アプリのログイン', desc: 'Cognito・JWT', section: 'AWS' },
+      { id: 'lesson_aws_ops', title: '監視・監査・コスト', desc: 'CloudWatch・IaC', section: 'AWS' },
+      { id: 'lesson_aws_s3more', title: "S3 くわしく", desc: "署名付き URL・ライフサイクル", section: 'AWS' },
+      { id: 'lesson_svc_map', title: "サービスの地図", desc: "何を借りるか", section: 'よく使うサービス' },
+      { id: 'lesson_svc_baas', title: "Firebase と Supabase", desc: "ログイン・DB・保存をまとめて", section: 'よく使うサービス' },
+      { id: 'lesson_svc_hosting', title: "公開の場所", desc: "Vercel・Netlify・Cloudflare", section: 'よく使うサービス' },
+      { id: 'lesson_svc_pay', title: "支払い・メール・ログイン", desc: "Stripe・Resend・Auth0", section: 'よく使うサービス' },
+      { id: 'lesson_svc_monitor', title: "見張りと分析", desc: "Sentry・Datadog・Analytics", section: 'よく使うサービス' },
     ],
   },
   {
@@ -4677,6 +4682,65 @@ const CV_SCRIPT_LOAD = {
 `,
 }
 
+// ===== よく使うサービスのコード（説明用の例） =====
+const CV_FIREBASE = {
+  view: true,
+  title: "Firebase でセーブを保存する",
+  file: "（例）画面の JS ／ firestore.rules",
+  task: "画面から直接データベースを使えるけど、守るのはルールなのだ",
+  marks: { 2: "ログインの係も Firebase", 6: "自分の番号の場所に保存", 10: "守りはルールで書く", 15: "自分のデータだけ" },
+  code: `
+// 画面の JS（Firebase の Web SDK）
+import { getAuth, signInAnonymously } from 'firebase/auth'
+import { getFirestore, doc, setDoc } from 'firebase/firestore'
+
+const { user } = await signInAnonymously(getAuth())   // 名前なしでログイン
+await setDoc(doc(getFirestore(), 'saves', user.uid), {
+  visited: ['101', '110'],
+})
+
+// firestore.rules：だれが何を読み書きできるか（ここが守りのかなめ）
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /saves/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
+`,
+}
+
+const CV_WEBHOOK = {
+  view: true,
+  title: "Stripe の Webhook を受け取る",
+  file: "（例）Express",
+  task: "支払いが終わったことは、Stripe からサーバーに知らせが来るのだ",
+  marks: { 2: "秘密のキーはサーバーだけ", 5: "そのままの本文", 8: "署名を確かめる", 16: "支払いが終わった", 17: "べき等に" },
+  code: `
+import Stripe from 'stripe'
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+
+// 署名を確かめるため、JSON にする前の「そのままの本文」で受け取る
+app.post('/webhooks/stripe', express.raw({ type: 'application/json' }), (req, res) => {
+  let event
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      req.headers['stripe-signature'],
+      process.env.STRIPE_WEBHOOK_SECRET,       // 本物の Stripe からか確かめる
+    )
+  } catch {
+    return res.status(400).end()
+  }
+  if (event.type === 'checkout.session.completed') {
+    unlockSecretEnding(event.data.object.client_reference_id)   // 同じ知らせが2回来ても大丈夫に
+  }
+  res.json({ received: true })
+})
+`,
+}
+
 export const lessonScenes = {
   lesson_intro: {
     chapter: { no: 'EX', title: '放課後テックゼミ', sub: 'AFTER SCHOOL TECH SEMINAR' },
@@ -7856,6 +7920,91 @@ export const lessonScenes = {
       { speaker: '僕', chara: 'zun_normal', text: "「Web は、みんなで決めたルールの上に立っているのか」" },
     ],
     next: 'lesson_menu_webhttp',
+  },
+
+  // ----- よく使うサービス -----
+  lesson_svc_map: {
+    place: { name: 'SERVICE 01 サービスの地図', time: '20:41' },
+    bg: 'lab_night',
+    bgm: 'night',
+    ambient: 'stars',
+    meter: '0.000201',
+    lines: [
+      { speaker: 'ずんだもん', chara: 'zun_normal', diagram: 'svcmap', text: "アプリを作るとき、全部を自分で作る必要はないのだ。よくある機能は、*サービス*として借りられるのだ。" },
+      { speaker: '四国めたん', chara: 'metan_normal', diagram: { type: 'svcmap', focus: 'baas' }, text: "データベースやログインをまとめて借りるのが Firebase や Supabase。公開の場所なら Vercel や Netlify ですわ。" },
+      { speaker: 'ずんだもん', chara: 'zun_proud', diagram: { type: 'svcmap', focus: 'pay' }, text: "支払いは Stripe、メールは Resend や SendGrid、エラーの見張りは Sentry なのだ。" },
+      { speaker: '四国めたん', chara: 'metan_smug', terminal: ["借りる前に見ること", "✔ 無料の範囲と料金", "✔ データの置き場所（国）", "✔ やめるときに持ち出せるか", "✔ 止まったときの影響"], text: "借りれば早く作れますが、料金がかかり、そのサービスから引っ越しにくくなりますの（ベンダーロックイン）。" },
+      { speaker: '僕', chara: 'metan_smug', text: "「全部作らずに、借りられるところは借りるのか」" },
+    ],
+    next: 'lesson_menu_aws',
+  },
+
+  lesson_svc_baas: {
+    place: { name: 'SERVICE 02 Firebase と Supabase', time: '20:42' },
+    bg: 'lab_night',
+    bgm: 'night',
+    ambient: 'stars',
+    meter: '0.000201',
+    lines: [
+      { speaker: 'ずんだもん', chara: 'zun_normal', diagram: 'baas', text: "*Firebase* は Google のサービスなのだ。ログイン・データベース・ファイル置き場・関数・公開の場所が、まとめて使えるのだ。" },
+      { speaker: '四国めたん', chara: 'metan_normal', playground: CV_FIREBASE, text: "画面から直接データベースを読み書きできますの。サーバーを作らなくていいので、小さなアプリならとても早く作れますわ。" },
+      { speaker: 'ずんだもん', chara: 'zun_surprise', diagram: { type: 'baas', focus: 'rules' }, fx: "shake", text: "でも、画面から直接さわれるということは、*だれでも*さわれるということなのだ！ セキュリティルールを書かないと、全員のデータが丸見えなのだ！" },
+      { speaker: '四国めたん', chara: 'metan_smug', text: "*Supabase* は、その仲間で、中身が PostgreSQL ですの。SQL が使えて、守りは行ごとのルール（RLS）で書きますわ。" },
+      { speaker: 'ずんだもん', chara: 'zun_normal', terminal: ["Firebase … Google・NoSQL", "  スマホアプリにも強い", "Supabase … PostgreSQL・SQL", "  自分のサーバーにも置ける", "どちらも：ルールを必ず書く"], text: "くらべるとこうなのだ。" },
+      { speaker: '僕', chara: 'zun_normal', text: "「サーバーがいらないぶん、守りはルールで書くのか」" },
+    ],
+    next: 'lesson_menu_aws',
+  },
+
+  lesson_svc_hosting: {
+    place: { name: 'SERVICE 03 公開の場所', time: '20:43' },
+    bg: 'lab_night',
+    bgm: 'night',
+    ambient: 'stars',
+    meter: '0.000201',
+    lines: [
+      { speaker: 'ずんだもん', chara: 'zun_normal', terminal: ["GitHub Pages … 静的なサイト（このゲーム）", "Vercel   … Next.js の会社・簡単", "Netlify  … 静的＋関数", "Cloudflare Pages … 速い CDN", "Firebase Hosting", "AWS（S3＋CloudFront）… 自由"], text: "作った Web アプリを置く場所も、いろいろあるのだ。" },
+      { speaker: '四国めたん', chara: 'metan_normal', text: "Vercel や Netlify は、GitHub につなぐだけで、push するたびに自動で公開してくれますの。" },
+      { speaker: 'ずんだもん', chara: 'zun_proud', text: "プルリクエストごとに*プレビュー用の URL* を作ってくれるのが便利なのだ。レビューする人が、実際に動くものを見られるのだ。" },
+      { speaker: '四国めたん', chara: 'metan_smug', text: "世界中の近い場所で小さな処理を動かす*エッジ*の機能もありますわ。Cloudflare Workers などですの。" },
+      { speaker: 'ずんだもん', chara: 'zun_normal', terminal: ["✔ 静的なサイト → どれでも OK", "✔ Next.js → Vercel が楽", "✔ 細かく管理したい → AWS", "✔ 無料の範囲・転送量に注意"], text: "選び方なのだ。" },
+      { speaker: '僕', chara: 'zun_normal', text: "「置く場所によって、できることがちがうのか」" },
+    ],
+    next: 'lesson_menu_aws',
+  },
+
+  lesson_svc_pay: {
+    place: { name: 'SERVICE 04 支払い・メール・ログイン', time: '20:44' },
+    bg: 'lab_night',
+    bgm: 'night',
+    ambient: 'stars',
+    meter: '0.000201',
+    lines: [
+      { speaker: 'ずんだもん', chara: 'zun_normal', terminal: ["支払い … Stripe・PAY.JP", "メール … Resend・SendGrid・SES", "ログイン … Auth0・Clerk・Cognito", "           Firebase Auth"], text: "お金・メール・ログインは、自分で作ると大変で、まちがえるとこわいのだ。だから専門のサービスを借りるのだ。" },
+      { speaker: '四国めたん', chara: 'metan_normal', diagram: 'webhook', text: "大事なのが *Webhook*。「支払いが終わりましたよ」と、サービスのほうから、あなたのサーバーに知らせてくれますの。" },
+      { speaker: 'ずんだもん', chara: 'zun_proud', diagram: { type: 'webhook', focus: 'notify' }, text: "画面の「支払い完了」を信じてはいけないのだ。Webhook で本物の知らせが来てから、アイテムを渡すのだ。" },
+      { speaker: '四国めたん', chara: 'metan_smug', playground: CV_WEBHOOK, text: "知らせが本物の Stripe からか、署名で確かめますわ。" },
+      { speaker: 'ずんだもん', chara: 'zun_normal', text: "カード番号は、自分のサーバーに通さないのだ。Stripe の画面や部品に入力してもらうのだ。" },
+      { speaker: '僕', chara: 'zun_normal', text: "「お金とログインは、専門家に任せるのか」" },
+    ],
+    next: 'lesson_menu_aws',
+  },
+
+  lesson_svc_monitor: {
+    place: { name: 'SERVICE 05 見張りと分析', time: '20:45' },
+    bg: 'lab_night',
+    bgm: 'night',
+    ambient: 'stars',
+    meter: '0.000201',
+    lines: [
+      { speaker: 'ずんだもん', chara: 'zun_normal', terminal: ["Sentry … エラーを集めて知らせる", "Datadog・New Relic … 全体の見張り", "Google Analytics … どう使われたか", "Slack … 知らせを受け取る場所", "PagerDuty … 夜中の呼び出し"], text: "公開したあとに、どこでエラーが出ているか、どう使われているかを知る道具なのだ。" },
+      { speaker: '四国めたん', chara: 'metan_normal', text: "*Sentry* を入れておくと、ユーザーの画面で起きたエラーが、どのコードの何行目か、どのブラウザかまで届きますの。" },
+      { speaker: 'ずんだもん', chara: 'zun_proud', text: "知らせは Slack に流して、チームで気づけるようにするのだ。" },
+      { speaker: '四国めたん', chara: 'metan_smug', text: "分析の道具を入れるときは、何を集めるかを決めて、個人情報を送らないこと。Cookie の同意が必要な国もありますわ。" },
+      { speaker: 'ずんだもん', chara: 'zun_normal', terminal: ["✔ エラーの見張りは最初から入れる", "✔ 知らせは多すぎると無視される", "✔ 個人情報を送らない", "✔ 料金は量で増えるので上限を"], text: "コツなのだ。" },
+      { speaker: '僕', chara: 'zun_normal', text: "「公開したあとも、ようすを見ていないといけないのか」" },
+    ],
+    next: 'lesson_menu_aws',
   },
 
   // ===================================================================
