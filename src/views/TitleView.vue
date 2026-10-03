@@ -61,10 +61,10 @@ function start() {
 }
 
 // TECH DOCS（技術説明モード）：同じゲーム画面で、Vue の説明シナリオ（data/lessons.js）を再生する
-function startLesson() {
+async function startLesson() {
   play('impact')
-  game.startLesson()
-  router.push('/game')
+  await game.startLesson() // 授業のデータを読みこんで、最初から始める
+  router.push('/docs')
 }
 </script>
 

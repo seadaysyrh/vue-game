@@ -7,6 +7,7 @@ import { useSound } from '../composables/useSound'
 import DigitRain from './DigitRain.vue'
 import TimeLeap from './TimeLeap.vue'
 import CharaSprite from './CharaSprite.vue'
+const BASE = import.meta.env.BASE_URL // 置き場所のフォルダ（GitHub Pages では /リポジトリ名/）。画像の場所はここから始める
 
 const props = defineProps({
   name: String, // 'opening' / 'shift' / 'rewind'
@@ -23,14 +24,14 @@ const shot = computed(() => shots[index.value])
 let timer = null
 
 function imageOf(s) {
-  if (s.still) return `/images/still/${s.still}.webp`
-  if (s.bg) return `/images/bg/${s.bg}.webp`
+  if (s.still) return `${BASE}images/still/${s.still}.webp`
+  if (s.bg) return `${BASE}images/bg/${s.bg}.webp`
   return null
 }
 
 // タイムリープのトンネルで、横を通りすぎる景色（flyby: ['roof_night', 'promise', …]。bg にも still にもある名前を使える）
 const STILLS = ['echo', 'farewell', 'observer', 'promise', 'rain', 'ramen']
-const flybyOf = (s) => (s.flyby ?? []).map((n) => (STILLS.includes(n) ? `/images/still/${n}.webp` : `/images/bg/${n}.webp`))
+const flybyOf = (s) => (s.flyby ?? []).map((n) => (STILLS.includes(n) ? `${BASE}images/still/${n}.webp` : `${BASE}images/bg/${n}.webp`))
 
 // 先に画像を読み込んでおく（カットが切り替わった瞬間に、絵が遅れて出ないように）
 shots.forEach((s) => {

@@ -3,6 +3,7 @@
 // 「基本」「目を閉じた絵」「口を変えた絵」の3枚を重ねておき、上の2枚を出したり消したりする
 // （src を差し替えるより、重ねて切り替えるほうがチラつかない）
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+const BASE = import.meta.env.BASE_URL // 置き場所のフォルダ（GitHub Pages では /リポジトリ名/）。画像の場所はここから始める
 
 const props = defineProps({
   name: String,     // 'zun_smile' など
@@ -10,7 +11,7 @@ const props = defineProps({
   talking: Boolean, // しゃべっている間 true（口パクする）
 })
 
-const src = (suffix) => `/images/chara/${props.name}${suffix}.webp`
+const src = (suffix) => `${BASE}images/chara/${props.name}${suffix}.webp`
 
 // ===== まばたき =====
 const blinking = ref(false)

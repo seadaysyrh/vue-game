@@ -88,7 +88,8 @@ function parse(src) {
 
 // <script setup> の中身を、変数を返す関数に作り変える（const / let / function で作った名前を、template から使えるようにする）
 function makeSetup(script, vue) {
-  const names = [...script.matchAll(/^\s*(?:const|let|var|function)\s+([A-Za-z_$][\w$]*)/gm)].map((m) => m[1])
+  // いちばん外側（字下げなし）の宣言だけを拾う。関数の中の変数まで拾うと「定義されていない」エラーになる
+  const names = [...script.matchAll(/^(?:async\s+)?(?:const|let|var|function)\s+([A-Za-z_$][\w$]*)/gm)].map((m) => m[1])
   // eslint-disable-next-line no-new-func
   const fn = new Function('ref', 'computed', 'watch', 'reactive', `${script}\nreturn { ${names.join(', ')} }`)
   return () => fn(vue.ref, vue.computed, vue.watch, vue.reactive)
@@ -97,6 +98,7 @@ function makeSetup(script, vue) {
 const host = ref(null) // 結果を出す場所。Shadow DOM の中に出して、ゲームの CSS と混ざらないようにする
 let shadow = null
 let app = null
+let observer = null // 結果の中身の変化を見張る
 let fullVue = null
 
 async function run() {
@@ -127,6 +129,10 @@ async function run() {
     app = fullVue.createApp({ setup, render })
     app.config.errorHandler = showError // ボタンを押したときなど、動いている途中のエラー
     app.mount(mountEl)
+    // 結果があとから書きかわったとき（1秒後に届く、など）にも「できたか」を確かめる
+    observer?.disconnect()
+    observer = new MutationObserver(recheck)
+    observer.observe(mountEl, { childList: true, subtree: true, characterData: true, attributes: true })
     // できたかどうかの確認は、画面が書きかわるのを待ってから
     await fullVue.nextTick()
     if (props.playground.check?.(mountEl) && !cleared.value) {
@@ -166,6 +172,7 @@ onMounted(() => {
 })
 onUnmounted(() => {
   clearTimeout(runTimer)
+  observer?.disconnect()
   app?.unmount()
 })
 

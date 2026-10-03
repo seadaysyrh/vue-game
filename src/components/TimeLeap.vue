@@ -77,9 +77,11 @@ onMounted(() => {
   }
 
   function draw(now) {
-    const dt = Math.min((now - last) / 1000, 0.05)
+    // 最初のコマでは、requestAnimationFrame の時刻が begin より少し前のことがある。
+    // そのままだと p がマイナスになって速さの計算が NaN になるので、0〜1 に収める
+    const dt = Math.max(0, Math.min((now - last) / 1000, 0.05))
     last = now
-    const p = Math.min((now - begin) / props.duration, 1)
+    const p = Math.max(0, Math.min((now - begin) / props.duration, 1))
     const v = speedAt(p)
     spin += dir * v * 0.35 * dt
 

@@ -37,6 +37,7 @@
 //                  { type: 'triptych' }（縦3本：左目・口・右目） | { type: 'slash', left, right }（斜め2本で2人の目）
 //   セリフの phone: スマホの画面（components/effects/PhoneScreen.vue）。本文の {choice0} は1回目に選んだ文章になる
 //   grade : 色調補正 'warm' | 'teal' | 'cold' | 'bleach'    scope: true … 映画の黒帯
+//           （grade・light・handheld・ambient・scope は、セリフに書いても効く。そのセリフだけ上書きされる）
 // ----- 演出の台本（セリフごと） -----
 //   beat  : セリフが始まる前の「間」（ミリ秒）。沈黙が、次の言葉を重くする
 //   speed : 'slow'（かみしめるように） | 'fast'

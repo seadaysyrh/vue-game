@@ -14,6 +14,17 @@
 //   sound      : 効果音の名前（composables/useSound.js）
 
 export const movies = {
+  // 技術説明モード（演出編）で見せる、デモ用の短いムービー（本編のネタバレを含まない）
+  lessonDemo: [
+    { bg: 'lab_evening', duration: 2400, motion: 'zoom-in', caption: 'カット1：ゆっくり寄る（motion: zoom-in）' },
+    { bg: 'hallway_evening', duration: 2400, motion: 'pan-right', caption: 'カット2：横に流す（motion: pan-right）' },
+    { bg: 'roof_day', duration: 2400, motion: 'zoom-in', effect: 'memory', caption: 'カット3：色あせた思い出（effect: memory）' },
+    { bg: 'stairs_evening', duration: 1500, effect: 'suck', caption: 'カット4：吸いこまれる（effect: suck）', sound: 'suck' },
+    { effect: 'leap', duration: 2800, flyby: ['classroom_evening', 'front_evening', 'roof_evening', 'hallway_night'], label: 'TIME LEAP', sound: 'warp' },
+    { effect: 'flash', duration: 400, sound: 'land' },
+    { bg: 'lab_night', duration: 2400, effect: 'arrive', caption: 'カット7：着地（effect: arrive）' },
+  ],
+
   // タイトルの START を押したときのオープニング
   opening: [
     { bg: 'front_evening', duration: 3600, motion: 'pan-right', caption: 'その放課後、世界は一度だけ書き換わった。', sound: 'whoosh' },

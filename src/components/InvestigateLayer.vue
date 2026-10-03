@@ -8,6 +8,7 @@
 // 箱は画面に「全部収まる」大きさにする（正方形に近い画面でも、端の調べる場所が切れないように）
 import { ref, computed } from 'vue'
 import { useSound } from '../composables/useSound'
+const BASE = import.meta.env.BASE_URL // 置き場所のフォルダ（GitHub Pages では /リポジトリ名/）。画像の場所はここから始める
 
 const props = defineProps({
   bg: String, // 背景の名前
@@ -41,7 +42,7 @@ function finish() {
   <!-- @click.stop：調査中のクリックは、ゲームの「次へ進む」に伝えない -->
   <div class="investigate" @click.stop="finish">
     <div class="frame">
-      <img :src="`/images/bg/${bg}.webp`" class="bg" alt="" />
+      <img :src="`${BASE}images/bg/${bg}.webp`" class="bg" alt="" />
       <button
         v-for="spot in investigate.hotspots"
         :key="spot.id"

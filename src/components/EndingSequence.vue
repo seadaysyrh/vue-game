@@ -6,6 +6,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useArchive } from '../composables/useArchive'
 import LetterCard from './LetterCard.vue'
+const BASE = import.meta.env.BASE_URL // 置き場所のフォルダ（GitHub Pages では /リポジトリ名/）。画像の場所はここから始める
 
 const props = defineProps({
   id: String,
@@ -99,14 +100,14 @@ function skip() {
       v-if="!reduceMotion"
       ref="video"
       class="movie"
-      :src="`/videos/ending_${id}.mp4`"
-      :poster="`/images/still/${ending.still}.webp`"
+      :src="`${BASE}videos/ending_${id}.mp4`"
+      :poster="`${BASE}images/still/${ending.still}.webp`"
       autoplay
       muted
       playsinline
       @ended="showText"
     ></video>
-    <img v-else class="movie" :src="`/images/still/${ending.still}.webp`" alt="" />
+    <img v-else class="movie" :src="`${BASE}images/still/${ending.still}.webp`" alt="" />
 
     <!-- フィルムのざらつき（動画に入れると重くなるので、画面側で重ねる） -->
     <div class="grain"></div>
@@ -122,7 +123,7 @@ function skip() {
     <!-- 思い出のアルバム（スタッフロールの間、左側に） -->
     <div v-if="phase === 3 && album.length" class="album">
       <Transition name="album">
-        <img :key="albumIndex" :src="`/images/still/${album[albumIndex]}.webp`" alt="" />
+        <img :key="albumIndex" :src="`${BASE}images/still/${album[albumIndex]}.webp`" alt="" />
       </Transition>
       <span class="album-label">MEMORIES {{ albumIndex + 1 }} / {{ album.length }}</span>
     </div>

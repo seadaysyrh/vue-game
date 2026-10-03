@@ -9,6 +9,7 @@ import { useArchive } from '../composables/useArchive'
 import { endings, endingByPath } from '../data/scenario'
 import { TIPS } from '../data/tips'
 import NixieMeter from '../components/NixieMeter.vue'
+const BASE = import.meta.env.BASE_URL // 置き場所のフォルダ（GitHub Pages では /リポジトリ名/）。画像の場所はここから始める
 
 const game = useGameStore()
 const { tips, stills } = useArchive()
@@ -76,7 +77,7 @@ const count = (list) => `${list.filter((x) => x.seen).length}/${list.length}`
     <section v-if="tab === 'endings'" class="grid">
       <article v-for="e in endingList" :key="e.id" class="card" :class="{ locked: !e.seen }">
         <div class="thumb">
-          <img v-if="e.seen" :src="`/images/still/${e.still}.webp`" alt="" />
+          <img v-if="e.seen" :src="`${BASE}images/still/${e.still}.webp`" alt="" />
           <span v-else>NO SIGNAL</span>
         </div>
         <p class="label">{{ e.label }}</p>
@@ -89,7 +90,7 @@ const count = (list) => `${list.filter((x) => x.seen).length}/${list.length}`
     <!-- ===== ギャラリー ===== -->
     <section v-if="tab === 'gallery'" class="grid gallery">
       <button v-for="g in galleryList" :key="g.name" class="still" :class="{ locked: !g.seen }" :disabled="!g.seen" @click="viewing = g">
-        <img v-if="g.seen" :src="`/images/still/${g.name}.webp`" alt="" />
+        <img v-if="g.seen" :src="`${BASE}images/still/${g.name}.webp`" alt="" />
         <span v-else>???</span>
         <small>{{ g.seen ? g.title : '未観測' }}</small>
       </button>
@@ -108,7 +109,7 @@ const count = (list) => `${list.filter((x) => x.seen).length}/${list.length}`
     <!-- スチルを大きく見る -->
     <Transition name="view">
       <div v-if="viewing" class="viewer" @click="viewing = null">
-        <img :src="`/images/still/${viewing.name}.webp`" alt="" />
+        <img :src="`${BASE}images/still/${viewing.name}.webp`" alt="" />
         <p>{{ viewing.title }}</p>
       </div>
     </Transition>

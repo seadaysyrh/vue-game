@@ -6,6 +6,7 @@
 import { ref, computed, watch, onUnmounted } from 'vue'
 import CharaSprite from './CharaSprite.vue'
 import LightRays from './effects/LightRays.vue'
+const BASE = import.meta.env.BASE_URL // 置き場所のフォルダ（GitHub Pages では /リポジトリ名/）。画像の場所はここから始める
 
 const props = defineProps({
   bg: String,       // 背景の名前（例：'lab_evening'）
@@ -22,8 +23,8 @@ const props = defineProps({
 })
 
 // 名前から画像の場所を組み立てる（public/ に置いたファイルは "/" から始まる URL で読める）
-const bgSrc = computed(() => `/images/bg/${props.bg}.webp`)
-const stillSrc = computed(() => (props.still ? `/images/still/${props.still}.webp` : null))
+const bgSrc = computed(() => `${BASE}images/bg/${props.bg}.webp`)
+const stillSrc = computed(() => (props.still ? `${BASE}images/still/${props.still}.webp` : null))
 
 // 立ち絵の「キャラ名」の部分だけを取り出す（'zun_smile' → 'zun'、'metan_sad' → 'metan'）
 // これを :key に使うと、同じキャラの表情が変わるだけならアニメーションせず、すぐ差し替わる

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted, defineAsyncComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGameStore } from '../stores/game'
 import { useSound } from '../composables/useSound'
@@ -27,10 +27,10 @@ import ScanLock from '../components/effects/ScanLock.vue'
 import RewriteScan from '../components/effects/RewriteScan.vue'
 import HoloTerminal from '../components/effects/HoloTerminal.vue'
 import TileDissolve from '../components/effects/TileDissolve.vue'
-import LessonDiagram from '../components/effects/LessonDiagram.vue'
-import CodePlayground from '../components/CodePlayground.vue'
-import LessonMenu from '../components/LessonMenu.vue'
-import { LESSON_IDS } from '../data/lessons'
+// 技術説明モードでしか使わない部品は、必要になったときにだけ読みこむ（本編を軽くするため）
+const LessonDiagram = defineAsyncComponent(() => import('../components/effects/LessonDiagram.vue'))
+const CodePlayground = defineAsyncComponent(() => import('../components/CodePlayground.vue'))
+const LessonMenu = defineAsyncComponent(() => import('../components/LessonMenu.vue'))
 import { useLessonProgress } from '../composables/useLessonProgress'
 import { routeTree } from '../data/routeTree'
 import InvestigateLayer from '../components/InvestigateLayer.vue'
@@ -59,7 +59,8 @@ const shownChapters = new Set()
 watch(
   () => [game.sceneId, game.movie],
   () => {
-    if (game.movie || !game.scene.chapter || shownChapters.has(game.sceneId)) return
+    // 本編では同じ章のカードは1回だけ。技術説明モードでは、演出を見せるために毎回出す
+    if (game.movie || !game.scene.chapter || (shownChapters.has(game.sceneId) && game.mode !== 'lesson')) return
     shownChapters.add(game.sceneId)
     chapterActive.value = true
     play('impact')
@@ -300,7 +301,7 @@ const { markSeen } = useLessonProgress()
 watch(
   () => game.sceneId,
   (now, before) => {
-    if (game.mode === 'lesson' && LESSON_IDS.has(before) && now !== before) markSeen(before)
+    if (game.mode === 'lesson' && game.isLessonScene(before) && now !== before) markSeen(before)
   },
 )
 // 目次で選ばれたシーンへ進む（目次は、ふつうの選択肢と同じく game.choose で進める）
@@ -324,7 +325,12 @@ watch(
   },
   { immediate: true },
 )
-watch(() => game.line.still, seeStill, { immediate: true })
+// 技術説明モードでは、本編のギャラリー（見たスチル）に記録しない
+watch(
+  () => game.line.still,
+  (still) => game.mode !== 'lesson' && seeStill(still),
+  { immediate: true },
+)
 
 // ===== カットイン：cutin: 'eyes' のような短い書き方も、{ type, chara, echo } の形にそろえる =====
 const cutin = computed(() => {
@@ -340,6 +346,11 @@ const diagramType = computed(() => {
   const d = game.line.diagram
   return typeof d === 'string' ? d : d?.type
 })
+
+// ===== 見た目の設定：シーンに書いたものを、セリフで上書きできる =====
+// grade（色調補正）・light（光の筋）・handheld（手持ちカメラ）・ambient（空気の粒子）
+// 技術説明モードで「同じ場面のまま、色だけ変えて見くらべる」ために使う
+const look = (key) => game.line[key] ?? game.scene[key]
 
 // ===== 携帯演出：本文の {choice0} などを、プレイヤーが実際に選んだ選択肢の文章に置き換える =====
 const chosenTexts = computed(() => {
@@ -427,7 +438,7 @@ const remaining = computed(() => (game.sceneId === 'start' ? 2 : 1))
   >
     <div class="world">
       <!-- 色調補正（カラーグレーディング）：シーンの grade で、映画のような色味にする -->
-      <div class="grade" :class="game.scene.grade ? `grade-${game.scene.grade}` : ''">
+      <div class="grade" :class="look('grade') ? `grade-${look('grade')}` : ''">
       <StageLayer
         :bg="game.scene.bg"
         :chara="game.line.chara"
@@ -435,11 +446,11 @@ const remaining = computed(() => (game.sceneId === 'start' ? 2 : 1))
         :still="game.line.still"
         :talking="talking"
         :camera="game.line.camera"
-        :handheld="game.scene.handheld"
-        :light="game.scene.light"
+        :handheld="look('handheld')"
+        :light="look('light')"
         :ghost="game.line.ghost"
       />
-      <AmbientLayer :mode="game.scene.ambient" />
+      <AmbientLayer :mode="look('ambient')" />
       </div>
     </div>
 
@@ -448,7 +459,7 @@ const remaining = computed(() => (game.sceneId === 'start' ? 2 : 1))
 
     <!-- 映画のような上下の黒帯（シーンの scope） -->
     <!-- 感情の山場（セリフの scope: 'wide'）では、黒帯がさらに広がって画面が横長になる -->
-    <div class="scope" :class="{ on: game.scene.scope, wide: game.line.scope === 'wide' }"><span></span><span></span></div>
+    <div class="scope" :class="{ on: game.scene.scope || game.line.scope, wide: game.line.scope === 'wide' }"><span></span><span></span></div>
 
     <!-- カットイン（目のアップなど）と携帯演出。セリフごとに出す -->
     <CutIn v-if="cutin && !blocking" :key="`c-${lineId}`" :cutin="cutin" :talking="talking" />

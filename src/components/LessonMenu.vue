@@ -114,10 +114,13 @@ function lessonThumb(id) {
 @keyframes fade-in { from { opacity: 0; } }
 @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
 
-/* 編ごとの色：きほん＝青、つくる＝緑、公開する＝オレンジ */
+/* 編ごとの色：きほん＝青、つくる＝緑、公開する＝オレンジ、サーバー＝むらさき、セキュリティ＝赤、演出＝ピンク */
 .track-basic { --accent: #6fc3ff; }
 .track-build { --accent: #6dffb0; }
 .track-ship { --accent: #ffb066; }
+.track-direct { --accent: #ff8ad8; }
+.track-server { --accent: #b48cff; }
+.track-secure { --accent: #ff6b6b; }
 
 /* ===== 見出し ===== */
 .head {
@@ -149,7 +152,7 @@ h2 {
 /* ===== 編のカード ===== */
 .cards {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 12px;
   width: min(960px, 100%);
 }

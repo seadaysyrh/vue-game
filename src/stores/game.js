@@ -3,7 +3,10 @@
 // ゲームの進行状況をここにまとめておけば、ゲーム画面・エンディング・分岐図のどれからでも読める。
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { scenes, getEndingType, endings, endingByPath } from '../data/scenario'
-import { lessonScenes, LESSON_START } from '../data/lessons'
+
+// 技術説明モードのデータ（data/lessons.js）は大きいので、TECH DOCS を押したときにだけ読みこむ。
+// 本編だけ遊ぶ人は、ダウンロードしなくてすむ
+let lessonData = null
 
 // ----- 通った世界線をブラウザに保存する（ページを閉じても残る） -----
 const SAVE_KEY = 'after-school-rewrite:visited'
@@ -46,7 +49,7 @@ export const useGameStore = defineStore('game', {
 
   // ----- getters：state から計算する値（コンポーネントの computed にあたる） -----
   getters: {
-    scene: (state) => (state.mode === 'lesson' ? lessonScenes : scenes)[state.sceneId],
+    scene: (state) => (state.mode === 'lesson' ? lessonData.lessonScenes : scenes)[state.sceneId],
     // このシーンのセリフのうち、今の選び方で出るものだけ
     lines() {
       // getter から別の getter を使うときは this を使う
@@ -93,11 +96,12 @@ export const useGameStore = defineStore('game', {
     },
 
     // 技術説明モードを最初から始める
-    startLesson() {
+    async startLesson() {
+      lessonData ??= await import('../data/lessons')
       this.mode = 'lesson'
       this.path = ''
       this.movie = null
-      this.goToScene(LESSON_START)
+      this.goToScene(lessonData.LESSON_START)
     },
 
     goToScene(id) {
@@ -144,6 +148,11 @@ export const useGameStore = defineStore('game', {
       this.movie = null
       this.goToScene(node.sceneId)
       this.path = node.key
+    },
+
+    // その ID が技術説明モードの「授業」のシーンか（見終わった授業の記録に使う）
+    isLessonScene(id) {
+      return Boolean(lessonData?.LESSON_IDS.has(id))
     },
 
     markVisited(key) {
