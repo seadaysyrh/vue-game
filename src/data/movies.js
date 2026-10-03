@@ -46,7 +46,7 @@ export const movies = {
     { effect: 'white', duration: 1400 },
   ],
 
-  // 走馬灯（嵐のルート）：カップラーメンの代わりに、雨の中で笑う彼女
+  // 走馬灯（嵐のルート）：カップラーメンの代わりに、雨の中で笑うずんだもん
   memoriesRain: [
     { bg: 'roof_day', chara: 'zun_proud', duration: 3000, motion: 'zoom-in', effect: 'memory', caption: '「半分こしてあげるのだ。部員への福利厚生なのだ」' },
     { bg: 'lab_evening', chara: 'zun_proud', duration: 3200, motion: 'zoom-in', effect: 'memory', caption: '「待ってたのだ！ ついに完成したのだ！」' },

@@ -160,7 +160,7 @@ export const scenes = {
       { speaker: '', chara: null, when: '0', speed: 'slow', text: '……「全部B」。昨日の僕は、こんなふざけたメッセージを信じたんだろうか。' },
       { speaker: '', chara: null, when: '1', speed: 'slow', text: '……「ありがとう」。昨日の僕は、それを誰に言ったんだろう。' },
       { speaker: '', chara: null, ghost: 'zun_normal', beat: 900, speed: 'slow', music: 'duck', text: '「ずんだもん……？」 返事はない。装置も、どこにもない。' },
-      { speaker: '', chara: null, camera: 'drift', text: '棚を見る。枝豆のキーホルダーも、作りかけの基板も。彼女の物が、ひとつもない。' },
+      { speaker: '', chara: null, camera: 'drift', text: '棚を見る。枝豆のキーホルダーも、作りかけの基板も。ずんだもんの物が、ひとつもない。' },
       {
         speaker: '',
         chara: null,
@@ -274,11 +274,11 @@ export const scenes = {
     lines: [
       { speaker: '', chara: null, camera: 'pull-back', beat: 600, text: '雨の屋上。昼休みにずんだ餅を分けたフェンスのそばに、淡く光る人影があった。' },
       { speaker: '？？？', chara: 'zun_sad', echo: true, camera: 'vertigo', fx: 'rack', beat: 1600, speed: 'slow', text: '……やっぱり。キミには、見えるのだ？' },
-      { speaker: '', chara: null, still: 'rain', fx: 'leak', speed: 'slow', text: '雨粒が、彼女の体をすり抜けて落ちていく。濡れているのは、僕だけだった。' },
+      { speaker: '', chara: null, still: 'rain', fx: 'leak', speed: 'slow', text: '雨粒が、ずんだもんの体をすり抜けて落ちていく。濡れているのは、僕だけだった。' },
       { speaker: '？？？', chara: 'zun_cry', echo: true, cutin: 'eyes', speed: 'slow', music: 'duck', text: 'この世界で、ボクは*生まれなかったこと*になってるのだ。今のボクは、前の世界の「残響」なのだ。' },
       { speaker: '', chara: 'zun_cry', echo: true, speed: 'slow', text: '——名前が、出てこない。目の前にいるのに。一緒にずんだ餅を食べた、あいつの名前が。' },
       { speaker: '僕', chara: 'zun_cry', echo: true, cutin: { type: 'vertical', side: 'right', focus: 'eye-left' }, beat: 1400, speed: 'slow', sfx: 'heartbeat', text: '「…………ずんだもん」' },
-      { speaker: '', chara: 'zun_cry', echo: true, fx: 'glitch', text: '名前を呼んだ瞬間、ノイズの向こうで、彼女の輪郭がはっきりした。' },
+      { speaker: '', chara: 'zun_cry', echo: true, fx: 'glitch', text: '名前を呼んだ瞬間、ノイズの向こうで、ずんだもんの輪郭がはっきりした。' },
       { speaker: 'ずんだもん', chara: 'zun_gentle', echo: true, still: 'echo', fx: 'leak', music: 'swell', scope: 'wide', beat: 900, text: 'でも、キミが覚えててくれるから……まだ、ここにいられるみたいなのだ。' },
       { speaker: 'ずんだもん', chara: 'zun_proud', echo: true, when: '0', music: 'normal', text: 'それにしても、最初のメッセージが「テストの答え」なんて……ほんと、キミらしいのだ。' },
       { speaker: 'ずんだもん', chara: 'zun_gentle', echo: true, when: '1', music: 'normal', text: 'あの「ありがとう」……ボク宛てだったのだ？ ……ちょっと、うれしかったのだ。' },
@@ -287,7 +287,7 @@ export const scenes = {
       { speaker: 'ずんだもん', chara: 'zun_smile', echo: true, text: '……昼休みのずんだ餅、半分こしておいてよかったのだ。' },
       { speaker: '僕', chara: 'zun_smile', echo: true, text: '「半分しかくれなかったけどな」' },
       { speaker: 'ずんだもん', chara: 'zun_proud', echo: true, fx: 'burst', text: '半分*「も」*あげたのだ！ 感謝するのだ！' },
-      { speaker: '', chara: 'zun_proud', echo: true, speed: 'slow', text: '笑った。この世界でたぶん僕だけが、彼女と笑える。' },
+      { speaker: '', chara: 'zun_proud', echo: true, speed: 'slow', text: '笑った。この世界でたぶん僕だけが、ずんだもんと笑える。' },
       { speaker: 'ずんだもん', chara: 'zun_gentle', echo: true, beat: 1000, speed: 'slow', text: '……ねえ。キミは、どうしたいのだ？' },
     ],
     choices: [
@@ -296,7 +296,7 @@ export const scenes = {
     ],
   },
 
-  // 雨上がりの屋上で、カップラーメン（食べられない彼女と）
+  // 雨上がりの屋上で、カップラーメン（食べられないずんだもんと）
   ramen: {
     place: { name: '屋上', time: '19:31' },
     bg: 'roof_night',
@@ -335,11 +335,11 @@ export const scenes = {
       { speaker: '', chara: null, fx: 'shake', sfx: 'thunder', beat: 600, text: '雨が、急に強くなった。遠くで雷が鳴る。' },
       { speaker: '僕', chara: null, camera: 'drift', text: '「どうすればいいんだよ……！ 名簿にも、連絡先にも、どこにもいないんだぞ」' },
       { speaker: 'ずんだもん', chara: 'zun_sad', echo: true, beat: 1000, speed: 'slow', text: '……ごめんなのだ。ボクが、変な装置なんか作ったから。' },
-      { speaker: '', chara: 'zun_sad', echo: true, fx: 'glitch', text: '彼女の輪郭が、ノイズみたいに一瞬ぶれた。' },
+      { speaker: '', chara: 'zun_sad', echo: true, fx: 'glitch', text: 'ずんだもんの輪郭が、ノイズみたいに一瞬ぶれた。' },
       { speaker: 'ずんだもん', chara: 'zun_cry', echo: true, cutin: { type: 'diagonal', angle: -16 }, speed: 'slow', music: 'duck', text: 'キミが迷うと……ボク、ちょっとずつ*薄くなる*みたいなのだ。' },
-      { speaker: '', chara: null, music: 'cut', sfx: 'heartbeat', beat: 900, text: '息が止まった。僕の迷いが、そのまま彼女を消していく。' },
+      { speaker: '', chara: null, music: 'cut', sfx: 'heartbeat', beat: 900, text: '息が止まった。僕の迷いが、そのままずんだもんを消していく。' },
       { speaker: 'ずんだもん', chara: 'zun_gentle', echo: true, cutin: 'face', beat: 1200, speed: 'slow', music: 'swell', text: 'ボクのために無理しなくていいのだ。……でも、もし決めてくれるなら、うれしいのだ。' },
-      { speaker: '', chara: null, still: 'rain', fx: 'leak', speed: 'slow', text: '雨の中で、彼女は笑っていた。濡れることもできない体で。' },
+      { speaker: '', chara: null, still: 'rain', fx: 'leak', speed: 'slow', text: '雨の中で、ずんだもんは笑っていた。濡れることもできない体で。' },
       { speaker: '', chara: null, music: 'normal', speed: 'slow', text: '塔屋の陰で、雨が弱まるのを待った。言葉は、もう出てこなかった。' },
     ],
     next: 'observer',
@@ -490,8 +490,8 @@ export const scenes = {
       { speaker: 'ずんだもん', chara: 'zun_smile', echo: true, when: '??0', speed: 'slow', text: '謝らないでほしいのだ。キミが選んだ世界なら、きっと大丈夫なのだ。' },
       { speaker: 'ずんだもん', chara: 'zun_cry', echo: true, when: '??1', cutin: { type: 'triptych' }, beat: 1200, speed: 'slow', music: 'swell', text: '……「忘れるな」って、送ってくれたのだ。' },
       { speaker: '僕', chara: 'zun_cry', echo: true, when: '??1', text: '「当たり前だろ。部員なんだから」' },
-      { speaker: '', chara: 'zun_gentle', echo: true, when: '1?1', fx: 'leak', sfx: 'heartbeat', beat: 1400, speed: 'slow', text: '彼女の指先が、僕の手に重なった。——すり抜けなかった。ほんの一瞬だけ、*温かかった*。' },
-      { speaker: '', chara: 'zun_gentle', echo: true, when: '0?1', speed: 'slow', text: '彼女の指先が、僕の手をすり抜けた。それでも、温かい気がした。' },
+      { speaker: '', chara: 'zun_gentle', echo: true, when: '1?1', fx: 'leak', sfx: 'heartbeat', beat: 1400, speed: 'slow', text: 'ずんだもんの指先が、僕の手に重なった。——すり抜けなかった。ほんの一瞬だけ、*温かかった*。' },
+      { speaker: '', chara: 'zun_gentle', echo: true, when: '0?1', speed: 'slow', text: 'ずんだもんの指先が、僕の手をすり抜けた。それでも、温かい気がした。' },
       { speaker: 'ずんだもん', chara: 'zun_smile', echo: true, when: '??2', speed: 'slow', text: 'めたんのことまで……キミは、ほんとに欲ばりなのだ。' },
       { speaker: 'ずんだもん', chara: 'zun_smile', echo: true, still: 'farewell', cinema: true, fx: 'leak', beat: 1800, speed: 'slow', music: 'muffle', scope: 'wide', text: 'またね、なのだ。' },
       { speaker: '四国めたん', chara: null, when: '??2', cinema: true, beat: 1500, speed: 'slow', text: '……どうして、わたくしの名前まで。' },
@@ -630,14 +630,14 @@ export const scenes = {
     lines: [
       { speaker: '', chara: null, camera: 'drift', text: '放課後。なぜか足が、屋上に向いた。' },
       { speaker: 'ずんだもん', chara: 'zun_normal', text: 'あ、来たのだ。' },
-      { speaker: '', chara: 'zun_normal', text: '緑の髪の女の子。たしか同じ研究会の……ずんだもん、だったか。' },
+      { speaker: '', chara: 'zun_normal', text: '緑の髪の子。たしか同じ研究会の……ずんだもん、だったか。' },
       { speaker: 'ずんだもん', chara: 'zun_sad', beat: 1000, speed: 'slow', text: '……やっぱり、覚えてないのだ？ 昨日のこと。' },
       { speaker: '僕', chara: 'zun_sad', text: '「昨日？ 何かあったっけ」' },
       { speaker: 'ずんだもん', chara: 'zun_gentle', cutin: 'face', speed: 'slow', music: 'duck', text: 'ううん。なんでもないのだ。' },
       { speaker: 'ずんだもん', chara: 'zun_smile', music: 'normal', text: 'ねえ、キミ。「ありがとう」って、言ってみてほしいのだ。' },
       { speaker: '僕', chara: 'zun_smile', text: '「……ありがとう？ なんで？」' },
       { speaker: 'ずんだもん', chara: null, still: 'end_alone', fx: 'leak', beat: 1200, speed: 'slow', music: 'swell', text: 'えへへ。……それが聞けたから、もう十分なのだ。' },
-      { speaker: '', chara: null, cinema: true, scope: 'wide', text: '彼女だけが知っている昨日を、僕は知らない。' },
+      { speaker: '', chara: null, cinema: true, scope: 'wide', text: 'ずんだもんだけが知っている昨日を、僕は知らない。' },
     ],
   },
 
@@ -805,7 +805,7 @@ export const endings = {
   allB: {
     still: 'end_allB',
     letter: { from: 'ずんだもん', lines: ['キミへ。', '0点、おつかれさまなのだ。', 'でもキミは、ボクのことを', 'ちゃんと覚えててくれたのだ。', 'それって、満点より', 'ずっとすごいことなのだ。'] }, // エンディング動画のあとの手紙
-    hint: '最初はふざけて、屋上では迷わず、最後に彼女を覚えておこうとした。', // 記録室で、まだ見ていないときに出すヒント
+    hint: '最初はふざけて、屋上では迷わず、最後にずんだもんを覚えておこうとした。', // 記録室で、まだ見ていないときに出すヒント
     bgm: 'evening',
     ambient: 'dust',
     label: 'END 02',
@@ -832,7 +832,7 @@ export const endings = {
   night: {
     still: 'end_night',
     letter: { from: 'ずんだもん', lines: ['キミへ。', '今日も来てくれて、ありがとうなのだ。', '触れないし、濡れないし、食べられないけど、', 'キミが覚えててくれる限り、', 'ボクは毎晩、ここにいるのだ。', '……明日は、傘を持ってくるのだ。'] }, // エンディング動画のあとの手紙
-    hint: '最初はふざけて、屋上で答えに迷い、最後に彼女を覚えておこうとした。', // 記録室で、まだ見ていないときに出すヒント
+    hint: '最初はふざけて、屋上で答えに迷い、最後にずんだもんを覚えておこうとした。', // 記録室で、まだ見ていないときに出すヒント
     bgm: 'echo',
     ambient: 'echo',
     label: 'END 04',
@@ -859,7 +859,7 @@ export const endings = {
   true: {
     still: 'end_true',
     letter: { from: 'ずんだもん', lines: ['キミへ。', 'おかえりなのだ。', '約束、ちゃんと覚えてるのだ？', '今夜は屋上で、本物のカップラーメンなのだ。', 'ボクは塩味。キミは……なんでもいいのだ。', 'これからも、ずっと部員なのだ。'] }, // エンディング動画のあとの手紙
-    hint: '最初は素直に、屋上では迷わず、最後に彼女を覚えておこうとした。', // 記録室で、まだ見ていないときに出すヒント
+    hint: '最初は素直に、屋上では迷わず、最後にずんだもんを覚えておこうとした。', // 記録室で、まだ見ていないときに出すヒント
     bgm: 'theme',
     ambient: 'dust',
     label: 'TRUE END',
@@ -885,7 +885,7 @@ export const endings = {
   shifted: {
     still: 'end_shifted',
     letter: { from: 'ずんだもん', lines: ['はじめましての、あなたへ。', '変ですね。はじめて会ったのに、', '雨の日に、ひとつの傘に入りたいって、', 'ずっと思っていた気がするんです。', '……今度、試してみてもいいですか？'] }, // エンディング動画のあとの手紙
-    hint: '最初は素直に、屋上で答えに迷い、最後に彼女を覚えておこうとした。', // 記録室で、まだ見ていないときに出すヒント
+    hint: '最初は素直に、屋上で答えに迷い、最後にずんだもんを覚えておこうとした。', // 記録室で、まだ見ていないときに出すヒント
     bgm: 'evening',
     ambient: 'dust',
     label: 'END 08',
